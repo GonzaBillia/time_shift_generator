@@ -1,34 +1,73 @@
-import datetime
+# domain/models/horario.py
+
+from datetime import date, time
+from typing import List, Tuple
 
 class Horario:
-    def __init__(self, hora_inicio, hora_fin):
+    def __init__(
+        self,
+        fecha: date,
+        bloques: List[Tuple[time, time]],
+        horario_corrido: bool = False
+    ):
         """
-        Inicializa un objeto Horario.
+        Inicializa un objeto Horario con múltiples bloques de tiempo.
 
         Args:
-            hora_inicio (datetime.time): Hora de inicio del horario.
-            hora_fin (datetime.time): Hora de fin del horario.
+            fecha (date): Fecha del horario.
+            bloques (List[Tuple[time, time]]): Lista de bloques (inicio, fin).
+            horario_corrido (bool, optional): Define si es un horario corrido o no. Por defecto es False.
+
+        Raises:
+            ValueError: Si los datos proporcionados no son válidos.
         """
+        self.fecha = fecha
+        self.horario_corrido = horario_corrido
 
-        if hora_fin <= hora_inicio:
-            raise ValueError("La hora de fin debe ser posterior a la hora de inicio.")
+        if not bloques:
+            raise ValueError("Debes proporcionar al menos un bloque de tiempo.")
 
-        self.hora_inicio = datetime.time(hora_inicio)
-        self.hora_fin = datetime.time(hora_fin)
+        # Validar y ordenar los bloques
+        self.bloques = sorted(bloques, key=lambda b: b[0])  # Ordenar bloques por hora de inicio
+        self._validar_bloques()
 
-    def duracion(self):
+    def _validar_bloques(self):
         """
-        Calcula la duración del horario en minutos.
+        Valida los bloques de horario:
+        - Verifica que cada bloque tenga una hora de inicio anterior a la hora de fin.
+        - Verifica que los bloques no se superpongan entre sí.
+        """
+        for i, (inicio, fin) in enumerate(self.bloques):
+            if fin <= inicio:
+                raise ValueError(f"El bloque {i + 1} tiene una hora de fin anterior o igual a la hora de inicio.")
+            if i > 0:  # Verificar superposición con el bloque anterior
+                _, fin_anterior = self.bloques[i - 1]
+                if inicio < fin_anterior:
+                    raise ValueError(f"El bloque {i + 1} se superpone con el bloque anterior.")
+
+    def duracion(self) -> int:
+        """
+        Calcula la duración total del horario en minutos.
 
         Returns:
-            int: Duración del horario en minutos.
+            int: Duración total en minutos.
         """
+        duracion_total = 0
+        for inicio, fin in self.bloques:
+            start_minutes = inicio.hour * 60 + inicio.minute
+            end_minutes = fin.hour * 60 + fin.minute
 
-        tiempo_delta = datetime.timedelta(hours=self.hora_fin.hour, minutes=self.hora_fin.minute) - \
-                       datetime.timedelta(hours=self.hora_inicio.hour, minutes=self.hora_inicio.minute)
-        return tiempo_delta.total_seconds() // 60
+            if end_minutes < start_minutes:
+                # Horario que se extiende al día siguiente
+                duracion = (24 * 60 - start_minutes) + end_minutes
+            else:
+                duracion = end_minutes - start_minutes
 
-    def se_superpone(self, otro_horario):
+            duracion_total += duracion
+
+        return duracion_total
+
+    def se_superpone(self, otro_horario: 'Horario') -> bool:
         """
         Verifica si este horario se superpone con otro horario.
 
@@ -36,7 +75,14 @@ class Horario:
             otro_horario (Horario): Otro objeto Horario.
 
         Returns:
-            bool: True si los horarios se superponen, False en caso contrario.
+            bool: True si algún bloque de este horario se superpone con algún bloque del otro horario.
         """
+        if self.fecha != otro_horario.fecha:
+            return False  # Los horarios no son del mismo día
 
-        return (self.hora_inicio <= otro_horario.hora_fin) and (self.hora_fin >= otro_horario.hora_inicio)
+        for inicio1, fin1 in self.bloques:
+            for inicio2, fin2 in otro_horario.bloques:
+                if not (fin1 <= inicio2 or fin2 <= inicio1):  # Hay superposición
+                    return True
+
+        return False
