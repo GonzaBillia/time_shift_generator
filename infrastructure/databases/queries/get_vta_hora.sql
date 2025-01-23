@@ -69,8 +69,9 @@ FROM factcabecera fc
 LEFT JOIN clientes c ON fc.IDCliente = c.CodCliente
 INNER JOIN Operadores op ON fc.IDUsuario = op.IDOperador
 
-WHERE 
-    fc.Emision BETWEEN %s AND %s
+WHERE
+    fc.Sucursal = %s
+    AND fc.Emision BETWEEN %s AND %s
     AND fc.Tipo IN ('FV', 'TK', 'TF', 'NC', 'ND', 'TZ')
     AND fc.TipoIVA <> 'XX'
 
