@@ -6,9 +6,9 @@ from .equipo import Equipo
 from .horario import Horario
 
 # Definición de constantes para los tipos de empleado
-TIEMPO_COMPLETO = "tiempo completo"
-TIEMPO_PARCIAL = "tiempo parcial"
-HORARIO_ESPECIAL = "horario especial"
+TIEMPO_COMPLETO = "tiempo completo", {"horas_x_dia_max": 8}, {"hs_semanales": 45}
+TIEMPO_PARCIAL = "tiempo parcial", {"horas_x_dia_max": 4}, {"hs_semanales": 30}
+HORARIO_ESPECIAL = "horario especial", {"horas_x_dia_max": 11}, {"hs_semanales": 22}
 
 class Colaborador:
     def __init__(
@@ -27,8 +27,8 @@ class Colaborador:
         vacaciones: List[date],
         horario_asignado: List[Horario],
         tipo_empleado: str,  # 'tiempo completo', 'tiempo parcial', 'horario especial'
+        horas_diarias_maximas: int,  # En horas
         horario_corrido: bool = False,
-        horas_diarias_maximas: int = 8  # En horas
     ):
         """
         Inicializa un objeto Colaborador.
@@ -67,8 +67,8 @@ class Colaborador:
         self.hs_extra = hs_extra
         self.vacaciones = vacaciones
         self.horario_asignado = horario_asignado  # Lista de objetos Horario
-        self.horario_corrido = horario_corrido
         self.horas_diarias_maximas = horas_diarias_maximas  # En horas
+        self.horario_corrido = horario_corrido
 
         # Validación del tipo de empleado
         if tipo_empleado not in {TIEMPO_COMPLETO, TIEMPO_PARCIAL, HORARIO_ESPECIAL}:

@@ -2,9 +2,8 @@ import pytest
 from datetime import time, date
 from domain.models.horario import Horario
 from domain.models.colaborador import Colaborador, TIEMPO_COMPLETO, TIEMPO_PARCIAL, HORARIO_ESPECIAL
-from tests.mocks.mock_horarios import MockHorario
 from tests.mocks.mock_colaborador import MockColaborador
-from domain.specs.horario_specs import (
+from domain.specs.colaborador_specs import (
     TipoEmpleadoSpecification
 )
 

@@ -90,30 +90,6 @@ class DiaLibreSpecification(HorarioSpecification):
         return len(dias_trabajados) < 7  # Al menos un día libre
 
 
-class TipoEmpleadoSpecification(HorarioSpecification):
-    def is_satisfied_by(self, horario: Horario, colaborador: Colaborador) -> bool:
-        """
-        Verifica que el tipo de empleado tenga las horas semanales y configuraciones por defecto correctas.
-
-        Args:
-            horario (Horario): El horario a evaluar (puede ser ignorado en esta especificación).
-            colaborador (Colaborador): El colaborador al que se asigna el horario.
-
-        Returns:
-            bool: True si se cumple la especificación, False en caso contrario.
-        """
-        tipo = colaborador.tipo_empleado
-        horas_semanales = colaborador.horas_semanales
-
-        if tipo == TIEMPO_COMPLETO and horas_semanales != 45:
-            return False
-        elif tipo == TIEMPO_PARCIAL and horas_semanales != 30:
-            return False
-        elif tipo == HORARIO_ESPECIAL and horas_semanales != 22:
-            return False
-        return True
-
-
 class HorariosPorDefectoSpecification(HorarioSpecification):
     def is_satisfied_by(self, horario: Horario, colaborador: Colaborador) -> bool:
         """
