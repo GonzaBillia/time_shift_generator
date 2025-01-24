@@ -86,3 +86,27 @@ class Horario:
                     return True
 
         return False
+    
+    def esta_dentro(self, otro: 'Horario') -> bool:
+        """
+        Verifica si todos los bloques de este horario están completamente contenidos dentro
+        de los bloques del otro horario.
+
+        Args:
+            otro (Horario): El horario a comparar.
+
+        Returns:
+            bool: True si todos los bloques están dentro del otro horario, False de lo contrario.
+        """
+        if self.fecha != otro.fecha:
+            return False  # Los horarios no son del mismo día
+
+        for inicio1, fin1 in self.bloques:
+            bloque_dentro = any(
+                inicio2 <= inicio1 and fin1 <= fin2
+                for inicio2, fin2 in otro.bloques
+            )
+            if not bloque_dentro:
+                return False  # Si algún bloque no está contenido, retornamos False
+
+        return True

@@ -1,14 +1,31 @@
 # domain/models/colaborador.py
 
+from __future__ import annotations
 from typing import List, Dict
 from datetime import date
-from .equipo import Equipo
 from .horario import Horario
+from .tipo_colaborador import TipoEmpleado
 
 # Definición de constantes para los tipos de empleado
-TIEMPO_COMPLETO = "tiempo completo", {"horas_x_dia_max": 8}, {"hs_semanales": 45}
-TIEMPO_PARCIAL = "tiempo parcial", {"horas_x_dia_max": 4}, {"hs_semanales": 30}
-HORARIO_ESPECIAL = "horario especial", {"horas_x_dia_max": 11}, {"hs_semanales": 22}
+# Crear los objetos de tipo empleado
+TIEMPO_COMPLETO = TipoEmpleado(
+    tipo="tiempo completo",
+    horas_por_dia_max=8,
+    horas_semanales=45
+)
+
+TIEMPO_PARCIAL = TipoEmpleado(
+    tipo="tiempo parcial",
+    horas_por_dia_max=4,
+    horas_semanales=30
+)
+
+HORARIO_ESPECIAL = TipoEmpleado(
+    tipo="horario especial",
+    horas_por_dia_max=11,
+    horas_semanales=22
+)
+
 
 class Colaborador:
     def __init__(
@@ -19,7 +36,6 @@ class Colaborador:
         telefono: str,
         dni: str,
         roles: List[str],
-        equipo: Equipo,
         horario_preferido: Horario,
         dias_preferidos: List[int],  # Ejemplo: 0=Monday, 6=Sunday
         horas_semanales: int,  # En horas
@@ -40,7 +56,6 @@ class Colaborador:
             telefono (str): Número de teléfono del colaborador.
             dni (str): Documento Nacional de Identidad del colaborador.
             roles (List[str]): Lista de roles que el colaborador puede desempeñar.
-            equipo (Equipo): Equipo de trabajo al que pertenece el colaborador.
             horario_preferido (Horario): Horario preferido del colaborador.
             dias_preferidos (List[int]): Lista de días preferidos para trabajar (0=Monday, 6=Sunday).
             horas_semanales (int): Cantidad de horas semanales a trabajar.
@@ -60,7 +75,6 @@ class Colaborador:
         self.telefono = telefono
         self.dni = dni
         self.roles = roles
-        self.equipo = equipo
         self.horario_preferido = horario_preferido
         self.dias_preferidos = dias_preferidos
         self.horas_semanales = horas_semanales  # En horas

@@ -1,6 +1,4 @@
 import pytest
-from datetime import time, date
-from domain.models.horario import Horario
 from domain.models.colaborador import Colaborador, TIEMPO_COMPLETO, TIEMPO_PARCIAL, HORARIO_ESPECIAL
 from tests.mocks.mock_colaborador import MockColaborador
 from domain.specs.colaborador_specs import (
@@ -17,7 +15,7 @@ def test_happy_path_tiempo_completo():
     )
 
     spec = TipoEmpleadoSpecification()
-    assert spec.is_satisfied_by(None, colaborador) == True, "TipoEmpleadoSpecification falló para TIEMPO_COMPLETO válido."
+    assert spec.is_satisfied_by(colaborador) == True, "TipoEmpleadoSpecification falló para TIEMPO_COMPLETO válido."
 
 # Test para TipoEmpleadoSpecification - Tiempo Parcial (Happy Path)
 def test_happy_path_tiempo_parcial():
@@ -29,7 +27,7 @@ def test_happy_path_tiempo_parcial():
     )
 
     spec = TipoEmpleadoSpecification()
-    assert spec.is_satisfied_by(None, colaborador) == True, "TipoEmpleadoSpecification falló para TIEMPO_PARCIAL válido."
+    assert spec.is_satisfied_by(colaborador) == True, "TipoEmpleadoSpecification falló para TIEMPO_PARCIAL válido."
 
 # Test para TipoEmpleadoSpecification - Horario Especial (Happy Path)
 def test_happy_path_horario_especial():
@@ -41,7 +39,7 @@ def test_happy_path_horario_especial():
     )
 
     spec = TipoEmpleadoSpecification()
-    assert spec.is_satisfied_by(None, colaborador) == True, "TipoEmpleadoSpecification falló para HORARIO_ESPECIAL válido."
+    assert spec.is_satisfied_by(colaborador) == True, "TipoEmpleadoSpecification falló para HORARIO_ESPECIAL válido."
 
 # Test para TipoEmpleadoSpecification - Tiempo Completo (Invalid Path)
 def test_invalid_path_tiempo_completo():
@@ -53,7 +51,7 @@ def test_invalid_path_tiempo_completo():
     )
 
     spec = TipoEmpleadoSpecification()
-    assert spec.is_satisfied_by(None, colaborador) == False, "TipoEmpleadoSpecification no detectó horas_semanales incorrectas para TIEMPO_COMPLETO."
+    assert spec.is_satisfied_by(colaborador) == False, "TipoEmpleadoSpecification no detectó horas_semanales incorrectas para TIEMPO_COMPLETO."
 
 # Test para TipoEmpleadoSpecification - Tiempo Parcial (Invalid Path)
 def test_invalid_path_tiempo_parcial():
@@ -65,7 +63,7 @@ def test_invalid_path_tiempo_parcial():
     )
 
     spec = TipoEmpleadoSpecification()
-    assert spec.is_satisfied_by(None, colaborador) == False, "TipoEmpleadoSpecification no detectó horas_semanales incorrectas para TIEMPO_PARCIAL."
+    assert spec.is_satisfied_by(colaborador) == False, "TipoEmpleadoSpecification no detectó horas_semanales incorrectas para TIEMPO_PARCIAL."
 
 # Test para TipoEmpleadoSpecification - Horario Especial (Invalid Path)
 def test_invalid_path_horario_especial():
@@ -77,4 +75,4 @@ def test_invalid_path_horario_especial():
     )
 
     spec = TipoEmpleadoSpecification()
-    assert spec.is_satisfied_by(None, colaborador) == False, "TipoEmpleadoSpecification no detectó horas_semanales incorrectas para HORARIO_ESPECIAL."
+    assert spec.is_satisfied_by(colaborador) == False, "TipoEmpleadoSpecification no detectó horas_semanales incorrectas para HORARIO_ESPECIAL."
