@@ -1,12 +1,16 @@
+# archivo: infrastructure/repositories/tipo_empleado_repo.py
+from typing import List, Optional
 from sqlalchemy.orm import Session
+
 from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.tipo_colaborador import TipoEmpleado
-from typing import List, Optional
 
 class TipoEmpleadoRepository:
     @staticmethod
     def get_by_id(tipo_empleado_id: int) -> Optional[TipoEmpleado]:
-        """Obtiene un tipo de empleado por su ID."""
+        """
+        Obtiene un TipoEmpleado por su ID. Retorna None si no existe.
+        """
         session: Session = Database.get_session("rrhh")
         tipo_empleado = session.query(TipoEmpleado).filter_by(id=tipo_empleado_id).first()
         session.close()
@@ -14,7 +18,9 @@ class TipoEmpleadoRepository:
 
     @staticmethod
     def get_all() -> List[TipoEmpleado]:
-        """Obtiene todos los tipos de empleados registrados en la base de datos."""
+        """
+        Devuelve la lista de todos los tipos de empleados en la base de datos.
+        """
         session: Session = Database.get_session("rrhh")
         tipos_empleados = session.query(TipoEmpleado).all()
         session.close()
@@ -22,7 +28,9 @@ class TipoEmpleadoRepository:
 
     @staticmethod
     def create(tipo_empleado: TipoEmpleado) -> TipoEmpleado:
-        """Crea un nuevo tipo de empleado en la base de datos."""
+        """
+        Crea un nuevo TipoEmpleado en la base de datos.
+        """
         session: Session = Database.get_session("rrhh")
         session.add(tipo_empleado)
         session.commit()
@@ -31,18 +39,27 @@ class TipoEmpleadoRepository:
         return tipo_empleado
 
     @staticmethod
-    def update(tipo_empleado: TipoEmpleado) -> TipoEmpleado:
-        """Actualiza un tipo de empleado en la base de datos."""
+    def update(tipo_empleado: TipoEmpleado) -> Optional[TipoEmpleado]:
+        """
+        Actualiza un TipoEmpleado existente. Retorna el objeto actualizado o None si no existe.
+        """
         session: Session = Database.get_session("rrhh")
-        session.merge(tipo_empleado)
+        existente = session.query(TipoEmpleado).filter_by(id=tipo_empleado.id).first()
+        if not existente:
+            session.close()
+            return None
+
+        db_tipo = session.merge(tipo_empleado)
         session.commit()
-        session.refresh(tipo_empleado)
+        session.refresh(db_tipo)
         session.close()
-        return tipo_empleado
+        return db_tipo
 
     @staticmethod
     def delete(tipo_empleado_id: int) -> bool:
-        """Elimina un tipo de empleado de la base de datos."""
+        """
+        Elimina un TipoEmpleado por su ID. Retorna True si se elimina, False si no existe.
+        """
         session: Session = Database.get_session("rrhh")
         tipo_empleado = session.query(TipoEmpleado).filter_by(id=tipo_empleado_id).first()
         if tipo_empleado:
@@ -55,7 +72,9 @@ class TipoEmpleadoRepository:
 
     @staticmethod
     def get_by_tipo(tipo: str) -> Optional[TipoEmpleado]:
-        """Obtiene un tipo de empleado por su nombre."""
+        """
+        Obtiene un TipoEmpleado por su campo 'tipo' (nombre), o None si no existe.
+        """
         session: Session = Database.get_session("rrhh")
         tipo_empleado = session.query(TipoEmpleado).filter_by(tipo=tipo).first()
         session.close()

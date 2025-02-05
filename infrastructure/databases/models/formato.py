@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from infrastructure.databases.config.database import DBConfig as Base
+from infrastructure.databases.config.database import Base
 
 class Formato(Base):
     __tablename__ = "formatos_sucursales"
@@ -8,10 +8,14 @@ class Formato(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     nombre = Column(String(50), nullable=False, unique=True)
 
-    # Relación con `roles_colaboradores` a través de la tabla intermedia `formatos_roles`
-    roles = relationship("Rol", secondary="formatos_roles", back_populates="formatos")
+    # Enfoque de asociación con Rol -> FormatosRoles
+    roles = relationship(
+        "FormatosRoles",
+        back_populates="formato",
+        cascade="all, delete-orphan"
+    )
 
-    # Relación con `sucursales` (Una formato puede aplicarse a varias sucursales)
+    # Relación con Sucursal
     sucursales = relationship("Sucursal", back_populates="formato")
 
     def __repr__(self):

@@ -1,12 +1,17 @@
 import os
-from sqlalchemy import create_engine
+from dotenv import load_dotenv
+from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base
 from application.config.logger_config import setup_logger
 from infrastructure.databases.config.dict import DB_PREFIXES
 
 # Crea el logger para este módulo
 logger = setup_logger(__name__, "logs/db_config.log")
+ENV_FILE = ".env"
+load_dotenv(ENV_FILE)
+
+Base = declarative_base()
 
 class DBConfig:
     engines = {}  # Diccionario para almacenar los engines de cada BD
@@ -39,11 +44,11 @@ class DBConfig:
 
             host = os.getenv(f"{prefix}_DB_HOST")
             user = os.getenv(f"{prefix}_DB_USER")
-            password = os.getenv(f"{prefix}_DB_PASSWORD")
+            password = os.getenv(f"{prefix}_DB_PASSWORD", "")
             database = os.getenv(f"{prefix}_DB_DATABASE")
             port = os.getenv(f"{prefix}_DB_PORT")
 
-            if not all([host, user, password, database, port]):
+            if not all([host, user, database, port]):
                 logger.error(f"[DBConfig] Faltan variables de entorno para {db_name}.")
                 return None
 
@@ -110,7 +115,7 @@ class DBConfig:
 
         try:
             with engine.connect() as connection:
-                result = connection.execute("SELECT 1")
+                result = connection.execute(text("SELECT 1"))
                 logger.debug(f"Test SELECT 1 para '{db_name}': {result.scalar()}")
             return True
         except SQLAlchemyError as e:

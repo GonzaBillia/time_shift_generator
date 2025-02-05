@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, Time, ForeignKey
 from sqlalchemy.orm import relationship
-from infrastructure.databases.config.database import DBConfig as Base
+from infrastructure.databases.config.database import Base
 
 class PuestosCubiertosPorHora(Base):
     __tablename__ = "puestos_cubiertos_por_hora"
@@ -18,4 +18,8 @@ class PuestosCubiertosPorHora(Base):
     dia = relationship("Dia", back_populates="puestos_cubiertos")
 
     def __repr__(self):
-        return f"<PuestosCubiertosPorHora(id={self.id}, sucursal_id={self.sucursal_id}, rol_colaborador_id={self.rol_colaborador_id}, dia_id={self.dia_id}, hora={self.hora}, cantidad_cubierta={self.cantidad_cubierta})>"
+        return (
+            f"<PuestosCubiertosPorHora(id={self.id}, sucursal_id={self.sucursal_id}, "
+            f"rol_colaborador_id={self.rol_colaborador_id}, dia_id={self.dia_id}, "
+            f"hora={self.hora}, cantidad_cubierta={self.cantidad_cubierta})>"
+        )

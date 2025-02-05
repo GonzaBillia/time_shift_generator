@@ -1,11 +1,14 @@
+from datetime import date
+from typing import List, Optional
 from sqlalchemy.orm import Session
+
 from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.colaborador import Colaborador
 from infrastructure.databases.models.horario import Horario
 from infrastructure.databases.models.rol import Rol
 from infrastructure.databases.models.tipo_colaborador import TipoEmpleado
-from datetime import date
-from typing import List, Optional
+from infrastructure.databases.models.vacacion_colaborador import VacacionColaborador
+from infrastructure.databases.models.horas_extra_colaborador import HorasExtraColaborador
 
 class ColaboradorRepository:
     @staticmethod
@@ -15,7 +18,7 @@ class ColaboradorRepository:
         colaborador = session.query(Colaborador).filter_by(id=colaborador_id).first()
         session.close()
         return colaborador
-    
+
     @staticmethod
     def get_by_legajo(legajo: int) -> Optional[Colaborador]:
         """Obtiene un colaborador por su número de legajo."""
@@ -82,8 +85,11 @@ class ColaboradorRepository:
         return colaborador
 
     @staticmethod
-    def asignar_horario(colaborador_id: int, horario: Horario):
-        """Asigna un horario a un colaborador."""
+    def asignar_horario(colaborador_id: int, horario: Horario) -> None:
+        """
+        Asigna un objeto Horario a un colaborador existente.
+        El objeto 'horario' ya debe tener sucursal_id, dia_id, etc. configurados.
+        """
         session: Session = Database.get_session("rrhh")
         colaborador = session.query(Colaborador).filter_by(id=colaborador_id).first()
         if colaborador:
@@ -92,25 +98,60 @@ class ColaboradorRepository:
         session.close()
 
     @staticmethod
-    def agregar_vacacion(colaborador_id: int, fecha: date):
-        """Agrega una fecha de vacaciones al colaborador."""
+    def agregar_vacacion(colaborador_id: int, fecha: date) -> None:
+        """
+        Agrega una fecha de vacaciones para el colaborador.
+        Crea un objeto VacacionColaborador.
+        """
         session: Session = Database.get_session("rrhh")
         colaborador = session.query(Colaborador).filter_by(id=colaborador_id).first()
         if colaborador:
-            if fecha not in colaborador.vacaciones:
-                colaborador.vacaciones.append(fecha)
+            # Verificar si ya existe esa fecha en la lista de vacaciones
+            existe = any(vac.fecha == fecha for vac in colaborador.vacaciones)
+            if not existe:
+                nueva_vac = VacacionColaborador(
+                    colaborador_id=colaborador.id,
+                    fecha=fecha
+                )
+                session.add(nueva_vac)
                 session.commit()
         session.close()
 
     @staticmethod
-    def agregar_horas_extra(colaborador_id: int, tipo: str, cantidad: int):
-        """Agrega horas extra a un colaborador."""
+    def agregar_horas_extra(colaborador_id: int, tipo: str, cantidad: int) -> None:
+        """
+        Agrega horas extra para un colaborador.
+        'tipo' debe ser 'devolver' o 'cobrar'.
+        Suma la cantidad de horas en una nueva fila HorasExtraColaborador (o actualiza la existente).
+        """
+        if tipo not in {'devolver', 'cobrar'}:
+            raise ValueError("El tipo debe ser 'devolver' o 'cobrar'.")
+
         session: Session = Database.get_session("rrhh")
         colaborador = session.query(Colaborador).filter_by(id=colaborador_id).first()
         if colaborador:
-            if tipo not in {'devolver', 'cobrar'}:
-                session.close()
-                raise ValueError("El tipo debe ser 'devolver' o 'cobrar'.")
-            colaborador.hs_extra[tipo] = colaborador.hs_extra.get(tipo, 0) + cantidad
+            # Opción A: siempre crear un nuevo registro de horas extra.
+            nueva_hx = HorasExtraColaborador(
+                colaborador_id=colaborador.id,
+                tipo=tipo,
+                cantidad=cantidad
+            )
+            session.add(nueva_hx)
+
+            # Opción B (alternativa): buscar si ya existe un registro con ese 'tipo' y sumarle 'cantidad'.
+            # horas_extra_existente = session.query(HorasExtraColaborador).filter_by(
+            #     colaborador_id=colaborador.id,
+            #     tipo=tipo
+            # ).first()
+            # if horas_extra_existente:
+            #     horas_extra_existente.cantidad += cantidad
+            # else:
+            #     nueva_hx = HorasExtraColaborador(
+            #         colaborador_id=colaborador.id,
+            #         tipo=tipo,
+            #         cantidad=cantidad
+            #     )
+            #     session.add(nueva_hx)
+
             session.commit()
         session.close()

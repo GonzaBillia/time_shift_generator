@@ -1,6 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
-from infrastructure.databases.config.database import DBConfig as Base
+from infrastructure.databases.config.database import Base
 
 class Colaborador(Base):
     __tablename__ = "colaboradores"
@@ -13,12 +13,27 @@ class Colaborador(Base):
     empresa_id = Column(Integer, ForeignKey("empresas.id"), nullable=False)
     tipo_empleado_id = Column(Integer, ForeignKey("tipo_empleado.id"), nullable=False)
     horario_corrido = Column(Boolean, nullable=False, default=True)
+    legajo = Column(Integer, nullable=False, unique=True)
 
     # Relaciones
     empresa = relationship("Empresa", back_populates="colaboradores")
     tipo_empleado = relationship("TipoEmpleado", back_populates="colaboradores")
     horarios = relationship("Horario", back_populates="colaborador")
-    sucursales = relationship("Sucursal", secondary="colaboradores_sucursales", back_populates="colaboradores")
+
+    # Asociación con sucursal (vía ColaboradorSucursal)
+    sucursales = relationship(
+        "ColaboradorSucursal",
+        back_populates="colaborador",
+        cascade="all, delete-orphan"
+    )
+
+    # Otras relaciones
+    vacaciones = relationship("VacacionColaborador", back_populates="colaborador")
+    horas_extra = relationship("HorasExtraColaborador", back_populates="colaborador")
 
     def __repr__(self):
-        return f"<Colaborador(id={self.id}, nombre={self.nombre}, email={self.email}, empresa_id={self.empresa_id}, tipo_empleado_id={self.tipo_empleado_id})>"
+        return (
+            f"<Colaborador(id={self.id}, nombre={self.nombre}, email={self.email}, "
+            f"legajo={self.legajo}, empresa_id={self.empresa_id}, "
+            f"tipo_empleado_id={self.tipo_empleado_id})>"
+        )

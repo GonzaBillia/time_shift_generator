@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, Enum
 from sqlalchemy.orm import relationship
-from infrastructure.databases.config.database import DBConfig as Base
+from infrastructure.databases.config.database import Base
 
 class HorasExtraColaborador(Base):
     __tablename__ = "horas_extra"

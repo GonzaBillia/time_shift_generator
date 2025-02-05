@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, Time, ForeignKey
 from sqlalchemy.orm import relationship
-from infrastructure.databases.config.database import DBConfig as Base
+from infrastructure.databases.config.database import Base
 
 class MinimoPuestosRequeridos(Base):
     __tablename__ = "minimo_puestos_requeridos"
@@ -18,4 +18,8 @@ class MinimoPuestosRequeridos(Base):
     dia = relationship("Dia", back_populates="minimo_puestos")
 
     def __repr__(self):
-        return f"<MinimoPuestosRequeridos(id={self.id}, sucursal_id={self.sucursal_id}, rol_colaborador_id={self.rol_colaborador_id}, dia_id={self.dia_id}, hora={self.hora}, cantidad_minima={self.cantidad_minima})>"
+        return (
+            f"<MinimoPuestosRequeridos(id={self.id}, sucursal_id={self.sucursal_id}, "
+            f"rol_colaborador_id={self.rol_colaborador_id}, dia_id={self.dia_id}, "
+            f"hora={self.hora}, cantidad_minima={self.cantidad_minima})>"
+        )

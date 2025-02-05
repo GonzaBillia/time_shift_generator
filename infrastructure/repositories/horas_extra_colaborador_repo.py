@@ -1,12 +1,16 @@
+# archivo: infrastructure/repositories/horas_extra_colaborador_repo.py
+from typing import List, Optional
 from sqlalchemy.orm import Session
+
 from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.horas_extra_colaborador import HorasExtraColaborador
-from typing import List, Optional
 
 class HorasExtraColaboradorRepository:
     @staticmethod
     def get_by_colaborador(colaborador_id: int) -> List[HorasExtraColaborador]:
-        """Obtiene todas las horas extra de un colaborador."""
+        """
+        Devuelve todas las horas extra pertenecientes a un colaborador específico.
+        """
         session: Session = Database.get_session("rrhh")
         horas_extra = session.query(HorasExtraColaborador).filter_by(colaborador_id=colaborador_id).all()
         session.close()
@@ -14,7 +18,9 @@ class HorasExtraColaboradorRepository:
 
     @staticmethod
     def get_by_tipo(colaborador_id: int, tipo: str) -> List[HorasExtraColaborador]:
-        """Obtiene todas las horas extra de un colaborador por tipo ('devolver' o 'cobrar')."""
+        """
+        Devuelve todas las horas extra de un colaborador, filtradas por tipo ('devolver' o 'cobrar').
+        """
         session: Session = Database.get_session("rrhh")
         horas_extra = session.query(HorasExtraColaborador).filter_by(
             colaborador_id=colaborador_id, tipo=tipo
@@ -24,7 +30,9 @@ class HorasExtraColaboradorRepository:
 
     @staticmethod
     def create(horas_extra: HorasExtraColaborador) -> HorasExtraColaborador:
-        """Registra una nueva entrada de horas extra para un colaborador."""
+        """
+        Crea un nuevo registro de horas extra para un colaborador.
+        """
         session: Session = Database.get_session("rrhh")
         session.add(horas_extra)
         session.commit()
@@ -34,7 +42,10 @@ class HorasExtraColaboradorRepository:
 
     @staticmethod
     def delete(horas_extra_id: int) -> bool:
-        """Elimina una entrada de horas extra de la base de datos."""
+        """
+        Elimina un registro de horas extra por su ID.
+        Retorna True si se elimina, False si no existe.
+        """
         session: Session = Database.get_session("rrhh")
         horas_extra = session.query(HorasExtraColaborador).filter_by(id=horas_extra_id).first()
         if horas_extra:

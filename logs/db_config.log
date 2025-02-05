@@ -1,0 +1,687 @@
+2025-02-05 13:30:46 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:30:46 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:30:46 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:30:46 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:30:46 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:30:46 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:30:46 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:30:46 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:30:46 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:30:46 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:30:46 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:41:34 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:41:34 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:41:34 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:41:34 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:41:34 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:41:34 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:41:34 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:41:34 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:41:34 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:41:34 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:41:34 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:52 [DEBUG] infrastructure.databases.config.database: None
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:52 [DEBUG] infrastructure.databases.config.database: None
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:52 [DEBUG] infrastructure.databases.config.database: None
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:52 [DEBUG] infrastructure.databases.config.database: None
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:52 [DEBUG] infrastructure.databases.config.database: None
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:52 [DEBUG] infrastructure.databases.config.database: None
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:52 [DEBUG] infrastructure.databases.config.database: None
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:52 [DEBUG] infrastructure.databases.config.database: None
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:52 [DEBUG] infrastructure.databases.config.database: None
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 13:42:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 13:42:52 [DEBUG] infrastructure.databases.config.database: None
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 13:42:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:31:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:31:52 [DEBUG] infrastructure.databases.config.database: root
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:31:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:31:52 [DEBUG] infrastructure.databases.config.database: root
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:31:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:31:52 [DEBUG] infrastructure.databases.config.database: root
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:31:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:31:52 [DEBUG] infrastructure.databases.config.database: root
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:31:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:31:52 [DEBUG] infrastructure.databases.config.database: root
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:31:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:31:52 [DEBUG] infrastructure.databases.config.database: root
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:31:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:31:52 [DEBUG] infrastructure.databases.config.database: root
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:31:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:31:52 [DEBUG] infrastructure.databases.config.database: root
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:31:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:31:52 [DEBUG] infrastructure.databases.config.database: root
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:31:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:31:52 [DEBUG] infrastructure.databases.config.database: root
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:31:52 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:32:23 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:32:23 [DEBUG] infrastructure.databases.config.database: 
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:32:23 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:32:23 [DEBUG] infrastructure.databases.config.database: 
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:32:23 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:32:23 [DEBUG] infrastructure.databases.config.database: 
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:32:23 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:32:23 [DEBUG] infrastructure.databases.config.database: 
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:32:23 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:32:23 [DEBUG] infrastructure.databases.config.database: 
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:32:23 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:32:23 [DEBUG] infrastructure.databases.config.database: 
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:32:23 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:32:23 [DEBUG] infrastructure.databases.config.database: 
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:32:23 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:32:23 [DEBUG] infrastructure.databases.config.database: 
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:32:23 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:32:23 [DEBUG] infrastructure.databases.config.database: 
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:32:23 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:32:23 [DEBUG] infrastructure.databases.config.database: 
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:32:23 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: Error inesperado al crear el engine: not all arguments converted during string formatting
+Traceback (most recent call last):
+  File "C:\Users\Administrador\Documents\Gonzalo\python_apps\time_shifter\infrastructure\databases\config\database.py", line 50, in create_engine
+    logger.debug(host, user, password, database, port)
+  File "C:\Python312\Lib\logging\__init__.py", line 1527, in debug
+    self._log(DEBUG, msg, args, **kwargs)
+  File "C:\Python312\Lib\logging\__init__.py", line 1684, in _log
+    self.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1700, in handle
+    self.callHandlers(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1762, in callHandlers
+    hdlr.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1028, in handle
+    self.emit(record)
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 386, in emit
+    super().emit(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1168, in emit
+    self.handleError(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1160, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 139, in format
+    return super().format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 703, in format
+    record.message = record.getMessage()
+                     ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 392, in getMessage
+    msg = msg % self.args
+          ~~~~^~~~~~~~~~~
+TypeError: not all arguments converted during string formatting
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: Error inesperado al crear el engine: not all arguments converted during string formatting
+Traceback (most recent call last):
+  File "C:\Users\Administrador\Documents\Gonzalo\python_apps\time_shifter\infrastructure\databases\config\database.py", line 50, in create_engine
+    logger.debug(host, user, password, database, port)
+  File "C:\Python312\Lib\logging\__init__.py", line 1527, in debug
+    self._log(DEBUG, msg, args, **kwargs)
+  File "C:\Python312\Lib\logging\__init__.py", line 1684, in _log
+    self.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1700, in handle
+    self.callHandlers(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1762, in callHandlers
+    hdlr.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1028, in handle
+    self.emit(record)
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 386, in emit
+    super().emit(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1168, in emit
+    self.handleError(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1160, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 139, in format
+    return super().format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 703, in format
+    record.message = record.getMessage()
+                     ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 392, in getMessage
+    msg = msg % self.args
+          ~~~~^~~~~~~~~~~
+TypeError: not all arguments converted during string formatting
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: Error inesperado al crear el engine: not all arguments converted during string formatting
+Traceback (most recent call last):
+  File "C:\Users\Administrador\Documents\Gonzalo\python_apps\time_shifter\infrastructure\databases\config\database.py", line 50, in create_engine
+    logger.debug(host, user, password, database, port)
+  File "C:\Python312\Lib\logging\__init__.py", line 1527, in debug
+    self._log(DEBUG, msg, args, **kwargs)
+  File "C:\Python312\Lib\logging\__init__.py", line 1684, in _log
+    self.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1700, in handle
+    self.callHandlers(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1762, in callHandlers
+    hdlr.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1028, in handle
+    self.emit(record)
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 386, in emit
+    super().emit(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1168, in emit
+    self.handleError(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1160, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 139, in format
+    return super().format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 703, in format
+    record.message = record.getMessage()
+                     ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 392, in getMessage
+    msg = msg % self.args
+          ~~~~^~~~~~~~~~~
+TypeError: not all arguments converted during string formatting
+2025-02-05 14:33:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: Error inesperado al crear el engine: not all arguments converted during string formatting
+Traceback (most recent call last):
+  File "C:\Users\Administrador\Documents\Gonzalo\python_apps\time_shifter\infrastructure\databases\config\database.py", line 50, in create_engine
+    logger.debug(host, user, password, database, port)
+  File "C:\Python312\Lib\logging\__init__.py", line 1527, in debug
+    self._log(DEBUG, msg, args, **kwargs)
+  File "C:\Python312\Lib\logging\__init__.py", line 1684, in _log
+    self.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1700, in handle
+    self.callHandlers(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1762, in callHandlers
+    hdlr.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1028, in handle
+    self.emit(record)
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 386, in emit
+    super().emit(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1168, in emit
+    self.handleError(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1160, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 139, in format
+    return super().format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 703, in format
+    record.message = record.getMessage()
+                     ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 392, in getMessage
+    msg = msg % self.args
+          ~~~~^~~~~~~~~~~
+TypeError: not all arguments converted during string formatting
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: Error inesperado al crear el engine: not all arguments converted during string formatting
+Traceback (most recent call last):
+  File "C:\Users\Administrador\Documents\Gonzalo\python_apps\time_shifter\infrastructure\databases\config\database.py", line 50, in create_engine
+    logger.debug(host, user, password, database, port)
+  File "C:\Python312\Lib\logging\__init__.py", line 1527, in debug
+    self._log(DEBUG, msg, args, **kwargs)
+  File "C:\Python312\Lib\logging\__init__.py", line 1684, in _log
+    self.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1700, in handle
+    self.callHandlers(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1762, in callHandlers
+    hdlr.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1028, in handle
+    self.emit(record)
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 386, in emit
+    super().emit(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1168, in emit
+    self.handleError(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1160, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 139, in format
+    return super().format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 703, in format
+    record.message = record.getMessage()
+                     ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 392, in getMessage
+    msg = msg % self.args
+          ~~~~^~~~~~~~~~~
+TypeError: not all arguments converted during string formatting
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: Error inesperado al crear el engine: not all arguments converted during string formatting
+Traceback (most recent call last):
+  File "C:\Users\Administrador\Documents\Gonzalo\python_apps\time_shifter\infrastructure\databases\config\database.py", line 50, in create_engine
+    logger.debug(host, user, password, database, port)
+  File "C:\Python312\Lib\logging\__init__.py", line 1527, in debug
+    self._log(DEBUG, msg, args, **kwargs)
+  File "C:\Python312\Lib\logging\__init__.py", line 1684, in _log
+    self.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1700, in handle
+    self.callHandlers(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1762, in callHandlers
+    hdlr.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1028, in handle
+    self.emit(record)
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 386, in emit
+    super().emit(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1168, in emit
+    self.handleError(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1160, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 139, in format
+    return super().format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 703, in format
+    record.message = record.getMessage()
+                     ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 392, in getMessage
+    msg = msg % self.args
+          ~~~~^~~~~~~~~~~
+TypeError: not all arguments converted during string formatting
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: Error inesperado al crear el engine: not all arguments converted during string formatting
+Traceback (most recent call last):
+  File "C:\Users\Administrador\Documents\Gonzalo\python_apps\time_shifter\infrastructure\databases\config\database.py", line 50, in create_engine
+    logger.debug(host, user, password, database, port)
+  File "C:\Python312\Lib\logging\__init__.py", line 1527, in debug
+    self._log(DEBUG, msg, args, **kwargs)
+  File "C:\Python312\Lib\logging\__init__.py", line 1684, in _log
+    self.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1700, in handle
+    self.callHandlers(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1762, in callHandlers
+    hdlr.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1028, in handle
+    self.emit(record)
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 386, in emit
+    super().emit(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1168, in emit
+    self.handleError(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1160, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 139, in format
+    return super().format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 703, in format
+    record.message = record.getMessage()
+                     ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 392, in getMessage
+    msg = msg % self.args
+          ~~~~^~~~~~~~~~~
+TypeError: not all arguments converted during string formatting
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: Error inesperado al crear el engine: not all arguments converted during string formatting
+Traceback (most recent call last):
+  File "C:\Users\Administrador\Documents\Gonzalo\python_apps\time_shifter\infrastructure\databases\config\database.py", line 50, in create_engine
+    logger.debug(host, user, password, database, port)
+  File "C:\Python312\Lib\logging\__init__.py", line 1527, in debug
+    self._log(DEBUG, msg, args, **kwargs)
+  File "C:\Python312\Lib\logging\__init__.py", line 1684, in _log
+    self.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1700, in handle
+    self.callHandlers(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1762, in callHandlers
+    hdlr.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1028, in handle
+    self.emit(record)
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 386, in emit
+    super().emit(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1168, in emit
+    self.handleError(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1160, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 139, in format
+    return super().format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 703, in format
+    record.message = record.getMessage()
+                     ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 392, in getMessage
+    msg = msg % self.args
+          ~~~~^~~~~~~~~~~
+TypeError: not all arguments converted during string formatting
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: Error inesperado al crear el engine: not all arguments converted during string formatting
+Traceback (most recent call last):
+  File "C:\Users\Administrador\Documents\Gonzalo\python_apps\time_shifter\infrastructure\databases\config\database.py", line 50, in create_engine
+    logger.debug(host, user, password, database, port)
+  File "C:\Python312\Lib\logging\__init__.py", line 1527, in debug
+    self._log(DEBUG, msg, args, **kwargs)
+  File "C:\Python312\Lib\logging\__init__.py", line 1684, in _log
+    self.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1700, in handle
+    self.callHandlers(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1762, in callHandlers
+    hdlr.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1028, in handle
+    self.emit(record)
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 386, in emit
+    super().emit(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1168, in emit
+    self.handleError(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1160, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 139, in format
+    return super().format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 703, in format
+    record.message = record.getMessage()
+                     ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 392, in getMessage
+    msg = msg % self.args
+          ~~~~^~~~~~~~~~~
+TypeError: not all arguments converted during string formatting
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: Error inesperado al crear el engine: not all arguments converted during string formatting
+Traceback (most recent call last):
+  File "C:\Users\Administrador\Documents\Gonzalo\python_apps\time_shifter\infrastructure\databases\config\database.py", line 50, in create_engine
+    logger.debug(host, user, password, database, port)
+  File "C:\Python312\Lib\logging\__init__.py", line 1527, in debug
+    self._log(DEBUG, msg, args, **kwargs)
+  File "C:\Python312\Lib\logging\__init__.py", line 1684, in _log
+    self.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1700, in handle
+    self.callHandlers(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1762, in callHandlers
+    hdlr.handle(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1028, in handle
+    self.emit(record)
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 386, in emit
+    super().emit(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1168, in emit
+    self.handleError(record)
+  File "C:\Python312\Lib\logging\__init__.py", line 1160, in emit
+    msg = self.format(record)
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 999, in format
+    return fmt.format(record)
+           ^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\site-packages\_pytest\logging.py", line 139, in format
+    return super().format(record)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 703, in format
+    record.message = record.getMessage()
+                     ^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\logging\__init__.py", line 392, in getMessage
+    msg = msg % self.args
+          ~~~~^~~~~~~~~~~
+TypeError: not all arguments converted during string formatting
+2025-02-05 14:33:00 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:18 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:18 [DEBUG] infrastructure.databases.config.database: ['127.0.0.1', 'root', '', 'rrhh_test', '3306']
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:18 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:18 [DEBUG] infrastructure.databases.config.database: ['127.0.0.1', 'root', '', 'rrhh_test', '3306']
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:18 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:18 [DEBUG] infrastructure.databases.config.database: ['127.0.0.1', 'root', '', 'rrhh_test', '3306']
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:33:18 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:18 [DEBUG] infrastructure.databases.config.database: ['127.0.0.1', 'root', '', 'rrhh_test', '3306']
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:18 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:18 [DEBUG] infrastructure.databases.config.database: ['127.0.0.1', 'root', '', 'rrhh_test', '3306']
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:18 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:18 [DEBUG] infrastructure.databases.config.database: ['127.0.0.1', 'root', '', 'rrhh_test', '3306']
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:18 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:18 [DEBUG] infrastructure.databases.config.database: ['127.0.0.1', 'root', '', 'rrhh_test', '3306']
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:18 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:18 [DEBUG] infrastructure.databases.config.database: ['127.0.0.1', 'root', '', 'rrhh_test', '3306']
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:18 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:18 [DEBUG] infrastructure.databases.config.database: ['127.0.0.1', 'root', '', 'rrhh_test', '3306']
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:18 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:18 [DEBUG] infrastructure.databases.config.database: ['127.0.0.1', 'root', '', 'rrhh_test', '3306']
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:33:18 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:33:59 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:33:59 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 14:34:00 [ERROR] infrastructure.databases.config.database: Error al conectar con la base 'rrhh': Not an executable object: 'SELECT 1'
+2025-02-05 14:36:30 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:36:30 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:36:30 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:36:30 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:36:30 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:36:30 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:36:30 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:36:30 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:36:30 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:36:30 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: [DBConfig] Faltan variables de entorno para rrhh.
+2025-02-05 14:36:30 [ERROR] infrastructure.databases.config.database: No se pudo crear la sesión: no hay engine disponible para rrhh.
+2025-02-05 14:37:52 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:37:52 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 14:37:52 [ERROR] infrastructure.databases.config.database: Error al conectar con la base 'rrhh': Not an executable object: 'SELECT 1'
+2025-02-05 14:40:39 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:40:39 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 14:40:39 [ERROR] infrastructure.databases.config.database: Error al conectar con la base 'rrhh': Not an executable object: 'SELECT 1'
+2025-02-05 14:42:12 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:42:12 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 14:51:34 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:51:34 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 14:59:05 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 14:59:05 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 15:04:39 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 15:04:40 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 15:10:11 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 15:10:11 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 15:20:14 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 15:20:14 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 15:32:56 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 15:32:56 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 16:28:16 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 16:28:16 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 16:28:16 [ERROR] infrastructure.databases.config.database: Error al conectar con la base 'rrhh': Not an executable object: 'SELECT 1'
+2025-02-05 16:32:08 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 16:32:08 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 16:32:08 [DEBUG] infrastructure.databases.config.database: Test SELECT 1 para 'rrhh': 1
+2025-02-05 16:37:10 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 16:37:10 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 16:37:11 [DEBUG] infrastructure.databases.config.database: Test SELECT 1 para 'rrhh': 1
+2025-02-05 16:47:26 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 16:47:26 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 16:47:27 [DEBUG] infrastructure.databases.config.database: Test SELECT 1 para 'rrhh': 1
+2025-02-05 16:48:30 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 16:48:30 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 16:48:30 [DEBUG] infrastructure.databases.config.database: Test SELECT 1 para 'rrhh': 1
+2025-02-05 16:51:23 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 16:51:23 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 16:51:23 [DEBUG] infrastructure.databases.config.database: Test SELECT 1 para 'rrhh': 1
+2025-02-05 16:54:11 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 16:54:11 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 16:54:11 [DEBUG] infrastructure.databases.config.database: Test SELECT 1 para 'rrhh': 1
+2025-02-05 16:55:00 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 16:55:00 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 16:55:00 [DEBUG] infrastructure.databases.config.database: Test SELECT 1 para 'rrhh': 1
+2025-02-05 16:55:17 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 16:55:17 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 16:55:17 [DEBUG] infrastructure.databases.config.database: Test SELECT 1 para 'rrhh': 1
+2025-02-05 16:56:57 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 16:56:57 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 16:56:57 [DEBUG] infrastructure.databases.config.database: Test SELECT 1 para 'rrhh': 1
+2025-02-05 16:57:21 [INFO] infrastructure.databases.config.database: Creando engine para la base de datos 'rrhh' con SQLAlchemy...
+2025-02-05 16:57:21 [INFO] infrastructure.databases.config.database: Engine creado para 'rrhh_test' en 127.0.0.1:3306.
+2025-02-05 16:57:21 [DEBUG] infrastructure.databases.config.database: Test SELECT 1 para 'rrhh': 1

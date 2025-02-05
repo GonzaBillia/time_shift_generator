@@ -1,13 +1,18 @@
+from typing import List, Optional
 from sqlalchemy.orm import Session
+
 from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.formato import Formato
 from infrastructure.databases.models.rol import Rol
-from typing import List, Optional
+from infrastructure.databases.models.formato_rol import FormatosRoles
 
 class FormatoRepository:
     @staticmethod
     def get_by_id(formato_id: int) -> Optional[Formato]:
-        """Obtiene un formato por su ID, incluyendo los roles asociados."""
+        """
+        Retorna un Formato por su ID, o None si no existe.
+        'formato.roles' es una lista de objetos FormatosRoles.
+        """
         session: Session = Database.get_session("rrhh")
         formato = session.query(Formato).filter_by(id=formato_id).first()
         session.close()
@@ -15,7 +20,9 @@ class FormatoRepository:
 
     @staticmethod
     def get_all() -> List[Formato]:
-        """Obtiene todos los formatos registrados en la base de datos."""
+        """
+        Retorna la lista de todos los Formato en la base.
+        """
         session: Session = Database.get_session("rrhh")
         formatos = session.query(Formato).all()
         session.close()
@@ -23,8 +30,12 @@ class FormatoRepository:
 
     @staticmethod
     def create(formato: Formato) -> Formato:
-        """Crea un nuevo formato en la base de datos y asocia sus roles."""
+        """
+        Crea un Formato y (opcionalmente) sus asociaciones FormatosRoles
+        si 'formato.roles' tiene elementos.
+        """
         session: Session = Database.get_session("rrhh")
+        # 'formato' debe estar listo, por ejemplo con formato.roles = [FormatosRoles(...), ...]
         session.add(formato)
         session.commit()
         session.refresh(formato)
@@ -32,28 +43,56 @@ class FormatoRepository:
         return formato
 
     @staticmethod
-    def update(formato: Formato) -> Formato:
-        """Actualiza un formato existente en la base de datos y sus roles."""
-        session: Session = Database.get_session("rrhh")
+    def update(formato: Formato) -> Optional[Formato]:
+        """
+        Actualiza un Formato existente en la BD (nombre y asociaciones).
         
-        # Obtener el formato actual y actualizarlo
+        1) Busca el Formato real: 'formato_existente'.
+        2) Actualiza el 'nombre'.
+        3) Limpia 'formato_existente.roles' (FormatosRoles).
+        4) Por cada obj en 'formato.roles', reasigna 'assoc.formato = formato_existente' y
+           ajusta 'assoc.rol' o 'assoc.rol_id'.
+        5) Hace commit. Devuelve el Formato actualizado. Si no existe, retorna None.
+        """
+        session: Session = Database.get_session("rrhh")
         formato_existente = session.query(Formato).filter_by(id=formato.id).first()
-        if formato_existente:
-            formato_existente.nombre = formato.nombre
+        if not formato_existente:
+            session.close()
+            return None
 
-            # Actualizar la relación Many-to-Many con `roles`
-            formato_existente.roles.clear()
-            for rol in formato.roles:
-                formato_existente.roles.append(session.query(Rol).filter_by(id=rol.id).first())
+        # Actualiza campos simples
+        formato_existente.nombre = formato.nombre
 
-            session.commit()
-            session.refresh(formato_existente)
+        # Limpiar la lista actual de asociaciones
+        formato_existente.roles.clear()
+
+        # Reasignar las nuevas asociaciones
+        for assoc in formato.roles:
+            # 'assoc' es un objeto FormatosRoles
+            # Aseguramos que apunte al formato correcto
+            assoc.formato = formato_existente
+
+            # Si 'assoc.rol' viene en memoria, session.merge(assoc.rol) o
+            # si 'assoc.rol_id' ya está puesto, no hay problema.
+            # Ejemplo: si 'assoc.rol' es None, y solo 'assoc.rol_id' vale, funciona igual,
+            # pero podríamos querer verificar si el rol existe.
+            if assoc.rol is not None:
+                db_rol = session.merge(assoc.rol)  # unifica el rol en la sesión
+                assoc.rol = db_rol
+
+            session.add(assoc)
+
+        session.commit()
+        session.refresh(formato_existente)
         session.close()
         return formato_existente
 
     @staticmethod
     def delete(formato_id: int) -> bool:
-        """Elimina un formato de la base de datos y su relación con los roles."""
+        """
+        Elimina el Formato por su ID. Por cascada (cascade="all, delete-orphan"),
+        se eliminarán los FormatosRoles asociados.
+        """
         session: Session = Database.get_session("rrhh")
         formato = session.query(Formato).filter_by(id=formato_id).first()
         if formato:
@@ -66,7 +105,9 @@ class FormatoRepository:
 
     @staticmethod
     def get_by_nombre(nombre: str) -> Optional[Formato]:
-        """Obtiene un formato por su nombre."""
+        """
+        Obtiene un Formato por su nombre, o None si no existe.
+        """
         session: Session = Database.get_session("rrhh")
         formato = session.query(Formato).filter_by(nombre=nombre).first()
         session.close()
@@ -74,8 +115,19 @@ class FormatoRepository:
 
     @staticmethod
     def get_roles_by_formato(formato_id: int) -> List[Rol]:
-        """Obtiene los roles asociados a un formato específico."""
+        """
+        Obtiene la lista de Rol que están asociados a un Formato dado,
+        extrayendo 'assoc.rol' de cada FormatosRoles en formato.roles.
+        """
         session: Session = Database.get_session("rrhh")
         formato = session.query(Formato).filter_by(id=formato_id).first()
+
+        if not formato:
+            session.close()
+            return []
+
+        # 'formato.roles' -> List[FormatosRoles]
+        # 'FormatosRoles.rol' -> Rol
+        lista_roles = [assoc.rol for assoc in formato.roles if assoc.rol is not None]
         session.close()
-        return formato.roles if formato else []
+        return lista_roles
