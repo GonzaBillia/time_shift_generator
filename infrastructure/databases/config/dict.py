@@ -1,4 +1,5 @@
 DB_PREFIXES = {
     "plex": "PLEX",
-    "quantio": "QUANTIO"
+    "quantio": "QUANTIO",
+    "rrhh": "RRHH"
 }

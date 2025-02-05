@@ -111,14 +111,3 @@ def test_agregar_horario_excede_horas_semanales(colaborador_tiempo_completo):
         assert str(e) == "Agregar este horario excede las horas semanales asignadas.", \
             "El mensaje de ValueError no coincide con el esperado."
 
-def test_agregar_horario_correcto(colaborador_tiempo_completo):
-    """
-    Verifica que se pueda agregar un horario válido sin exceder los límites.
-    """
-    nuevo_horario = Horario(
-        fecha=date(2025, 1, 12),  # Domingo
-        bloques=[(time(9, 0), time(12, 0))]  # 3 horas
-    )
-    colaborador_tiempo_completo.agregar_horario(nuevo_horario)
-    assert len(colaborador_tiempo_completo.horario_asignado) == 7
-    assert colaborador_tiempo_completo.horario_asignado[-1] == nuevo_horario

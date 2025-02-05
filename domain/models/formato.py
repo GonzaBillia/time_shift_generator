@@ -1,16 +1,22 @@
 from typing import List
+from .rol import Rol  # Ahora usamos objetos `Rol`, no strings
 
 class Formato:
-    def __init__(self, nombre: str, roles: List[str]):
+    def __init__(self, nombre: str, roles: List[Rol]):
         """
-        Inicializa un formato.
+        Inicializa un formato de sucursal.
 
         Args:
             nombre (str): Nombre del formato.
-            roles (List[str]): Lista de roles asociados al formato.
+            roles (List[Rol]): Lista de roles asociados al formato.
         """
         self.nombre = nombre
-        self.roles = roles
+        self.roles = list(roles)  # Copia la lista para evitar mutaciones
+
+    def __str__(self):
+        """Representación en cadena del objeto Formato."""
+        return f"Formato(nombre={self.nombre}, roles={[rol.nombre for rol in self.roles]})"
+
 
 class FormatoTradicional(Formato):
     def __init__(self):
@@ -19,23 +25,41 @@ class FormatoTradicional(Formato):
         """
         super().__init__(
             nombre="tradicional",
-            roles=["atencion", "cajero", "anfitrion", "pedidos", "carga_stock"]
+            roles=[
+                Rol("atencion", principal=True),
+                Rol("cajero"),
+                Rol("anfitrion"),
+                Rol("pedidos"),
+                Rol("carga_stock"),
+            ]
         )
 
-class FormatoGondola(FormatoTradicional):
+
+class FormatoGondola(Formato):
     def __init__(self):
         """
         Inicializa el formato góndola, heredando del tradicional y añadiendo nuevos roles.
         """
-        super().__init__()
-        self.nombre = "gondola"
-        self.roles.extend(["atencion_salon", "referentes"])
+        base_roles = FormatoTradicional().roles
+        super().__init__(
+            nombre="gondola",
+            roles=base_roles + [
+                Rol("atencion_salon"),
+                Rol("referentes"),
+            ]
+        )
 
-class FormatoMarket(FormatoGondola):
+
+class FormatoMarket(Formato):
     def __init__(self):
         """
         Inicializa el formato market, heredando del góndola y añadiendo nuevos roles.
         """
-        super().__init__()
-        self.nombre = "market"
-        self.roles.extend(["repositor", "atencion_fiambreria"])
+        base_roles = FormatoGondola().roles
+        super().__init__(
+            nombre="market",
+            roles=base_roles + [
+                Rol("repositor"),
+                Rol("atencion_fiambreria"),
+            ]
+        )
