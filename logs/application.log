@@ -1,0 +1,4 @@
+2025-02-26 13:47:40 [INFO] main: Logger configurado correctamente
+2025-02-26 13:48:21 [INFO] application.controllers.colaborador_controller: Buscando colaboradores con filtros: dni=40772342, empresa_id=None, tipo_empleado_id=None, horario_corrido=None
+2025-02-26 13:48:55 [INFO] main: Logger configurado correctamente
+2025-02-26 13:49:31 [INFO] main: Logger configurado correctamente

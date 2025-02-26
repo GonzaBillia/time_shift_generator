@@ -34,6 +34,29 @@ class ColaboradorRepository:
         colaboradores = session.query(Colaborador).all()
         session.close()
         return colaboradores
+    
+    @staticmethod
+    def get_filtered(
+        dni: Optional[int] = None,
+        empresa_id: Optional[int] = None,
+        tipo_empleado_id: Optional[int] = None,
+        horario_corrido: Optional[bool] = None,
+    ) -> List[Colaborador]:
+        session: Session = Database.get_session("rrhh")
+        try:
+            query = session.query(Colaborador)
+            if dni is not None:
+                query = query.filter(Colaborador.dni == dni)
+            if empresa_id is not None:
+                query = query.filter(Colaborador.empresa_id == empresa_id)
+            if tipo_empleado_id is not None:
+                query = query.filter(Colaborador.tipo_empleado_id == tipo_empleado_id)
+            if horario_corrido is not None:
+                query = query.filter(Colaborador.horario_corrido == horario_corrido)
+            colaboradores = query.all()
+        finally:
+            session.close()
+        return colaboradores
 
     @staticmethod
     def create(colaborador: Colaborador) -> Colaborador:

@@ -1,0 +1,2 @@
+2025-02-26 13:48:00 [INFO] application.routes.colaborador_routes: get all colaboradores
+2025-02-26 13:48:21 [INFO] application.routes.colaborador_routes: Endpoint /filters accedido con parámetros: dni=40772342, empresa_id=None, tipo_empleado_id=None, horario_corrido=None

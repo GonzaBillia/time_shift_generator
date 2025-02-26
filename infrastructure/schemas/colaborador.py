@@ -5,7 +5,7 @@ class ColaboradorBase(BaseModel):
     nombre: str
     email: str
     telefono: Optional[str] = None
-    dni: str
+    dni: int
     empresa_id: int
     tipo_empleado_id: int
     horario_corrido: bool
@@ -14,5 +14,4 @@ class ColaboradorBase(BaseModel):
 class ColaboradorResponse(ColaboradorBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

@@ -9,7 +9,7 @@ class Colaborador(Base):
     nombre = Column(String(100), nullable=False)
     email = Column(String(100), nullable=False, unique=True)
     telefono = Column(String(20), nullable=True)
-    dni = Column(String(20), nullable=False, unique=True)
+    dni = Column(Integer, nullable=False, unique=True)
     empresa_id = Column(Integer, ForeignKey("empresas.id"), nullable=False)
     tipo_empleado_id = Column(Integer, ForeignKey("tipo_empleado.id"), nullable=False)
     horario_corrido = Column(Boolean, nullable=False, default=True)
