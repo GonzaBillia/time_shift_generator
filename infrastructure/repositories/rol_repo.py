@@ -1,6 +1,5 @@
-# archivo: infrastructure/repositories/rol_repo.py
 from typing import List, Optional
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.rol import Rol
@@ -10,9 +9,12 @@ class RolRepository:
     def get_by_id(rol_id: int) -> Optional[Rol]:
         """
         Obtiene un Rol por su ID. Retorna None si no existe.
+        Se carga de forma anticipada la relación 'formatos' para evitar lazy loading.
         """
         session: Session = Database.get_session("rrhh")
-        rol = session.query(Rol).filter_by(id=rol_id).first()
+        rol = session.query(Rol) \
+            .options(joinedload(Rol.formatos)) \
+            .filter_by(id=rol_id).first()
         session.close()
         return rol
 
@@ -20,9 +22,12 @@ class RolRepository:
     def get_all() -> List[Rol]:
         """
         Devuelve todos los Roles registrados en la base de datos.
+        Se carga de forma anticipada la relación 'formatos' para evitar lazy loading.
         """
         session: Session = Database.get_session("rrhh")
-        roles = session.query(Rol).all()
+        roles = session.query(Rol) \
+            .options(joinedload(Rol.formatos)) \
+            .all()
         session.close()
         return roles
 
@@ -74,9 +79,12 @@ class RolRepository:
     def get_by_nombre(nombre: str) -> Optional[Rol]:
         """
         Obtiene un Rol por su nombre. Retorna None si no existe.
+        Se carga de forma anticipada la relación 'formatos' para evitar lazy loading.
         """
         session: Session = Database.get_session("rrhh")
-        rol = session.query(Rol).filter_by(nombre=nombre).first()
+        rol = session.query(Rol) \
+            .options(joinedload(Rol.formatos)) \
+            .filter_by(nombre=nombre).first()
         session.close()
         return rol
 
@@ -84,8 +92,11 @@ class RolRepository:
     def get_principales() -> List[Rol]:
         """
         Devuelve todos los Roles marcados como 'principal=True'.
+        Se carga de forma anticipada la relación 'formatos' para evitar lazy loading.
         """
         session: Session = Database.get_session("rrhh")
-        roles = session.query(Rol).filter_by(principal=True).all()
+        roles = session.query(Rol) \
+            .options(joinedload(Rol.formatos)) \
+            .filter_by(principal=True).all()
         session.close()
         return roles

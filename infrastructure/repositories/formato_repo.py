@@ -1,5 +1,5 @@
 from typing import List, Optional
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.formato import Formato
@@ -12,9 +12,12 @@ class FormatoRepository:
         """
         Retorna un Formato por su ID, o None si no existe.
         'formato.roles' es una lista de objetos FormatosRoles.
+        Se utiliza joinedload para cargar la relación 'roles' de forma anticipada.
         """
         session: Session = Database.get_session("rrhh")
-        formato = session.query(Formato).filter_by(id=formato_id).first()
+        formato = session.query(Formato)\
+            .options(joinedload(Formato.roles).joinedload(FormatosRoles.rol))\
+            .filter_by(id=formato_id).first()
         session.close()
         return formato
 
@@ -22,9 +25,12 @@ class FormatoRepository:
     def get_all() -> List[Formato]:
         """
         Retorna la lista de todos los Formato en la base.
+        Se utiliza joinedload para cargar la relación 'roles' de forma anticipada.
         """
         session: Session = Database.get_session("rrhh")
-        formatos = session.query(Formato).all()
+        formatos = session.query(Formato)\
+            .options(joinedload(Formato.roles).joinedload(FormatosRoles.rol))\
+            .all()
         session.close()
         return formatos
 
@@ -35,7 +41,6 @@ class FormatoRepository:
         si 'formato.roles' tiene elementos.
         """
         session: Session = Database.get_session("rrhh")
-        # 'formato' debe estar listo, por ejemplo con formato.roles = [FormatosRoles(...), ...]
         session.add(formato)
         session.commit()
         session.refresh(formato)
@@ -55,7 +60,9 @@ class FormatoRepository:
         5) Hace commit. Devuelve el Formato actualizado. Si no existe, retorna None.
         """
         session: Session = Database.get_session("rrhh")
-        formato_existente = session.query(Formato).filter_by(id=formato.id).first()
+        formato_existente = session.query(Formato)\
+            .options(joinedload(Formato.roles).joinedload(FormatosRoles.rol))\
+            .filter_by(id=formato.id).first()
         if not formato_existente:
             session.close()
             return None
@@ -68,18 +75,10 @@ class FormatoRepository:
 
         # Reasignar las nuevas asociaciones
         for assoc in formato.roles:
-            # 'assoc' es un objeto FormatosRoles
-            # Aseguramos que apunte al formato correcto
             assoc.formato = formato_existente
-
-            # Si 'assoc.rol' viene en memoria, session.merge(assoc.rol) o
-            # si 'assoc.rol_id' ya está puesto, no hay problema.
-            # Ejemplo: si 'assoc.rol' es None, y solo 'assoc.rol_id' vale, funciona igual,
-            # pero podríamos querer verificar si el rol existe.
             if assoc.rol is not None:
-                db_rol = session.merge(assoc.rol)  # unifica el rol en la sesión
+                db_rol = session.merge(assoc.rol)
                 assoc.rol = db_rol
-
             session.add(assoc)
 
         session.commit()
@@ -109,7 +108,9 @@ class FormatoRepository:
         Obtiene un Formato por su nombre, o None si no existe.
         """
         session: Session = Database.get_session("rrhh")
-        formato = session.query(Formato).filter_by(nombre=nombre).first()
+        formato = session.query(Formato)\
+            .options(joinedload(Formato.roles).joinedload(FormatosRoles.rol))\
+            .filter_by(nombre=nombre).first()
         session.close()
         return formato
 
@@ -120,14 +121,14 @@ class FormatoRepository:
         extrayendo 'assoc.rol' de cada FormatosRoles en formato.roles.
         """
         session: Session = Database.get_session("rrhh")
-        formato = session.query(Formato).filter_by(id=formato_id).first()
+        formato = session.query(Formato)\
+            .options(joinedload(Formato.roles).joinedload(FormatosRoles.rol))\
+            .filter_by(id=formato_id).first()
 
         if not formato:
             session.close()
             return []
 
-        # 'formato.roles' -> List[FormatosRoles]
-        # 'FormatosRoles.rol' -> Rol
         lista_roles = [assoc.rol for assoc in formato.roles if assoc.rol is not None]
         session.close()
         return lista_roles

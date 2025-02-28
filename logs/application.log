@@ -36,3 +36,12 @@
 2025-02-28 10:01:57 [ERROR] application.controllers.colaborador_controller: Error al actualizar Colaborador con id 4: Instance '<Colaborador at 0x2497d51d3a0>' is not persistent within this Session
 2025-02-28 10:02:15 [ERROR] application.controllers.colaborador_controller: Error al actualizar Colaborador con id 4: Instance '<Colaborador at 0x2497d39a150>' is not persistent within this Session
 2025-02-28 10:06:10 [ERROR] application.controllers.colaborador_controller: Error al actualizar Colaborador con id 4: Instance '<Colaborador at 0x2497d8e7110>' is not persistent within this Session
+2025-02-28 10:06:12 [INFO] main: Logger configurado correctamente
+2025-02-28 10:06:16 [INFO] application.controllers.colaborador_controller: Colaborador actualizado exitosamente con id 4
+2025-02-28 11:18:10 [INFO] main: Logger configurado correctamente
+2025-02-28 11:19:22 [INFO] main: Logger configurado correctamente
+2025-02-28 11:27:54 [INFO] main: Logger configurado correctamente
+2025-02-28 11:37:55 [INFO] main: Logger configurado correctamente
+2025-02-28 11:42:55 [INFO] main: Logger configurado correctamente
+2025-02-28 11:42:56 [INFO] main: Logger configurado correctamente
+2025-02-28 11:46:58 [INFO] main: Logger configurado correctamente

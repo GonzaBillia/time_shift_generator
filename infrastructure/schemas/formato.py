@@ -9,5 +9,4 @@ class FormatoResponse(FormatoBase):
     id: int
     roles: List[RolResponse]
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
