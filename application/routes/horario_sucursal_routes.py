@@ -1,4 +1,3 @@
-# ROUTER_PY_SCHEMA_HORARIO_SUCURSAL
 from fastapi import APIRouter, HTTPException, Query
 from typing import List
 from infrastructure.schemas.horario_sucursal import (
@@ -6,6 +5,7 @@ from infrastructure.schemas.horario_sucursal import (
     HorarioSucursalBase,
     HorarioSucursalUpdate
 )
+from fastapi.encoders import jsonable_encoder
 from infrastructure.databases.models.horario_sucursal import HorarioSucursal
 from application.controllers.horario_sucursal_controller import (
     controlador_py_logger_get_by_id_horario_sucursal,
@@ -29,7 +29,8 @@ def get_horario_sucursal_by_id(horario_id: int):
     try:
         horario = controlador_py_logger_get_by_id_horario_sucursal(horario_id)
         horario_schema = HorarioSucursalResponse.model_validate(horario)
-        return success_response("HorarioSucursal encontrado", data=horario_schema.model_dump())
+        data = jsonable_encoder(horario_schema.model_dump())
+        return success_response("HorarioSucursal encontrado", data=data)
     except HTTPException as he:
         raise he
     except Exception as e:
@@ -44,7 +45,7 @@ def get_horarios_by_sucursal(sucursal_id: int):
     try:
         horarios = controlador_py_logger_get_by_sucursal(sucursal_id)
         horarios_schema = [HorarioSucursalResponse.model_validate(h) for h in horarios]
-        data = [hs.model_dump() for hs in horarios_schema]
+        data = jsonable_encoder([hs.model_dump() for hs in horarios_schema])
         return success_response("Horarios de sucursal encontrados", data=data)
     except HTTPException as he:
         raise he
@@ -60,7 +61,7 @@ def get_horarios_by_dia(dia_id: int):
     try:
         horarios = controlador_py_logger_get_by_dia(dia_id)
         horarios_schema = [HorarioSucursalResponse.model_validate(h) for h in horarios]
-        data = [hs.model_dump() for hs in horarios_schema]
+        data = jsonable_encoder([hs.model_dump() for hs in horarios_schema])
         return success_response("Horarios para el día encontrados", data=data)
     except HTTPException as he:
         raise he
@@ -70,20 +71,18 @@ def get_horarios_by_dia(dia_id: int):
 
 @router.post("/", response_model=HorarioSucursalResponse)
 def create_horario_sucursal(horario_data: HorarioSucursalBase):
-    """
-    Endpoint para crear un nuevo HorarioSucursal.
-    """
     try:
         nuevo_horario = HorarioSucursal(**horario_data.model_dump())
         creado = controlador_py_logger_create_horario_sucursal(nuevo_horario)
         horario_schema = HorarioSucursalResponse.model_validate(creado)
-        return success_response("HorarioSucursal creado exitosamente", data=horario_schema.model_dump())
+        data = jsonable_encoder(horario_schema.model_dump())
+        return success_response("HorarioSucursal creado exitosamente", data=data)
     except HTTPException as he:
         raise he
     except Exception as e:
         logger.error("Error en create_horario_sucursal: %s", e)
         return error_response(str(e), status_code=500)
-
+    
 @router.put("/{horario_id}", response_model=HorarioSucursalResponse)
 def update_horario_sucursal_partial(horario_id: int, horario_update: HorarioSucursalUpdate):
     """
@@ -100,7 +99,8 @@ def update_horario_sucursal_partial(horario_id: int, horario_update: HorarioSucu
         
         actualizado = controlador_py_logger_update_horario_sucursal(horario_actual)
         horario_schema = HorarioSucursalResponse.model_validate(actualizado)
-        return success_response("HorarioSucursal actualizado exitosamente", data=horario_schema.model_dump())
+        data = jsonable_encoder(horario_schema.model_dump())
+        return success_response("HorarioSucursal actualizado exitosamente", data=data)
     except HTTPException as he:
         raise he
     except Exception as e:
@@ -114,7 +114,8 @@ def delete_horario_sucursal(horario_id: int):
     """
     try:
         resultado = controlador_py_logger_delete_horario_sucursal(horario_id)
-        return success_response("HorarioSucursal eliminado exitosamente", data={"deleted": resultado})
+        data = jsonable_encoder({"deleted": resultado})
+        return success_response("HorarioSucursal eliminado exitosamente", data=data)
     except HTTPException as he:
         raise he
     except Exception as e:

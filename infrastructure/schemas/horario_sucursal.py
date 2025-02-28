@@ -17,4 +17,9 @@ class HorarioSucursalUpdate(BaseModel):
 class HorarioSucursalResponse(HorarioSucursalBase):
     id: int
 
-    model_config = {"from_attributes": True}
+    model_config = {
+        "from_attributes": True,
+        "json_encoders": {
+            time: lambda v: v.isoformat()
+        }
+    }
