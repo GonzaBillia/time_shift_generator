@@ -8,5 +8,4 @@ class VacacionColaboradorBase(BaseModel):
 class VacacionColaboradorResponse(VacacionColaboradorBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

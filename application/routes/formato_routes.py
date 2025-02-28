@@ -2,6 +2,7 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List
 from infrastructure.schemas.formato import FormatoResponse, FormatoBase
+from infrastructure.schemas.rol import RolResponse
 from infrastructure.databases.models.formato import Formato
 from application.controllers.formato_controller import (
     controlador_py_logger_get_by_id_formato,
@@ -94,16 +95,17 @@ def get_formato_by_nombre(nombre: str):
         logger.error("Error en get_formato_by_nombre: %s", e)
         return error_response(str(e), status_code=500)
 
-@router.get("/roles/{formato_id}", response_model=List)
+@router.get("/roles/{formato_id}", response_model=List[RolResponse])
 def get_roles_by_formato(formato_id: int):
     try:
         roles = controlador_py_logger_get_roles_by_formato(formato_id)
-        # Aquí se asume que roles es una lista de objetos que pueden transformarse.
-        # Si dispones de un esquema para Rol, se recomienda usarlo.
-        roles_data = [str(role) for role in roles]
-        return success_response("Roles obtenidos para el Formato", data=roles_data)
+        # Transformar cada objeto Rol usando el esquema RolResponse
+        roles_schema = [RolResponse.model_validate(role) for role in roles]
+        data = [rs.model_dump() for rs in roles_schema]
+        return success_response("Roles obtenidos para el Formato", data=data)
     except HTTPException as he:
         raise he
     except Exception as e:
         logger.error("Error en get_roles_by_formato: %s", e)
         return error_response(str(e), status_code=500)
+

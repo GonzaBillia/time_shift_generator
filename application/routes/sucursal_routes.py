@@ -1,0 +1,147 @@
+# ROUTER_PY_SCHEMA_SUCURSAL
+from fastapi import APIRouter, HTTPException, Query
+from typing import List
+from infrastructure.schemas.sucursal import SucursalResponse, SucursalBase, SucursalUpdate
+from infrastructure.databases.models.sucursal import Sucursal
+from application.controllers.sucursal_controller import (
+    controlador_py_logger_get_by_id_sucursal,
+    controlador_py_logger_get_all_sucursales,
+    controlador_py_logger_create_sucursal,
+    controlador_py_logger_update_sucursal_partial,
+    controlador_py_logger_delete_sucursal,
+    controlador_py_logger_get_by_nombre_sucursal,
+    controlador_py_logger_get_by_empresa,
+    controlador_py_logger_get_horarios
+)
+from application.helpers.response_handler import success_response, error_response
+from application.config.logger_config import setup_logger
+
+router = APIRouter(prefix="/sucursales", tags=["Sucursales"])
+logger = setup_logger(__name__, "logs/sucursal.log")
+
+@router.get("/id/{sucursal_id}", response_model=SucursalResponse)
+def get_sucursal_by_id(sucursal_id: int):
+    """
+    Endpoint para obtener una Sucursal por su ID.
+    """
+    try:
+        sucursal = controlador_py_logger_get_by_id_sucursal(sucursal_id)
+        sucursal_schema = SucursalResponse.model_validate(sucursal)
+        return success_response("Sucursal encontrada", data=sucursal_schema.model_dump())
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en get_sucursal_by_id: %s", e)
+        return error_response(str(e), status_code=500)
+
+@router.get("/", response_model=List[SucursalResponse])
+def get_all_sucursales():
+    """
+    Endpoint para obtener todas las Sucursales.
+    """
+    try:
+        sucursales = controlador_py_logger_get_all_sucursales()
+        sucursales_schema = [SucursalResponse.model_validate(s) for s in sucursales]
+        data = [ss.model_dump() for ss in sucursales_schema]
+        return success_response("Sucursales encontradas", data=data)
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en get_all_sucursales: %s", e)
+        return error_response(str(e), status_code=500)
+
+@router.post("/", response_model=SucursalResponse)
+def create_sucursal(sucursal_data: SucursalBase):
+    """
+    Endpoint para crear una nueva Sucursal.
+    """
+    try:
+        # Convertir el body (SucursalBase) en una instancia del modelo SQLAlchemy
+        nueva_sucursal = Sucursal(**sucursal_data.model_dump())
+        creada = controlador_py_logger_create_sucursal(nueva_sucursal)
+        sucursal_schema = SucursalResponse.model_validate(creada)
+        return success_response("Sucursal creada exitosamente", data=sucursal_schema.model_dump())
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en create_sucursal: %s", e)
+        return error_response(str(e), status_code=500)
+
+@router.put("/{sucursal_id}", response_model=SucursalResponse)
+def update_sucursal_partial(sucursal_id: int, sucursal_update: SucursalUpdate):
+    """
+    Endpoint para actualizar parcialmente una Sucursal.
+    Solo se actualizarán los campos enviados en el body.
+    """
+    try:
+        update_data = sucursal_update.dict(exclude_unset=True)
+        actualizado = controlador_py_logger_update_sucursal_partial(sucursal_id, update_data)
+        sucursal_schema = SucursalResponse.model_validate(actualizado)
+        return success_response("Sucursal actualizada exitosamente", data=sucursal_schema.model_dump())
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en update_sucursal_partial: %s", e)
+        return error_response(str(e), status_code=500)
+
+@router.delete("/{sucursal_id}")
+def delete_sucursal(sucursal_id: int):
+    """
+    Endpoint para eliminar una Sucursal por su ID.
+    """
+    try:
+        resultado = controlador_py_logger_delete_sucursal(sucursal_id)
+        return success_response("Sucursal eliminada exitosamente", data={"deleted": resultado})
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en delete_sucursal: %s", e)
+        return error_response(str(e), status_code=500)
+
+@router.get("/nombre/{nombre}", response_model=SucursalResponse)
+def get_sucursal_by_nombre(nombre: str):
+    """
+    Endpoint para obtener una Sucursal por su nombre.
+    """
+    try:
+        sucursal = controlador_py_logger_get_by_nombre_sucursal(nombre)
+        sucursal_schema = SucursalResponse.model_validate(sucursal)
+        return success_response("Sucursal encontrada", data=sucursal_schema.model_dump())
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en get_sucursal_by_nombre: %s", e)
+        return error_response(str(e), status_code=500)
+
+@router.get("/empresa/{empresa_id}", response_model=List[SucursalResponse])
+def get_sucursales_by_empresa(empresa_id: int):
+    """
+    Endpoint para obtener todas las Sucursales asociadas a una Empresa.
+    """
+    try:
+        sucursales = controlador_py_logger_get_by_empresa(empresa_id)
+        sucursales_schema = [SucursalResponse.model_validate(s) for s in sucursales]
+        data = [ss.model_dump() for ss in sucursales_schema]
+        return success_response("Sucursales de la Empresa encontradas", data=data)
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en get_sucursales_by_empresa: %s", e)
+        return error_response(str(e), status_code=500)
+
+@router.get("/{sucursal_id}/horarios", response_model=List)
+def get_horarios_by_sucursal(sucursal_id: int):
+    """
+    Endpoint para obtener la lista de horarios asignados a una Sucursal.
+    """
+    try:
+        horarios = controlador_py_logger_get_horarios(sucursal_id)
+        # Si dispones de un esquema para Horario, sería recomendable usarlo.
+        # Por ahora, se retorna una lista de representaciones.
+        data = [str(horario) for horario in horarios]
+        return success_response("Horarios obtenidos", data=data)
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en get_horarios_by_sucursal: %s", e)
+        return error_response(str(e), status_code=500)

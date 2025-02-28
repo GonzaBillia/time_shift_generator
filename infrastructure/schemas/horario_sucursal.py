@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import time
+from typing import Optional
 
 class HorarioSucursalBase(BaseModel):
     sucursal_id: int
@@ -7,8 +8,13 @@ class HorarioSucursalBase(BaseModel):
     hora_apertura: time
     hora_cierre: time
 
+class HorarioSucursalUpdate(BaseModel):
+    sucursal_id: Optional[int]
+    dia_id: Optional[int]
+    hora_apertura: Optional[time]
+    hora_cierre: Optional[time]
+
 class HorarioSucursalResponse(HorarioSucursalBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}

@@ -5,6 +5,4 @@ class FormatosRolesBase(BaseModel):
     formato_id: int
 
 class FormatosRolesResponse(FormatosRolesBase):
-    # Al ser una clave compuesta, no se define un campo "id" adicional.
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
