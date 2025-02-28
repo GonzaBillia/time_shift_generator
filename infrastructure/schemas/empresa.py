@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class EmpresaBase(BaseModel):
     razon_social: str
@@ -7,5 +8,8 @@ class EmpresaBase(BaseModel):
 class EmpresaResponse(EmpresaBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
+
+class EmpresaUpdate(BaseModel):
+    razon_social: Optional[str] = None
+    cuit: Optional[str] = None

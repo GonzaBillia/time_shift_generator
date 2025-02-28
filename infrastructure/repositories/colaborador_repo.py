@@ -70,13 +70,13 @@ class ColaboradorRepository:
 
     @staticmethod
     def update(colaborador: Colaborador) -> Colaborador:
-        """Actualiza un colaborador en la base de datos."""
         session: Session = Database.get_session("rrhh")
-        session.merge(colaborador)
+        db_colaborador = session.merge(colaborador)
         session.commit()
-        session.refresh(colaborador)
+        session.refresh(db_colaborador)
         session.close()
-        return colaborador
+        return db_colaborador
+
 
     @staticmethod
     def delete(colaborador_id: int) -> bool:

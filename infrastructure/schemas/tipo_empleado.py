@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class TipoEmpleadoBase(BaseModel):
     tipo: str
@@ -8,5 +9,9 @@ class TipoEmpleadoBase(BaseModel):
 class TipoEmpleadoResponse(TipoEmpleadoBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
+
+class TipoEmpleadoUpdate(BaseModel):
+    tipo: Optional[str] = None
+    horas_por_dia_max: Optional[int] = None
+    horas_semanales: Optional[int] = None

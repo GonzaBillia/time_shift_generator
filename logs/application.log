@@ -2,3 +2,37 @@
 2025-02-26 13:48:21 [INFO] application.controllers.colaborador_controller: Buscando colaboradores con filtros: dni=40772342, empresa_id=None, tipo_empleado_id=None, horario_corrido=None
 2025-02-26 13:48:55 [INFO] main: Logger configurado correctamente
 2025-02-26 13:49:31 [INFO] main: Logger configurado correctamente
+2025-02-28 08:32:03 [INFO] main: Logger configurado correctamente
+2025-02-28 08:34:33 [INFO] main: Logger configurado correctamente
+2025-02-28 08:37:21 [INFO] main: Logger configurado correctamente
+2025-02-28 08:46:45 [INFO] main: Logger configurado correctamente
+2025-02-28 08:51:34 [INFO] main: Logger configurado correctamente
+2025-02-28 08:54:33 [INFO] main: Logger configurado correctamente
+2025-02-28 09:01:02 [INFO] main: Logger configurado correctamente
+2025-02-28 09:02:02 [INFO] main: Logger configurado correctamente
+2025-02-28 09:12:03 [INFO] main: Logger configurado correctamente
+2025-02-28 09:12:06 [INFO] main: Logger configurado correctamente
+2025-02-28 09:14:02 [INFO] main: Logger configurado correctamente
+2025-02-28 09:15:02 [INFO] main: Logger configurado correctamente
+2025-02-28 09:17:56 [INFO] main: Logger configurado correctamente
+2025-02-28 09:21:43 [INFO] main: Logger configurado correctamente
+2025-02-28 09:21:44 [INFO] main: Logger configurado correctamente
+2025-02-28 09:26:45 [INFO] main: Logger configurado correctamente
+2025-02-28 09:26:46 [INFO] main: Logger configurado correctamente
+2025-02-28 09:28:40 [INFO] main: Logger configurado correctamente
+2025-02-28 09:28:42 [INFO] main: Logger configurado correctamente
+2025-02-28 09:29:25 [INFO] main: Logger configurado correctamente
+2025-02-28 09:38:30 [INFO] main: Logger configurado correctamente
+2025-02-28 09:38:31 [INFO] main: Logger configurado correctamente
+2025-02-28 09:43:02 [INFO] main: Logger configurado correctamente
+2025-02-28 09:45:02 [INFO] main: Logger configurado correctamente
+2025-02-28 09:45:04 [INFO] main: Logger configurado correctamente
+2025-02-28 09:55:04 [INFO] main: Logger configurado correctamente
+2025-02-28 09:55:06 [INFO] main: Logger configurado correctamente
+2025-02-28 09:58:37 [INFO] application.controllers.colaborador_controller: Colaborador creado exitosamente con id 4
+2025-02-28 10:01:23 [INFO] main: Logger configurado correctamente
+2025-02-28 10:01:41 [INFO] main: Logger configurado correctamente
+2025-02-28 10:01:42 [WARNING] application.controllers.colaborador_controller: Colaborador no encontrado con id 3
+2025-02-28 10:01:57 [ERROR] application.controllers.colaborador_controller: Error al actualizar Colaborador con id 4: Instance '<Colaborador at 0x2497d51d3a0>' is not persistent within this Session
+2025-02-28 10:02:15 [ERROR] application.controllers.colaborador_controller: Error al actualizar Colaborador con id 4: Instance '<Colaborador at 0x2497d39a150>' is not persistent within this Session
+2025-02-28 10:06:10 [ERROR] application.controllers.colaborador_controller: Error al actualizar Colaborador con id 4: Instance '<Colaborador at 0x2497d8e7110>' is not persistent within this Session
