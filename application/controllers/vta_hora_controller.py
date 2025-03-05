@@ -1,31 +1,29 @@
-# CONTROLLER_PY_LOGGER_VTA_HORA
 import logging
-from typing import List
-from fastapi import HTTPException
 from datetime import date
-from infrastructure.repositories.vta_hora_repo import get_vta_hora as repo_get_vta_hora
+from fastapi import HTTPException
+from application.services.venta_hora_service import obtener_ventas_por_hora, obtener_facturas
+from infrastructure.schemas.venta_hora import VentaHoraResponse
 
 logger = logging.getLogger(__name__)
 
-def controlador_py_logger_get_vta_hora(sucursal: int, fecha_desde: date, fecha_hasta: date) -> List[dict]:
+def controlador_get_facturas(sucursal: int, fecha_desde: date, fecha_hasta: date) -> VentaHoraResponse:
     """
-    Ejecuta la consulta de ventas/hora usando el archivo SQL get_vta_hora.sql y retorna los resultados.
-    
-    Args:
-        sucursal (int): ID de la sucursal.
-        fecha_desde (date): Fecha de inicio del rango.
-        fecha_hasta (date): Fecha de fin del rango.
-        
-    Returns:
-        List[dict]: Lista de registros resultantes de la consulta.
-        
-    Raises:
-        HTTPException: En caso de error interno.
+    Llama al service para obtener las facturas sin procesar y las valida con el esquema.
     """
     try:
-        data = repo_get_vta_hora(sucursal, fecha_desde, fecha_hasta)
-        return data
-    except Exception as error:
-        logger.error("Error al obtener vta_hora para sucursal %s, desde %s hasta %s: %s", 
-                     sucursal, fecha_desde, fecha_hasta, error)
-        raise HTTPException(status_code=500, detail="Error interno del servidor") from error
+        facturas_data = obtener_facturas(sucursal, fecha_desde, fecha_hasta)
+        # Como el esquema ya se validó en el service, podemos retornar directamente
+        return VentaHoraResponse(data=facturas_data)
+    except Exception as e:
+        logger.error("Error en controlador_get_facturas: %s", e)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from e
+
+def controlador_get_ventas_por_hora(sucursal: int, fecha_desde: date, fecha_hasta: date) -> dict:
+    """
+    Llama al service para obtener las ventas agrupadas por hora.
+    """
+    try:
+        return obtener_ventas_por_hora(sucursal, fecha_desde, fecha_hasta)
+    except Exception as e:
+        logger.error("Error en controlador_get_ventas_por_hora: %s", e)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from e
