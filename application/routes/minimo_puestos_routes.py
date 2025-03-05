@@ -88,7 +88,7 @@ def create_minimo(minimo_data: MinimoPuestosRequeridosBase):
         logger.error("Error en create_minimo: %s", e)
         return error_response(str(e), status_code=500)
 
-@router.patch("/{minimo_id}", response_model=MinimoPuestosRequeridosResponse)
+@router.put("/{minimo_id}", response_model=MinimoPuestosRequeridosResponse)
 def update_minimo_partial(minimo_id: int, minimo_update: MinimoPuestosRequeridosUpdate):
     """
     Endpoint para actualizar parcialmente un registro de mínimos de puestos requeridos.

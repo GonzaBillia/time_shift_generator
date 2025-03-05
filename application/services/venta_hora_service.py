@@ -2,7 +2,7 @@ import logging
 from datetime import date
 from infrastructure.schemas.venta_hora import VentaHoraResponse
 from infrastructure.repositories.vta_hora_repo import get_vta_hora
-from domain.models.venta_hora import Factura, VentasPorHora  # Asegúrate de que estos modelos estén en domain/models/venta_hora.py
+from domain.models.venta_hora import Factura, VentasPorHora, calcular_personas  # Asegúrate de que estos modelos estén en domain/models/venta_hora.py
 
 logger = logging.getLogger(__name__)
 
@@ -50,3 +50,23 @@ def obtener_ventas_por_hora(sucursal: int, fecha_desde: date, fecha_hasta: date)
     except Exception as e:
         logger.error("Error en obtener_ventas_por_hora: %s", e)
         raise e
+
+
+def obtener_personas_por_hora(sucursal: int, fecha_desde: date, fecha_hasta: date, tiempo_promedio: int = 5) -> dict:
+    """
+    Obtiene el agrupamiento de ventas por hora y calcula la cantidad de personas
+    que realizaron las facturas en cada grupo, usando la función calcular_personas.
+    Se redondea siempre hacia arriba (usando math.ceil).
+    Retorna el diccionario con la cantidad de personas, con claves transformadas a strings.
+    """
+    # Primero, obtenemos el agrupamiento "raw" sin transformar las claves
+    facturas_data = obtener_facturas(sucursal, fecha_desde, fecha_hasta)
+    facturas = [Factura(venta) for venta in facturas_data]
+    ventas_por_hora_obj = VentasPorHora()
+    ventas_por_hora_obj.procesar_facturas(facturas)
+    agrupamiento = ventas_por_hora_obj.obtener_ventas()
+    # Calcular la cantidad de personas usando la función calcular_personas
+    personas = calcular_personas(agrupamiento, tiempo_promedio)
+    # Transformamos las claves para serialización JSON
+    personas_transformado = transformar_resultado(personas)
+    return personas_transformado

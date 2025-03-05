@@ -5,7 +5,8 @@ from fastapi.encoders import jsonable_encoder
 from application.helpers.response_handler import success_response, error_response
 from application.controllers.vta_hora_controller import (
     controlador_get_facturas,
-    controlador_get_ventas_por_hora
+    controlador_get_ventas_por_hora,
+    controlador_get_personas_por_hora
 )
 from application.config.logger_config import setup_logger
 from infrastructure.schemas.venta_hora import VentaHoraResponse
@@ -49,4 +50,25 @@ def get_ventas_por_hora(
         raise he
     except Exception as e:
         logger.error("Error en get_ventas_por_hora: %s", e)
+        return error_response(str(e), status_code=500)
+
+@router.get("/personas", response_model=dict)
+def get_personas_por_hora(
+    sucursal: int = Query(..., description="ID de la sucursal"),
+    fecha_desde: date = Query(..., description="Fecha de inicio (YYYY-MM-DD)"),
+    fecha_hasta: date = Query(..., description="Fecha de fin (YYYY-MM-DD)"),
+    tiempo_promedio: int = Query(5, description="Tiempo promedio (en minutos) que tarda una factura")
+):
+    """
+    Endpoint que calcula, a partir del agrupamiento de ventas por hora, la cantidad de personas
+    que realizaron las facturas. Se utiliza math.ceil para redondear hacia arriba.
+    """
+    try:
+        resultado = controlador_get_personas_por_hora(sucursal, fecha_desde, fecha_hasta, tiempo_promedio)
+        resultado_json = jsonable_encoder(resultado)
+        return success_response("Cantidad de personas obtenida exitosamente", data=resultado_json)
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en get_personas_por_hora: %s", e)
         return error_response(str(e), status_code=500)
