@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker, scoped_session, declarative_base
+from urllib.parse import quote_plus
 from application.config.logger_config import setup_logger
 from infrastructure.databases.config.dict import DB_PREFIXES
 
@@ -52,7 +53,9 @@ class DBConfig:
                 logger.error(f"[DBConfig] Faltan variables de entorno para {db_name}.")
                 return None
 
-            connection_url = f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}?charset=utf8"
+            # Codificar la contraseña para evitar problemas con caracteres especiales como '@'
+            password_encoded = quote_plus(password)
+            connection_url = f"mysql+pymysql://{user}:{password_encoded}@{host}:{port}/{database}?charset=utf8"
 
             engine = create_engine(
                 connection_url,
@@ -144,4 +147,3 @@ class DBConfig:
                 logger.error(f"Error al cerrar el engine para '{db_name}': {e}")
         else:
             logger.warning(f"No hay engine activo para '{db_name}'.")
-

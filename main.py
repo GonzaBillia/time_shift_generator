@@ -5,6 +5,7 @@ from application.routes.horario_sucursal_routes import router as horario_sucursa
 from application.routes.formatos_roles_routes import router as formatos_roles_router
 from application.routes.espacio_disponible_sucursal_routes import router as espacio_disponible_sucursal_router
 from application.routes.horas_extra_colaborador_routes import router as horas_extra_colaborador_router
+from application.routes.vta_hora_routes import router as vta_hora_router
 from application.routes.horario_routes import router as horarios_router
 from application.routes.sucursal_routes import router as sucursal_routes
 from application.routes.empresa_routes import router as empresas_router
@@ -31,6 +32,7 @@ app.include_router(dias_router)
 app.include_router(roles_router)
 app.include_router(formatos_router)
 app.include_router(tipo_colaboradores_router)
+app.include_router(vta_hora_router)
 
 @app.get("/")
 async def read_root():

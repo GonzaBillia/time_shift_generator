@@ -25,12 +25,12 @@ SELECT
     ) AS CtaCte,
     
     -- Obra Social
-    IF(fc.Tipo = 'NC', fc.TotalCobertura * -1, fc.TotalCobertura) AS OSocial,
+    IF(fc.Tipo = 'NC', fc.TotalCobertura * -1, fc.TotalCobertura) AS 'OSocial',
     (SELECT obsociales.Descripcio
      FROM factcoberturas, obsociales
      WHERE factcoberturas.IDObSoc = obsociales.CodObSoc
        AND factcoberturas.IDComprobante = fc.IDComprobante
-     LIMIT 1) AS Obra Social Detalle,
+     LIMIT 1) AS 'Obra Social Detalle',
     
     -- Tarjetas
     SUM(
@@ -39,7 +39,7 @@ SELECT
              FROM factpagos
              WHERE IDComprobante = fc.IDComprobante AND idmediodepago IN (3, 5)), 
         0)
-    ) AS Tarjeta,
+    ) AS 'Tarjeta',
     
     -- Otros Medios de Pago
     SUM(
@@ -48,30 +48,30 @@ SELECT
              FROM factpagos
              WHERE IDComprobante = fc.IDComprobante AND idmediodepago NOT IN (1, 3, 5)), 
         0)
-    ) AS OtrosMP,
+    ) AS 'OtrosMP',
     
     -- Detalle de Tarjeta
     (SELECT tarjetas.tarjeta
      FROM factpagos, tarjetas
      WHERE factpagos.IDTarjeta = tarjetas.IDTarjeta
        AND factpagos.IDComprobante = fc.IDComprobante
-     LIMIT 1) AS Tarjeta Detalle,
+     LIMIT 1) AS 'Tarjeta Detalle',
     
     -- Total Comprobante
-    IF(fc.Tipo = 'NC', fc.TotalComprobante * -1, fc.TotalComprobante) AS Total,
+    IF(fc.Tipo = 'NC', fc.TotalComprobante * -1, fc.TotalComprobante) AS 'Total',
     
     -- Cliente
-    c.Nombre AS Apellido y nombre/Razón Social,
-    c.Documento AS DNI,
-    c.Cuit AS CUIT
+    c.Nombre AS 'Apellido y nombre/Razón Social',
+    c.Documento AS 'DNI',
+    c.Cuit AS 'CUIT'
 
 FROM factcabecera fc
 LEFT JOIN clientes c ON fc.IDCliente = c.CodCliente
 INNER JOIN Operadores op ON fc.IDUsuario = op.IDOperador
 
 WHERE
-    fc.Sucursal = %s
-    AND fc.Emision BETWEEN %s AND %s
+    fc.Sucursal = :sucursal
+    AND fc.Emision BETWEEN :fecha_desde AND :fecha_hasta
     AND fc.Tipo IN ('FV', 'TK', 'TF', 'NC', 'ND', 'TZ')
     AND fc.TipoIVA <> 'XX'
 
