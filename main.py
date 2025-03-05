@@ -6,6 +6,7 @@ from application.routes.formatos_roles_routes import router as formatos_roles_ro
 from application.routes.espacio_disponible_sucursal_routes import router as espacio_disponible_sucursal_router
 from application.routes.horas_extra_colaborador_routes import router as horas_extra_colaborador_router
 from application.routes.minimo_puestos_routes import router as minimo_puestos_router
+from application.routes.puestos_cubiertos_por_hora_routes import router as puestos_cubiertos_router
 from application.routes.vta_hora_routes import router as vta_hora_router
 from application.routes.horario_routes import router as horarios_router
 from application.routes.sucursal_routes import router as sucursal_routes
@@ -24,6 +25,7 @@ app = FastAPI(title="API de Colaboradores")
 app.include_router(colaboradores_router)
 app.include_router(espacio_disponible_sucursal_router)
 app.include_router(horas_extra_colaborador_router)
+app.include_router(puestos_cubiertos_router)
 app.include_router(horario_sucursal_router)
 app.include_router(empresas_router)
 app.include_router(formatos_roles_router)
