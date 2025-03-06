@@ -1,17 +1,20 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
 from application.config.logger_config import setup_logger
+from fastapi.encoders import jsonable_encoder
 from application.controllers.colaborador_controller import(
     controlador_py_logger_get_all, 
     controlador_py_logger_get_filtered, 
     controlador_py_logger_get_by_id, 
     controlador_py_logger_get_by_legajo,
+    controlador_py_logger_get_details,
     controlador_py_logger_create_colaborador,
     controlador_py_logger_update_colaborador,
     controlador_py_logger_delete_colaborador
 )
 from application.helpers.response_handler import error_response, success_response
 from infrastructure.schemas.colaborador import ColaboradorResponse, ColaboradorBase, ColaboradorUpdate
+from infrastructure.schemas.colaborador_details import ColaboradorDetailSchema
 from infrastructure.databases.models.colaborador import Colaborador
 
 logger = setup_logger(__name__, "logs/colaboradores.log")
@@ -93,6 +96,21 @@ def get_colaborador_by_legajo(colaborador_legajo: int):
         colaborador = controlador_py_logger_get_by_legajo(colaborador_legajo)
         colaborador_schema = ColaboradorResponse.model_validate(colaborador)
         return success_response("Colaborador encontrado", data=colaborador_schema.model_dump())
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        return error_response(str(e), status_code=500)
+
+@router.get("/details/{colaborador_id}", response_model=ColaboradorDetailSchema)
+def get_colaborador_details_endpoint(colaborador_id: int):
+    """
+    Endpoint para obtener un colaborador con detalles completos por ID.
+    """
+    try:
+        colaborador = controlador_py_logger_get_details(colaborador_id)
+        # Validamos la instancia utilizando el modelo de Pydantic v2 y convertimos a un dict serializable
+        colaborador_schema = ColaboradorDetailSchema.model_validate(colaborador)
+        return success_response("Colaborador encontrado", data=jsonable_encoder(colaborador_schema))
     except HTTPException as he:
         raise he
     except Exception as e:

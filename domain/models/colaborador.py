@@ -16,7 +16,7 @@ class Colaborador:
         dni: str,
         sucursales: List[int],  # Lista de IDs de sucursales donde trabaja
         roles: List[Rol],  # Lista de roles asignados
-        horario_preferido: Horario,
+        horario_preferido: List[Tuple[int, Horario]],
         dias_preferidos: List[int],  # 0=Lunes, 6=Domingo
         tipo_empleado: TipoEmpleado,
         horario_asignado: List[Tuple[int, Horario]],  # (sucursal_id, Horario)

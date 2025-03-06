@@ -2,6 +2,7 @@ from application.config.logger_config import setup_logger
 from typing import Optional, List
 from fastapi import HTTPException
 from infrastructure.databases.models import Colaborador
+from application.services.colaborador_service import get_colaborador_details
 from infrastructure.repositories.colaborador_repo import ColaboradorRepository  # Ajusta el path según tu estructura
 from application.controllers.empresa_controller import controlador_py_logger_get_by_id_empresa
 from application.controllers.tipo_colaborador_controller import controlador_py_logger_get_by_id_tipo_empleado
@@ -108,6 +109,32 @@ def controlador_py_logger_get_by_legajo(colaborador_legajo: int) -> Colaborador:
 
     if not colaborador:
         logger.warning("Colaborador no encontrado con legajo %s", colaborador_legajo)
+        raise HTTPException(status_code=404, detail="Colaborador no encontrado")
+
+    return colaborador
+
+def controlador_py_logger_get_details(colaborador_id: int):
+    """
+    Obtiene un colaborador a partir de su ID con todos sus detalles.
+
+    Args:
+        colaborador_id (int): ID del colaborador.
+
+    Returns:
+        Colaborador: Objeto Colaborador con detalles completos.
+
+    Raises:
+        HTTPException: Con código 404 si no se encuentra el colaborador,
+                       o con código 500 si ocurre un error interno.
+    """
+    try:
+        colaborador = get_colaborador_details(colaborador_id)
+    except Exception as error:
+        logger.error("Error al obtener detalles del colaborador con id %s: %s", colaborador_id, error)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from error
+
+    if not colaborador:
+        logger.warning("Colaborador no encontrado con id %s", colaborador_id)
         raise HTTPException(status_code=404, detail="Colaborador no encontrado")
 
     return colaborador
