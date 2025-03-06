@@ -13,6 +13,8 @@ class Dia(Base):
     horarios_sucursal = relationship("HorarioSucursal", back_populates="dia")
     minimo_puestos = relationship("MinimoPuestosRequeridos", back_populates="dia")
     puestos_cubiertos = relationship("PuestosCubiertosPorHora", back_populates="dia")
+    # Relación agregada para HorarioPreferidoColaborador
+    horarios_preferidos_colaboradores = relationship("HorarioPreferidoColaborador", back_populates="dia")
 
     def __repr__(self):
         return f"<Dia(id={self.id}, nombre={self.nombre})>"

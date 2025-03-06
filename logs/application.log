@@ -156,3 +156,7 @@
 2025-03-06 11:31:18 [ERROR] application.controllers.colaborador_controller: Error al obtener detalles del colaborador con id 1: module 'infrastructure.repositories.colaborador_repo' has no attribute 'get_by_id'
 2025-03-06 11:31:31 [ERROR] application.controllers.colaborador_controller: Error al obtener colaborador con id 1: Mapper 'Mapper[Colaborador(colaboradores)]' has no property 'horarios_preferidos_colaboradores'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.
 2025-03-06 11:31:37 [ERROR] application.controllers.colaborador_controller: Error al obtener detalles del colaborador con id 1: module 'infrastructure.repositories.colaborador_repo' has no attribute 'get_by_id'
+2025-03-06 11:35:50 [INFO] main: Logger configurado correctamente
+2025-03-06 11:35:55 [ERROR] application.controllers.colaborador_controller: Error al obtener detalles del colaborador con id 1: Mapper 'Mapper[Colaborador(colaboradores)]' has no property 'horarios_preferidos_colaboradores'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.
+2025-03-06 11:38:30 [INFO] main: Logger configurado correctamente
+2025-03-06 11:38:44 [ERROR] application.controllers.colaborador_controller: Error al obtener detalles del colaborador con id 1: Mapper 'Mapper[Dia(dias)]' has no property 'horarios_preferidos_colaboradores'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.

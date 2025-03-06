@@ -1,3 +1,4 @@
+# models/colaborador.py
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from infrastructure.databases.config.database import Base
@@ -19,17 +20,22 @@ class Colaborador(Base):
     empresa = relationship("Empresa", back_populates="colaboradores")
     tipo_empleado = relationship("TipoEmpleado", back_populates="colaboradores")
     horarios = relationship("Horario", back_populates="colaborador")
-
-    # Asociación con sucursal (vía ColaboradorSucursal)
+    
     sucursales = relationship(
         "ColaboradorSucursal",
         back_populates="colaborador",
         cascade="all, delete-orphan"
     )
 
-    # Otras relaciones
     vacaciones = relationship("VacacionColaborador", back_populates="colaborador")
     horas_extra = relationship("HorasExtraColaborador", back_populates="colaborador")
+
+    # Nueva relación para horarios preferidos
+    horarios_preferidos_colaboradores = relationship(
+        "HorarioPreferidoColaborador", 
+        back_populates="colaborador",
+        cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return (
