@@ -8,6 +8,8 @@ from application.routes.horas_extra_colaborador_routes import router as horas_ex
 from application.routes.minimo_puestos_routes import router as minimo_puestos_router
 from application.routes.puestos_cubiertos_por_hora_routes import router as puestos_cubiertos_router
 from application.routes.horario_preferido_colaborador_routes import router as horario_preferido_colaborador_router
+from application.routes.auth_routes import router as auth_router
+from application.routes.usuario_routes import router as usuario_router
 from application.routes.vta_hora_routes import router as vta_hora_router
 from application.routes.horario_routes import router as horarios_router
 from application.routes.sucursal_routes import router as sucursal_routes
@@ -17,7 +19,6 @@ from application.routes.dia_routes import router as dias_router
 from application.routes.formato_routes import router as formatos_router
 
 from application.middlewares.auth_middleware import AuthMiddleware
-from application.middlewares.roles_middleware import RolesMiddleware
 
 from application.config.logger_config import setup_logger
 
@@ -27,7 +28,6 @@ logger.info("Logger configurado correctamente")
 app = FastAPI(title="API de Colaboradores")
 
 app.add_middleware(AuthMiddleware)
-app.add_middleware(RolesMiddleware)
 
 app.include_router(colaboradores_router)
 app.include_router(espacio_disponible_sucursal_router)
@@ -45,6 +45,8 @@ app.include_router(tipo_colaboradores_router)
 app.include_router(horario_preferido_colaborador_router)
 app.include_router(minimo_puestos_router)
 app.include_router(vta_hora_router)
+app.include_router(auth_router)
+app.include_router(usuario_router)
 
 @app.get("/")
 async def read_root():
