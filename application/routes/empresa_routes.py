@@ -48,6 +48,21 @@ def get_empresa_by_cuit(cuit: str):
     except Exception as e:
         logger.error("Error en get_empresa_by_cuit: %s", e)
         return error_response(str(e), status_code=500)
+    
+@router.get("/id/{id}", response_model=EmpresaResponse)
+def get_empresa_by_cuit(id: int):
+    """
+    Endpoint para obtener una empresa por su CUIT.
+    """
+    try:
+        empresa = controlador_py_logger_get_by_id_empresa(id)
+        empresa_schema = EmpresaResponse.model_validate(empresa)
+        return success_response("Empresa encontrada", data=empresa_schema.model_dump())
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en get_empresa_by_cuit: %s", e)
+        return error_response(str(e), status_code=500)
 
 @router.get("/razon_social/{razon_social}", response_model=EmpresaResponse)
 def get_empresa_by_razon_social(razon_social: str):
