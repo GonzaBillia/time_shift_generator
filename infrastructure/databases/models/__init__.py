@@ -14,3 +14,6 @@ from .minimo_puestos_requeridos import MinimoPuestosRequeridos
 from .puestos_cubiertos_por_hora import PuestosCubiertosPorHora
 from .rol import Rol
 from .vacacion_colaborador import VacacionColaborador
+from .usuario import Usuario
+from .rol_usuario import RolUsuario
+

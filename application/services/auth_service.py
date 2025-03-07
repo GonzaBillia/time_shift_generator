@@ -24,7 +24,7 @@ def authenticate_user(username: str, password: str):
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes= os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+    expire = datetime.utcnow() + timedelta(minutes= int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")))
     to_encode.update({"exp": expire})
     token = jwt.encode(to_encode, os.getenv("SECRET_KEY"), algorithm= os.getenv("ALGORITHM"))
     return token

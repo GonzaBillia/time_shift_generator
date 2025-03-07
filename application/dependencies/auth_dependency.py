@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException, Request, status
 import jwt, os
 from dotenv import load_dotenv
+from sqlalchemy.orm import joinedload
 from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.usuario import Usuario
 
@@ -22,8 +23,11 @@ def get_current_user_from_cookie(request: Request):
     except jwt.PyJWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
     
-    db = Database.get_session("default")
-    user = db.query(Usuario).filter(Usuario.id == int(user_id)).first()
+    db = Database.get_session("rrhh")
+    user = db.query(Usuario)\
+             .options(joinedload(Usuario.rol_usuario))\
+             .filter(Usuario.id == int(user_id))\
+             .first()
     db.close()
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuario no encontrado")

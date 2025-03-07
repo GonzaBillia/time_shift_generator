@@ -17,5 +17,6 @@ class Usuario(Base):
     last_login = Column(TIMESTAMP, nullable=True)
     token_version = Column(Integer, nullable=False, default=0)
     
+    
     # Relación con roles_usuarios
     rol_usuario = relationship("RolUsuario", back_populates="usuarios")

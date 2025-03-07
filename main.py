@@ -18,7 +18,7 @@ from application.routes.rol_routes import router as roles_router
 from application.routes.dia_routes import router as dias_router
 from application.routes.formato_routes import router as formatos_router
 
-from application.middlewares.auth_middleware import AuthMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 from application.config.logger_config import setup_logger
 
@@ -27,7 +27,14 @@ logger.info("Logger configurado correctamente")
 
 app = FastAPI(title="API de Colaboradores")
 
-app.add_middleware(AuthMiddleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 app.include_router(colaboradores_router)
 app.include_router(espacio_disponible_sucursal_router)
