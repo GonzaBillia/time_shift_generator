@@ -1,6 +1,7 @@
 from application.config.logger_config import setup_logger
 from typing import Optional, List
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 from infrastructure.databases.models import Colaborador
 from application.services.colaborador_service import get_colaborador_details
 from infrastructure.repositories.colaborador_repo import ColaboradorRepository  # Ajusta el path según tu estructura
@@ -61,7 +62,7 @@ def controlador_py_logger_get_filtered(
 
     return colaboradores
 
-def controlador_py_logger_get_by_id(colaborador_id: int) -> Colaborador:
+def controlador_py_logger_get_by_id(colaborador_id: int, db: Session) -> Colaborador:
     """
     Obtiene un colaborador por su ID.
 
@@ -76,7 +77,7 @@ def controlador_py_logger_get_by_id(colaborador_id: int) -> Colaborador:
                        o con código 500 si ocurre un error interno.
     """
     try:
-        colaborador = ColaboradorRepository.get_by_id(colaborador_id)
+        colaborador = ColaboradorRepository.get_by_id(colaborador_id, db)
     except Exception as error:
         logger.error("Error al obtener colaborador con id %s: %s", colaborador_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -139,17 +140,17 @@ def controlador_py_logger_get_details(colaborador_id: int):
 
     return colaborador
 
-def controlador_py_logger_create_colaborador(colaborador: Colaborador) -> Colaborador:
+def controlador_py_logger_create_colaborador(colaborador: Colaborador, db: Session) -> Colaborador:
     """
     Crea un nuevo Colaborador en la base de datos.
     Valida que la Empresa y TipoEmpleado existan.
     """
     try:
         # Validar FK: Empresa y TipoEmpleado
-        controlador_py_logger_get_by_id_empresa(colaborador.empresa_id)
-        controlador_py_logger_get_by_id_tipo_empleado(colaborador.tipo_empleado_id)
+        controlador_py_logger_get_by_id_empresa(colaborador.empresa_id, db)
+        controlador_py_logger_get_by_id_tipo_empleado(colaborador.tipo_empleado_id, db)
         
-        nuevo = ColaboradorRepository.create(colaborador)
+        nuevo = ColaboradorRepository.create(colaborador, db)
         logger.info("Colaborador creado exitosamente con id %s", nuevo.id)
         return nuevo
     except HTTPException as he:
@@ -158,19 +159,19 @@ def controlador_py_logger_create_colaborador(colaborador: Colaborador) -> Colabo
         logger.error("Error al crear Colaborador: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
-def controlador_py_logger_update_colaborador(colaborador: Colaborador) -> Colaborador:
+def controlador_py_logger_update_colaborador(colaborador: Colaborador, db: Session) -> Colaborador:
     """
     Actualiza un Colaborador en la base de datos.
     Valida las FK si se envían en el objeto actualizado.
     """
     try:
-        # Si se actualizan FK, valida que existan.
+        # Validar FK en caso de que se envíen nuevos valores
         if colaborador.empresa_id:
-            controlador_py_logger_get_by_id_empresa(colaborador.empresa_id)
+            controlador_py_logger_get_by_id_empresa(colaborador.empresa_id, db)
         if colaborador.tipo_empleado_id:
-            controlador_py_logger_get_by_id_tipo_empleado(colaborador.tipo_empleado_id)
+            controlador_py_logger_get_by_id_tipo_empleado(colaborador.tipo_empleado_id, db)
             
-        actualizado = ColaboradorRepository.update(colaborador)
+        actualizado = ColaboradorRepository.update(colaborador, db)
         logger.info("Colaborador actualizado exitosamente con id %s", actualizado.id)
         return actualizado
     except HTTPException as he:

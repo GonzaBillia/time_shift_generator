@@ -12,12 +12,21 @@ from infrastructure.databases.models.horas_extra_colaborador import HorasExtraCo
 
 class ColaboradorRepository:
     @staticmethod
-    def get_by_id(colaborador_id: int) -> Optional[Colaborador]:
-        """Obtiene un colaborador por su ID."""
-        session: Session = Database.get_session("rrhh")
-        colaborador = session.query(Colaborador).filter_by(id=colaborador_id).first()
-        session.close()
-        return colaborador
+    def get_by_id(colaborador_id: int, db: Optional[Session] = None) -> Optional[Colaborador]:
+        """
+        Obtiene un colaborador por su ID.
+        Si no se pasa una sesión, se crea una sesión interna que se cierra al finalizar.
+        """
+        close_session = False
+        if db is None:
+            db = Database.get_session("rrhh")
+            close_session = True
+        try:
+            colaborador = db.query(Colaborador).filter_by(id=colaborador_id).first()
+            return colaborador
+        finally:
+            if close_session:
+                db.close()
 
     @staticmethod
     def get_by_legajo(legajo: int) -> Optional[Colaborador]:
@@ -59,23 +68,42 @@ class ColaboradorRepository:
         return colaboradores
 
     @staticmethod
-    def create(colaborador: Colaborador) -> Colaborador:
+    def create(colaborador: Colaborador, db: Optional[Session] = None) -> Colaborador:
         """Crea un nuevo colaborador en la base de datos."""
-        session: Session = Database.get_session("rrhh")
-        session.add(colaborador)
-        session.commit()
-        session.refresh(colaborador)
-        session.close()
-        return colaborador
+        close_session = False
+        if db is None:
+            db = Database.get_session("rrhh")
+            close_session = True
+        try:
+            db.add(colaborador)
+            db.commit()
+            db.refresh(colaborador)
+            return colaborador
+        finally:
+            if close_session:
+                db.close()
 
     @staticmethod
-    def update(colaborador: Colaborador) -> Colaborador:
-        session: Session = Database.get_session("rrhh")
-        db_colaborador = session.merge(colaborador)
-        session.commit()
-        session.refresh(db_colaborador)
-        session.close()
-        return db_colaborador
+    def update(colaborador: Colaborador, db: Optional[Session] = None) -> Colaborador:
+        """
+        Actualiza un colaborador en la base de datos.
+        Si se pasa una sesión externa, se asume que el manejo de la transacción (commit) se hace afuera.
+        """
+        close_session = False
+        if db is None:
+            db = Database.get_session("rrhh")
+            close_session = True
+        try:
+            db_colaborador = db.merge(colaborador)
+            if close_session:
+                db.commit()
+            else:
+                db.flush()
+            db.refresh(db_colaborador)
+            return db_colaborador
+        finally:
+            if close_session:
+                db.close()
 
 
     @staticmethod

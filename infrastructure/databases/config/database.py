@@ -147,3 +147,12 @@ class DBConfig:
                 logger.error(f"Error al cerrar el engine para '{db_name}': {e}")
         else:
             logger.warning(f"No hay engine activo para '{db_name}'.")
+
+    @staticmethod
+    def get_db_session(db_name: str):
+    # "MY_DB" es el nombre de la base de datos; ajústalo según corresponda
+        session = DBConfig.get_session(db_name)
+        try:
+            yield session
+        finally:
+            session.close()

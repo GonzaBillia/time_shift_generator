@@ -7,7 +7,7 @@ class Horario:
         sucursal_id: int,
         colaborador_id: Optional[int],  # Puede ser None si es un horario general de sucursal
         dia_id: int,  # Nuevo campo para reflejar la base de datos
-        fecha: date,
+        fecha: Optional[date],
         bloques: List[Tuple[time, time]],
         horario_corrido: bool
     ):

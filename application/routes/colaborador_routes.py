@@ -1,5 +1,7 @@
-from fastapi import APIRouter, HTTPException, Query
-from typing import List, Optional
+from fastapi import APIRouter, HTTPException, Query, Depends
+from sqlalchemy.orm import Session
+from datetime import time
+from typing import List, Optional, Generator
 from application.config.logger_config import setup_logger
 from fastapi.encoders import jsonable_encoder
 from application.controllers.colaborador_controller import(
@@ -12,13 +14,24 @@ from application.controllers.colaborador_controller import(
     controlador_py_logger_update_colaborador,
     controlador_py_logger_delete_colaborador
 )
+from application.controllers.horario_preferido_colaborador_controller import (
+    controlador_py_logger_get_by_id_horario_preferido_colaborador,
+    controlador_py_logger_update_horario_preferido_colaborador,
+    controlador_py_logger_create_horario_preferido_colaborador
+)
+from application.services.colaborador_service import convertir_recursivamente
 from application.helpers.response_handler import error_response, success_response
 from infrastructure.schemas.colaborador import ColaboradorResponse, ColaboradorBase, ColaboradorUpdate
-from infrastructure.schemas.colaborador_details import ColaboradorDetailSchema
+from infrastructure.schemas.horario_preferido_colaborador import HorarioPreferidoColaboradorBase
+from infrastructure.schemas.colaborador_details import ColaboradorDetailSchema, ColaboradorFullUpdate
 from infrastructure.databases.models.colaborador import Colaborador
+from infrastructure.databases.config.database import DBConfig 
 
 logger = setup_logger(__name__, "logs/colaboradores.log")
 router = APIRouter(prefix="/colaboradores", tags=["Colaboradores"])
+
+def get_rrhh_session() -> Generator[Session, None, None]:
+    yield from DBConfig.get_db_session("rrhh")
 
 @router.get("/all", response_model=List[ColaboradorResponse])
 def get_all_colaboradores():
@@ -103,18 +116,17 @@ def get_colaborador_by_legajo(colaborador_legajo: int):
 
 @router.get("/details/{colaborador_id}", response_model=ColaboradorDetailSchema)
 def get_colaborador_details_endpoint(colaborador_id: int):
-    """
-    Endpoint para obtener un colaborador con detalles completos por ID.
-    """
     try:
         colaborador = controlador_py_logger_get_details(colaborador_id)
-        # Validamos la instancia utilizando el modelo de Pydantic v2 y convertimos a un dict serializable
         colaborador_schema = ColaboradorDetailSchema.model_validate(colaborador)
-        return success_response("Colaborador encontrado", data=jsonable_encoder(colaborador_schema))
+        data = jsonable_encoder(colaborador_schema)
+        return success_response("Colaborador encontrado", data=data)
     except HTTPException as he:
         raise he
     except Exception as e:
+        logger.error("Error en get_colaborador_details_endpoint: %s", e)
         return error_response(str(e), status_code=500)
+
 
 @router.post("/", response_model=ColaboradorResponse)
 def create_colaborador(colaborador_data: ColaboradorBase):
@@ -186,4 +198,62 @@ def delete_colaborador(colaborador_id: int):
         raise he
     except Exception as e:
         logger.error("Error en delete_colaborador: %s", e)
+        return error_response(str(e), status_code=500)
+    
+@router.put("/full/{colaborador_id}", response_model=ColaboradorResponse)
+def update_colaborador_full(
+    colaborador_id: int,
+    colaborador_full_update: ColaboradorFullUpdate,
+    db: Session = Depends(get_rrhh_session)
+):
+    """
+    Endpoint para actualizar completamente un colaborador, incluyendo:
+    - Los datos básicos del colaborador (actualizados solo si se envían cambios)
+    - La lista de horarios preferidos: se actualizan los existentes (si vienen con id) o se crean nuevos
+    - El campo dias_preferidos se actualiza derivándolo de la unión de los dias en los horarios preferidos.
+    Toda la operación se ejecuta en una transacción.
+    """
+    try:
+        with db.begin():
+            # Recuperar el colaborador actual
+            colaborador_actual = controlador_py_logger_get_by_id(colaborador_id, db)
+            if not colaborador_actual:
+                raise HTTPException(status_code=404, detail="Colaborador no encontrado")
+            
+            # Actualizar los campos del colaborador (solo los enviados)
+            update_data = colaborador_full_update.colaborador.model_dump(exclude_unset=True)
+            for key, value in update_data.items():
+                setattr(colaborador_actual, key, value)
+            
+            # Procesar la actualización/creación de los horarios preferidos
+            # Se asume que colaborador_full_update.horario_preferido es una lista de objetos con la información
+            updated_horarios = []
+            for horario_data in colaborador_full_update.horario_preferido:
+                if horario_data.id:  # Si se envía un id, se intenta actualizar el registro existente
+                    horario_actual = controlador_py_logger_get_by_id_horario_preferido_colaborador(horario_data.id, db)
+                    if horario_actual:
+                        update_horario = horario_data.model_dump(exclude_unset=True)
+                        for key, value in update_horario.items():
+                            setattr(horario_actual, key, value)
+                        actualizado_horario = controlador_py_logger_update_horario_preferido_colaborador(horario_actual, db)
+                        updated_horarios.append(actualizado_horario)
+                    else:
+                        # Si no se encuentra, se crea uno nuevo
+                        nuevo_horario = HorarioPreferidoColaboradorBase(**horario_data.model_dump())
+                        creado = controlador_py_logger_create_horario_preferido_colaborador(nuevo_horario, db)
+                        updated_horarios.append(creado)
+                else:
+                    # Si no se envía id, se crea uno nuevo
+                    nuevo_horario = HorarioPreferidoColaboradorBase(**horario_data.model_dump())
+                    creado = controlador_py_logger_create_horario_preferido_colaborador(nuevo_horario, db)
+                    updated_horarios.append(creado)
+            
+            # Actualizar el colaborador completo en la base de datos
+            actualizado = controlador_py_logger_update_colaborador(colaborador_actual, db)
+            colaborador_schema = ColaboradorResponse.model_validate(actualizado)
+            return success_response("Colaborador actualizado exitosamente", data=colaborador_schema.model_dump())
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en update_colaborador_full: %s", e)
         return error_response(str(e), status_code=500)

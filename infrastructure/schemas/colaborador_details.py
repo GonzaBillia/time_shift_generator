@@ -2,37 +2,13 @@
 from pydantic import BaseModel, ConfigDict
 from typing import List, Tuple, Dict, Optional
 from datetime import date, time
-
-class BloqueSchema(BaseModel):
-    inicio: time
-    fin: time
-
-    model_config = ConfigDict(json_schema_extra={"example": {"inicio": "08:00", "fin": "12:00"}})
-
-class HorarioSchema(BaseModel):
-    sucursal_id: int
-    colaborador_id: Optional[int]
-    dia_id: int
-    fecha: date
-    horario_corrido: bool
-    bloques: List[BloqueSchema]
-
-    model_config = ConfigDict(from_attributes=True)
-
-class TipoEmpleadoSchema(BaseModel):
-    id: int
-    tipo: str
-    horas_por_dia_max: int
-    horas_semanales: int
-
-    model_config = ConfigDict(from_attributes=True)
-
-class RolSchema(BaseModel):
-    id: int
-    nombre: str
-    principal: bool
-
-    model_config = ConfigDict(from_attributes=True)
+from .sucursal import SucursalResponse
+from .horario import HorarioResponse
+from .tipo_empleado import TipoEmpleadoResponse
+from .rol import RolResponse
+from .empresa import EmpresaResponse
+from .colaborador import ColaboradorUpdate
+from .horario_preferido_colaborador import HorarioPreferidoColaboradorResponse
 
 class ColaboradorDetailSchema(BaseModel):
     id: int
@@ -41,15 +17,19 @@ class ColaboradorDetailSchema(BaseModel):
     email: str
     telefono: str
     dni: str
-    sucursales: List[int]
-    roles: List[RolSchema]
-    # Se define cada horario como una tupla: (sucursal_id, HorarioSchema)
-    horario_preferido: List[Tuple[int, HorarioSchema]]
+    empresa: EmpresaResponse
+    sucursales: List[SucursalResponse]
+    roles: List[RolResponse]
+    horario_preferido: List[HorarioPreferidoColaboradorResponse]
     dias_preferidos: List[int]
-    tipo_empleado: TipoEmpleadoSchema
-    horario_asignado: List[Tuple[int, HorarioSchema]]
+    tipo_empleado: TipoEmpleadoResponse
+    horario_asignado: List[HorarioResponse]
     hs_extra: Dict[str, int]
     vacaciones: List[date]
     horario_corrido: bool
 
     model_config = ConfigDict(from_attributes=True)
+
+class ColaboradorFullUpdate(BaseModel):
+    colaborador: ColaboradorUpdate
+    horario_preferido: Optional[List[HorarioPreferidoColaboradorResponse]] = []

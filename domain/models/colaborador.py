@@ -4,6 +4,8 @@ from datetime import date
 from .horario import Horario
 from .tipo_colaborador import TipoEmpleado
 from .rol import Rol
+from .sucursal import Sucursal
+from .empresa import Empresa
 
 class Colaborador:
     def __init__(
@@ -14,12 +16,13 @@ class Colaborador:
         email: str,
         telefono: str,
         dni: str,
-        sucursales: List[int],  # Lista de IDs de sucursales donde trabaja
+        empresa: Empresa,
+        sucursales: List[Sucursal],  # Lista de IDs de sucursales donde trabaja
         roles: List[Rol],  # Lista de roles asignados
-        horario_preferido: List[Tuple[int, Horario]],
-        dias_preferidos: List[int],  # 0=Lunes, 6=Domingo
+        horario_preferido: List[Horario],       # <-- Se quita la tupla
+        dias_preferidos: List[int],
         tipo_empleado: TipoEmpleado,
-        horario_asignado: List[Tuple[int, Horario]],  # (sucursal_id, Horario)
+        horario_asignado: List[Horario],   # (sucursal_id, Horario)
         hs_extra: Dict[str, int],  # {'devolver': int, 'cobrar': int}
         vacaciones: List[date],
         horario_corrido: bool = False,
@@ -52,6 +55,7 @@ class Colaborador:
         self.dni = dni
         self.sucursales = sucursales
         self.roles = roles
+        self.empresa = empresa
         self.horario_preferido = horario_preferido
         self.dias_preferidos = dias_preferidos
         self.tipo_empleado = tipo_empleado
