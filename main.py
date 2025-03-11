@@ -8,6 +8,7 @@ from application.routes.horas_extra_colaborador_routes import router as horas_ex
 from application.routes.minimo_puestos_routes import router as minimo_puestos_router
 from application.routes.puestos_cubiertos_por_hora_routes import router as puestos_cubiertos_router
 from application.routes.horario_preferido_colaborador_routes import router as horario_preferido_colaborador_router
+from application.routes.colaborador_sucursal_routes import router as colaborador_sucursal_router
 from application.routes.auth_routes import router as auth_router
 from application.routes.usuario_routes import router as usuario_router
 from application.routes.vta_hora_routes import router as vta_hora_router
@@ -50,6 +51,7 @@ app.include_router(roles_router)
 app.include_router(formatos_router)
 app.include_router(tipo_colaboradores_router)
 app.include_router(horario_preferido_colaborador_router)
+app.include_router(colaborador_sucursal_router)
 app.include_router(minimo_puestos_router)
 app.include_router(vta_hora_router)
 app.include_router(auth_router)

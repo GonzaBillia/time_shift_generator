@@ -15,7 +15,7 @@ class Sucursal:
         formato: Formato,
         disposicion_fisica: Dict[Rol, int],  # Ahora usa `Rol` en lugar de strings
         horario_atencion: List[Horario],  # Puede haber varios horarios (lunes a viernes, sábados, etc.)
-        dias_atencion: List[int]  # Lista de `dia_id` (0 = Lunes, 6 = Domingo)
+        dias_atencion: List[int],  # Lista de `dia_id` (0 = Lunes, 6 = Domingo)
     ):
         """
         Inicializa una sucursal.
