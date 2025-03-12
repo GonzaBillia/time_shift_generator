@@ -1,12 +1,13 @@
 from application.config.logger_config import setup_logger
 from typing import Optional, List
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 from infrastructure.databases.models import Empresa
 from infrastructure.repositories.empresas_repo import EmpresaRepository
 
 logger = setup_logger(__name__, "logs/empresa.log")
 
-def controlador_py_logger_get_by_id_empresa(empresa_id: int) -> Empresa:
+def controlador_py_logger_get_by_id_empresa(empresa_id: int, db: Session = None) -> Empresa:
     """
     Obtiene una Empresa por su ID.
 
@@ -20,7 +21,7 @@ def controlador_py_logger_get_by_id_empresa(empresa_id: int) -> Empresa:
         HTTPException: Con código 404 si la empresa no existe o 500 en caso de error interno.
     """
     try:
-        empresa = EmpresaRepository.get_by_id(empresa_id)
+        empresa = EmpresaRepository.get_by_id(empresa_id, db)
     except Exception as error:
         logger.error("Error al obtener Empresa con id %s: %s", empresa_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error

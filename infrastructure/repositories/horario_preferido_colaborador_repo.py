@@ -24,14 +24,20 @@ class HorarioPreferidoColaboradorRepository:
                 db.close()
 
     @staticmethod
-    def get_by_colaborador(colaborador_id: int) -> List[HorarioPreferidoColaborador]:
+    def get_by_colaborador(colaborador_id: int, db: Optional[Session] = None) -> List[HorarioPreferidoColaborador]:
         """
         Retorna todos los horarios preferidos asociados a un colaborador.
         """
-        session: Session = Database.get_session("rrhh")
-        horarios = session.query(HorarioPreferidoColaborador).filter_by(colaborador_id=colaborador_id).all()
-        session.close()
-        return horarios
+        close_session = False
+        if db is None:
+            db = Database.get_session("rrhh")
+            close_session = True
+        try:
+            horario = db.query(HorarioPreferidoColaborador).filter_by(colaborador_id=colaborador_id)
+            return horario
+        finally:
+            if close_session:
+                db.close()
 
     @staticmethod
     def get_by_dia(dia_id: int) -> List[HorarioPreferidoColaborador]:
@@ -92,17 +98,26 @@ class HorarioPreferidoColaboradorRepository:
                 db.close()
 
     @staticmethod
-    def delete(horario_id: int) -> bool:
+    def delete(horario_id: int, db: Optional[Session] = None) -> bool:
         """
         Elimina un HorarioPreferidoColaborador por su ID.
         Retorna True si se elimina, False si no existe.
         """
-        session: Session = Database.get_session("rrhh")
-        horario = session.query(HorarioPreferidoColaborador).filter_by(id=horario_id).first()
-        if horario:
-            session.delete(horario)
-            session.commit()
-            session.close()
+        close_session = False
+        if db is None:
+            db = Database.get_session("rrhh")
+            close_session = True
+        try:
+            existente = db.query(HorarioPreferidoColaborador).filter_by(id=horario_id).first()
+            if not existente:
+                return False
+            db.delete(existente)
+            if close_session:
+                db.commit()
+            else:
+                db.flush()
             return True
-        session.close()
-        return False
+        finally:
+            if close_session:
+                db.close()
+

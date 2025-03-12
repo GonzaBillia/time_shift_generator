@@ -45,6 +45,7 @@ def get_colaborador_details(colaborador_id: int) -> Colaborador:
     horario_preferido_data = horario_preferido_colaborador_repo.get_by_colaborador(colaborador_id)
     # Se construye una lista de HorarioPreferidoColaboradorResponse
     horario_preferido_response: List[HorarioPreferidoColaboradorResponse] = []
+    dias_preferidos: List[int] = []
     for hp in horario_preferido_data:
         try:
             # Crear el objeto Horario para el horario preferido (sin fecha)

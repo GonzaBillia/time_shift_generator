@@ -16,8 +16,10 @@ from application.controllers.colaborador_controller import(
 )
 from application.controllers.horario_preferido_colaborador_controller import (
     controlador_py_logger_get_by_id_horario_preferido_colaborador,
+    controlador_py_logger_get_by_colaborador,
     controlador_py_logger_update_horario_preferido_colaborador,
-    controlador_py_logger_create_horario_preferido_colaborador
+    controlador_py_logger_create_horario_preferido_colaborador,
+    controlador_py_logger_delete_horario_preferido_colaborador
 )
 from application.services.colaborador_service import convertir_recursivamente
 from application.helpers.response_handler import error_response, success_response
@@ -225,8 +227,21 @@ def update_colaborador_full(
             for key, value in update_data.items():
                 setattr(colaborador_actual, key, value)
             
-            # Procesar la actualización/creación de los horarios preferidos
-            # Se asume que colaborador_full_update.horario_preferido es una lista de objetos con la información
+            # 1. Obtener la lista actual de horarios preferidos del colaborador utilizando el controlador.
+            current_horarios = controlador_py_logger_get_by_colaborador(colaborador_actual.id, db)
+            current_ids = {h.id for h in current_horarios if h.id is not None}
+
+            # 2. Extraer los IDs de los horarios que vienen en el payload (los que se quieren actualizar o mantener).
+            payload_ids = {horario_data.id for horario_data in colaborador_full_update.horario_preferido if horario_data.id}
+
+            # 3. Determinar cuáles horarios se deben eliminar (existen actualmente pero no se enviaron en el payload).
+            to_delete_ids = current_ids - payload_ids
+
+            # 4. Eliminar cada uno de los horarios faltantes utilizando el controlador de eliminación.
+            for del_id in to_delete_ids:
+                controlador_py_logger_delete_horario_preferido_colaborador(del_id, db)
+
+            # 4. Procesar la actualización/creación de los horarios preferidos
             updated_horarios = []
             for horario_data in colaborador_full_update.horario_preferido:
                 if horario_data.id:  # Si se envía un id, se intenta actualizar el registro existente

@@ -3,6 +3,7 @@ import logging
 from typing import List, Optional
 from fastapi import HTTPException
 from infrastructure.databases.models.formato_rol import FormatosRoles
+from infrastructure.databases.models.rol import Rol
 from infrastructure.repositories.formatos_roles_repo import FormatosRolesRepository
 from application.config.logger_config import setup_logger
 
@@ -32,6 +33,30 @@ def controlador_py_logger_get_all_formatos_roles() -> List[FormatosRoles]:
         mappings = FormatosRolesRepository.get_all()
     except Exception as error:
         logger.error("Error al obtener todos los registros de FormatosRoles: %s", error)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from error
+
+    return mappings
+
+def controlador_py_logger_get_by_formatos(formato_id: int) -> List[FormatosRoles]:
+    """
+    Obtiene todos los registros de FormatosRoles.
+    """
+    try:
+        mappings = FormatosRolesRepository.get_by_formatos(formato_id)
+    except Exception as error:
+        logger.error("Error al obtener los registros de FormatosRoles: %s", error)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from error
+
+    return mappings
+
+def controlador_py_logger_get_roles_by_formato(formato_id: int) -> List[Rol]:
+    """
+    Obtiene todos los registros de FormatosRoles.
+    """
+    try:
+        mappings = FormatosRolesRepository.get_roles_by_formato(formato_id)
+    except Exception as error:
+        logger.error("Error al obtener los registros de FormatosRoles: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
     return mappings

@@ -1,7 +1,8 @@
 from typing import List, Optional
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.formato_rol import FormatosRoles
+from infrastructure.databases.models.rol import Rol
 
 class FormatosRolesRepository:
     @staticmethod
@@ -16,6 +17,18 @@ class FormatosRolesRepository:
         ).first()
         session.close()
         return mapping
+    
+    @staticmethod
+    def get_by_formatos(formato_id: int) -> List[FormatosRoles]:
+        """
+        Obtiene un registro de FormatosRoles por su clave compuesta.
+        """
+        session: Session = Database.get_session("rrhh")
+        mapping = session.query(FormatosRoles).filter_by( 
+            formato_id=formato_id
+        )
+        session.close()
+        return mapping
 
     @staticmethod
     def get_all() -> List[FormatosRoles]:
@@ -26,6 +39,19 @@ class FormatosRolesRepository:
         mappings = session.query(FormatosRoles).all()
         session.close()
         return mappings
+    
+    @staticmethod
+    def get_roles_by_formato(formato_id: int) -> List[Rol]:
+        session: Session = Database.get_session("rrhh")
+        roles = (
+            session.query(Rol)
+            .join(FormatosRoles)
+            .options(joinedload(Rol.formatos))
+            .filter(FormatosRoles.formato_id == formato_id)
+            .all()
+        )
+        session.close()
+        return roles
 
     @staticmethod
     def create(mapping: FormatosRoles) -> FormatosRoles:

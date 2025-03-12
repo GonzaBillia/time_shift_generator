@@ -2,17 +2,18 @@
 from application.config.logger_config import setup_logger
 from typing import List, Optional
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 from infrastructure.databases.models.tipo_colaborador import TipoEmpleado
 from infrastructure.repositories.tipo_colaborador_repo import TipoEmpleadoRepository
 
 logger = setup_logger(__name__, "logs/tipo_colaborador.log")
 
-def controlador_py_logger_get_by_id_tipo_empleado(tipo_empleado_id: int) -> TipoEmpleado:
+def controlador_py_logger_get_by_id_tipo_empleado(tipo_empleado_id: int, db: Session) -> TipoEmpleado:
     """
     Obtiene un TipoEmpleado por su ID.
     """
     try:
-        tipo = TipoEmpleadoRepository.get_by_id(tipo_empleado_id)
+        tipo = TipoEmpleadoRepository.get_by_id(tipo_empleado_id, db)
     except Exception as error:
         logger.error("Error al obtener TipoEmpleado con id %s: %s", tipo_empleado_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
