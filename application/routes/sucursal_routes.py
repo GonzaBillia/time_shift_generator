@@ -1,8 +1,11 @@
 # ROUTER_PY_SCHEMA_SUCURSAL
-from fastapi import APIRouter, HTTPException, Query
-from typing import List
-from infrastructure.schemas.sucursal import SucursalResponse, SucursalBase, SucursalUpdate
+from fastapi import APIRouter, HTTPException, Depends
+from typing import List, Generator
+from fastapi.encoders import jsonable_encoder
+from sqlalchemy.orm import Session
+from infrastructure.schemas.sucursal import SucursalResponse, SucursalBase, SucursalUpdate, SucursalEditResponse
 from infrastructure.databases.models.sucursal import Sucursal
+from application.services.sucursal_service import get_sucursal_details
 from application.controllers.sucursal_controller import (
     controlador_py_logger_get_by_id_sucursal,
     controlador_py_logger_get_all_sucursales,
@@ -11,13 +14,20 @@ from application.controllers.sucursal_controller import (
     controlador_py_logger_delete_sucursal,
     controlador_py_logger_get_by_nombre_sucursal,
     controlador_py_logger_get_by_empresa,
-    controlador_py_logger_get_horarios
+    controlador_py_logger_get_horarios,
+    controlador_update_full_sucursal
 )
 from application.helpers.response_handler import success_response, error_response
 from application.config.logger_config import setup_logger
+from infrastructure.schemas.sucursal import SucursalFullUpdate, SucursalResponse
+from infrastructure.schemas.horario_sucursal import HorarioSucursalUpdate
+from infrastructure.databases.config.database import DBConfig
 
 router = APIRouter(prefix="/sucursales", tags=["Sucursales"])
 logger = setup_logger(__name__, "logs/sucursal.log")
+
+def get_rrhh_session() -> Generator[Session, None, None]:
+    yield from DBConfig.get_db_session("rrhh")
 
 @router.get("/id/{sucursal_id}", response_model=SucursalResponse)
 def get_sucursal_by_id(sucursal_id: int):
@@ -144,4 +154,47 @@ def get_horarios_by_sucursal(sucursal_id: int):
         raise he
     except Exception as e:
         logger.error("Error en get_horarios_by_sucursal: %s", e)
+        return error_response(str(e), status_code=500)
+    
+@router.get("/{sucursal_id}/details", response_model=SucursalEditResponse)
+def controlador_get_sucursal_details(
+    sucursal_id: int
+) -> SucursalEditResponse:
+    """
+    Controlador para obtener los detalles completos de una sucursal.
+    Se utiliza la función get_sucursal_details para centralizar y procesar la información.
+    """
+    try:
+        # Se llama al servicio que reúne todos los datos de la sucursal.
+        details = get_sucursal_details(sucursal_id)
+        if not details:
+            raise HTTPException(status_code=404, detail="Sucursal no encontrada")
+        return success_response("Sucursal actualizada exitosamente", data=details)
+    except Exception as error:
+        # Captura y retorna el error en caso de falla.
+        raise HTTPException(status_code=500, detail=str(error))
+
+@router.put("/full/{sucursal_id}", response_model=SucursalResponse)
+def update_sucursal_full(
+    sucursal_id: int,
+    sucursal_full_update: SucursalFullUpdate = Depends(),  # También se puede usar Body(...)
+    db: Session = Depends(get_rrhh_session)
+):
+    """
+    Endpoint para actualizar completamente una sucursal y sus objetos asociados:
+      - Actualiza los datos básicos de la sucursal.
+      - Actualiza, crea o elimina filas de HorarioSucursal.
+      - Actualiza, crea o elimina filas de EspacioDisponibleSucursal.
+      - Deriva y actualiza el campo 'dias_atencion' a partir de los horarios actualizados.
+    Toda la operación se ejecuta en una transacción.
+    """
+    try:
+        updated = controlador_update_full_sucursal(sucursal_id, sucursal_full_update, db)
+        sucursal_schema = SucursalResponse.model_validate(updated)
+        data = jsonable_encoder(sucursal_schema.model_dump())
+        return success_response("Sucursal actualizada exitosamente", data=data)
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en update_sucursal_full: %s", e)
         return error_response(str(e), status_code=500)

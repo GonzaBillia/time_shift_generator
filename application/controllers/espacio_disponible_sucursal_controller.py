@@ -26,7 +26,7 @@ def controlador_py_logger_get_all_espacios() -> List[EspacioDisponibleSucursal]:
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
     return espacios
 
-def controlador_py_logger_get_by_sucursal(sucursal_id: int) -> List[EspacioDisponibleSucursal]:
+def controlador_py_logger_get_espacios_by_sucursal(sucursal_id: int) -> List[EspacioDisponibleSucursal]:
     try:
         espacios = EspacioDisponibleSucursalRepository.get_by_sucursal(sucursal_id)
     except Exception as error:

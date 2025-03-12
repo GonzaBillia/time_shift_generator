@@ -1,6 +1,7 @@
 import logging
 from typing import List, Optional
 from fastapi import HTTPException
+from fastapi.encoders import jsonable_encoder
 from infrastructure.databases.models.colaborador_sucursal import ColaboradorSucursal
 from infrastructure.repositories.colaborador_sucursal_repo import ColaboradorSucursalRepository
 from application.config.logger_config import setup_logger
@@ -85,6 +86,7 @@ def controlador_get_colaboradores_by_sucursal(sucursal_id: int):
     
     try:
         colaboradores = get_colaboradores_by_sucursal(sucursal_id)
+        colaboradores = jsonable_encoder(colaboradores)
         return colaboradores
     except Exception as e:
         logger.error("Error en controlador_get_colaboradores_by_sucursal: %s", e)

@@ -2,8 +2,10 @@
 from application.config.logger_config import setup_logger
 from typing import List, Optional
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 from infrastructure.databases.models.sucursal import Sucursal
 from infrastructure.repositories.sucursal_repo import SucursalRepository
+from application.services.sucursal_service import update_full_sucursal
 
 # Importamos los controladores para validar las FK
 from application.controllers.empresa_controller import controlador_py_logger_get_by_id_empresa
@@ -150,3 +152,14 @@ def controlador_py_logger_get_horarios(sucursal_id: int) -> List:
         logger.error("Error al obtener horarios para Sucursal con id %s: %s", sucursal_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
     return horarios
+
+def controlador_update_full_sucursal(sucursal_id: int, sucursal_full_update, db: Session):
+    """
+    Llama al servicio para actualizar completamente una sucursal y sus objetos asociados.
+    """
+    try:
+        updated_sucursal = update_full_sucursal(sucursal_id, sucursal_full_update, db)
+        return updated_sucursal
+    except Exception as e:
+        logger.error("Error en controlador_update_full_sucursal: %s", e)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from e

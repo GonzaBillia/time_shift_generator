@@ -2,6 +2,7 @@
 import logging
 from typing import List, Optional
 from fastapi import HTTPException
+from fastapi.encoders import jsonable_encoder
 from infrastructure.databases.models.formato_rol import FormatosRoles
 from infrastructure.databases.models.rol import Rol
 from infrastructure.repositories.formatos_roles_repo import FormatosRolesRepository
@@ -54,12 +55,13 @@ def controlador_py_logger_get_roles_by_formato(formato_id: int) -> List[Rol]:
     Obtiene todos los registros de FormatosRoles.
     """
     try:
-        mappings = FormatosRolesRepository.get_roles_by_formato(formato_id)
+        roles = FormatosRolesRepository.get_roles_by_formato(formato_id)
+        # Convertir a un formato serializable (lista de diccionarios)
+        roles_serialized = jsonable_encoder(roles)
+        return roles_serialized
     except Exception as error:
         logger.error("Error al obtener los registros de FormatosRoles: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
-
-    return mappings
 
 def controlador_py_logger_create_formatos_roles(mapping: FormatosRoles) -> FormatosRoles:
     """

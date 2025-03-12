@@ -9,10 +9,11 @@ class HorarioSucursalBase(BaseModel):
     hora_cierre: time
 
 class HorarioSucursalUpdate(BaseModel):
-    sucursal_id: Optional[int]
-    dia_id: Optional[int]
-    hora_apertura: Optional[time]
-    hora_cierre: Optional[time]
+    id: Optional[int] = None
+    sucursal_id: Optional[int] = None
+    dia_id: Optional[int] = None
+    hora_apertura: Optional[time] = None
+    hora_cierre: Optional[time] = None
 
 class HorarioSucursalResponse(HorarioSucursalBase):
     id: int

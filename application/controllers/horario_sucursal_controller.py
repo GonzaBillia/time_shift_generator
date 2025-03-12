@@ -2,6 +2,7 @@
 from application.config.logger_config import setup_logger
 from typing import List, Optional
 from fastapi import HTTPException
+from fastapi.encoders import jsonable_encoder
 from infrastructure.databases.models.horario_sucursal import HorarioSucursal
 from infrastructure.repositories.horario_sucursal_repo import HorarioSucursalRepository
 
@@ -29,10 +30,11 @@ def controlador_py_logger_get_by_sucursal(sucursal_id: int) -> List[HorarioSucur
     """
     try:
         horarios = HorarioSucursalRepository.get_by_sucursal(sucursal_id)
+        horarios = jsonable_encoder(horarios)
+        return horarios
     except Exception as error:
         logger.error("Error al obtener HorarioSucursal para sucursal %s: %s", sucursal_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
-    return horarios
 
 def controlador_py_logger_get_by_dia(dia_id: int) -> List[HorarioSucursal]:
     """

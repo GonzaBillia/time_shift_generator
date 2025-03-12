@@ -11,7 +11,7 @@ from infrastructure.databases.models.espacio_disponible_sucursal import EspacioD
 from application.controllers.espacio_disponible_sucursal_controller import (
     controlador_py_logger_get_by_id_espacio,
     controlador_py_logger_get_all_espacios,
-    controlador_py_logger_get_by_sucursal,
+    controlador_py_logger_get_espacios_by_sucursal,
     controlador_py_logger_get_by_rol,
     controlador_py_logger_create_espacio,
     controlador_py_logger_update_espacio,
@@ -52,7 +52,7 @@ def get_all_espacios():
 @router.get("/sucursal/{sucursal_id}", response_model=List[EspacioDisponibleSucursalResponse])
 def get_espacios_by_sucursal(sucursal_id: int):
     try:
-        espacios = controlador_py_logger_get_by_sucursal(sucursal_id)
+        espacios = controlador_py_logger_get_espacios_by_sucursal(sucursal_id)
         espacios_schema = [EspacioDisponibleSucursalResponse.model_validate(e) for e in espacios]
         data = [jsonable_encoder(es.model_dump()) for es in espacios_schema]
         return success_response("Espacios disponibles para la sucursal encontrados", data=data)
