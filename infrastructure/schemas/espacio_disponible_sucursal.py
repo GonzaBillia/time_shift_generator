@@ -8,10 +8,11 @@ class EspacioDisponibleSucursalBase(BaseModel):
     limitado_por_pc: bool
 
 class EspacioDisponibleSucursalUpdate(BaseModel):
-    sucursal_id: Optional[int]
-    rol_colaborador_id: Optional[int]
-    cantidad: Optional[int]
-    limitado_por_pc: Optional[bool]
+    id: Optional[int] = None 
+    sucursal_id: Optional[int] = None
+    rol_colaborador_id: Optional[int] = None
+    cantidad: Optional[int] = None
+    limitado_por_pc: Optional[bool] = None
 
 class EspacioDisponibleSucursalResponse(EspacioDisponibleSucursalBase):
     id: int

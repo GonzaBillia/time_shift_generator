@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Generator
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-from infrastructure.schemas.sucursal import SucursalResponse, SucursalBase, SucursalUpdate, SucursalEditResponse
+from infrastructure.schemas.sucursal import SucursalResponse, SucursalBase, SucursalUpdate, SucursalEditResponse, SucursalFullUpdateRequest
 from infrastructure.databases.models.sucursal import Sucursal
 from application.services.sucursal_service import get_sucursal_details
 from application.controllers.sucursal_controller import (
@@ -177,7 +177,7 @@ def controlador_get_sucursal_details(
 @router.put("/full/{sucursal_id}", response_model=SucursalResponse)
 def update_sucursal_full(
     sucursal_id: int,
-    sucursal_full_update: SucursalFullUpdate = Depends(),  # También se puede usar Body(...)
+    data: SucursalFullUpdate,
     db: Session = Depends(get_rrhh_session)
 ):
     """
@@ -189,10 +189,11 @@ def update_sucursal_full(
     Toda la operación se ejecuta en una transacción.
     """
     try:
-        updated = controlador_update_full_sucursal(sucursal_id, sucursal_full_update, db)
+        updated = controlador_update_full_sucursal(sucursal_id, data, db)
+        # Usamos SucursalResponse para validar desde los atributos del ORM.
         sucursal_schema = SucursalResponse.model_validate(updated)
-        data = jsonable_encoder(sucursal_schema.model_dump())
-        return success_response("Sucursal actualizada exitosamente", data=data)
+        response_data = jsonable_encoder(sucursal_schema.model_dump())
+        return success_response("Sucursal actualizada exitosamente", data=response_data)
     except HTTPException as he:
         raise he
     except Exception as e:

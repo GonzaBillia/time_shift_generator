@@ -25,14 +25,12 @@ class SucursalFullUpdate(BaseModel):
     telefono: Optional[str] = None
     empresa_id: Optional[int] = None
     formato_id: Optional[int] = None
-    formato: Optional[str] = None
-    empresa: Optional[str] = None
-    roles: Optional[List[RolResponse]] = None
-    colaboradores: Optional[List[ColaboradorSucursalDetail]] = None
-    countColabs: Optional[int] = None
     horarios: Optional[List[HorarioSucursalUpdate]] = None
     espacio: Optional[List[EspacioDisponibleSucursalUpdate]] = None
 
+class SucursalFullUpdateRequest(BaseModel):
+    sucursal_id: int
+    data: SucursalFullUpdate
 
 class SucursalResponse(SucursalBase):
     id: int

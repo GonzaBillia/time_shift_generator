@@ -153,12 +153,12 @@ def controlador_py_logger_get_horarios(sucursal_id: int) -> List:
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
     return horarios
 
-def controlador_update_full_sucursal(sucursal_id: int, sucursal_full_update, db: Session):
+def controlador_update_full_sucursal(sucursal_id: int, data, db: Session):
     """
     Llama al servicio para actualizar completamente una sucursal y sus objetos asociados.
     """
     try:
-        updated_sucursal = update_full_sucursal(sucursal_id, sucursal_full_update, db)
+        updated_sucursal = update_full_sucursal(sucursal_id, data, db)
         return updated_sucursal
     except Exception as e:
         logger.error("Error en controlador_update_full_sucursal: %s", e)

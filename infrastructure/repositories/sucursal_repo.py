@@ -6,48 +6,40 @@ from infrastructure.databases.models.sucursal import Sucursal
 class SucursalRepository:
     @staticmethod
     def get_by_id(sucursal_id: int, db: Optional[Session] = None) -> Optional[Sucursal]:
-        """
-        Obtiene una Sucursal por su ID. Retorna None si no existe.
-        """
         close_session = False
         if db is None:
             db = Database.get_session("rrhh")
             close_session = True
         try:
-            sucursal = db.query(Sucursal).filter_by(id=sucursal_id).first()
-            return sucursal
+            return db.query(Sucursal).filter_by(id=sucursal_id).first()
         finally:
             if close_session:
                 db.close()
 
     @staticmethod
     def get_all(db: Optional[Session] = None) -> List[Sucursal]:
-        """
-        Devuelve la lista de todas las Sucursales.
-        """
         close_session = False
         if db is None:
             db = Database.get_session("rrhh")
             close_session = True
         try:
-            sucursales = db.query(Sucursal).all()
-            return sucursales
+            return db.query(Sucursal).all()
         finally:
             if close_session:
                 db.close()
 
     @staticmethod
     def create(sucursal: Sucursal, db: Optional[Session] = None) -> Sucursal:
-        """
-        Crea una nueva Sucursal en la base de datos.
-        """
         close_session = False
         if db is None:
             db = Database.get_session("rrhh")
             close_session = True
         try:
             db.add(sucursal)
-            db.commit()
+            if close_session:
+                db.commit()
+            else:
+                db.flush()
             db.refresh(sucursal)
             return sucursal
         finally:
@@ -57,18 +49,19 @@ class SucursalRepository:
     @staticmethod
     def update(sucursal: Sucursal, db: Optional[Session] = None) -> Optional[Sucursal]:
         """
-        Actualiza una Sucursal existente. Retorna la sucursal actualizada o None si no existe.
+        Actualiza una sucursal en la base de datos.
+        Si se pasa una sesión externa, se asume que el manejo de la transacción (commit) se hace afuera.
         """
         close_session = False
         if db is None:
             db = Database.get_session("rrhh")
             close_session = True
         try:
-            existente = db.query(Sucursal).filter_by(id=sucursal.id).first()
-            if not existente:
-                return None
             db_sucursal = db.merge(sucursal)
-            db.commit()
+            if close_session:
+                db.commit()
+            else:
+                db.flush()
             db.refresh(db_sucursal)
             return db_sucursal
         finally:
@@ -77,9 +70,6 @@ class SucursalRepository:
 
     @staticmethod
     def delete(sucursal_id: int, db: Optional[Session] = None) -> bool:
-        """
-        Elimina una Sucursal por su ID. Retorna True si se elimina, False si no existe.
-        """
         close_session = False
         if db is None:
             db = Database.get_session("rrhh")
@@ -88,7 +78,10 @@ class SucursalRepository:
             sucursal = db.query(Sucursal).filter_by(id=sucursal_id).first()
             if sucursal:
                 db.delete(sucursal)
-                db.commit()
+                if close_session:
+                    db.commit()
+                else:
+                    db.flush()
                 return True
             return False
         finally:
@@ -97,49 +90,37 @@ class SucursalRepository:
 
     @staticmethod
     def get_by_nombre(nombre: str, db: Optional[Session] = None) -> Optional[Sucursal]:
-        """
-        Obtiene una Sucursal por su nombre. Retorna None si no existe.
-        """
         close_session = False
         if db is None:
             db = Database.get_session("rrhh")
             close_session = True
         try:
-            sucursal = db.query(Sucursal).filter_by(nombre=nombre).first()
-            return sucursal
+            return db.query(Sucursal).filter_by(nombre=nombre).first()
         finally:
             if close_session:
                 db.close()
 
     @staticmethod
     def get_by_empresa(empresa_id: int, db: Optional[Session] = None) -> List[Sucursal]:
-        """
-        Devuelve todas las Sucursales asociadas a una Empresa específica.
-        """
         close_session = False
         if db is None:
             db = Database.get_session("rrhh")
             close_session = True
         try:
-            sucursales = db.query(Sucursal).filter_by(empresa_id=empresa_id).all()
-            return sucursales
+            return db.query(Sucursal).filter_by(empresa_id=empresa_id).all()
         finally:
             if close_session:
                 db.close()
 
     @staticmethod
     def get_horarios(sucursal_id: int, db: Optional[Session] = None) -> List:
-        """
-        Devuelve la lista de objetos 'Horario' asignados a la Sucursal.
-        """
         close_session = False
         if db is None:
             db = Database.get_session("rrhh")
             close_session = True
         try:
             sucursal = db.query(Sucursal).filter_by(id=sucursal_id).first()
-            horarios = sucursal.horarios if sucursal else []
-            return horarios
+            return sucursal.horarios if sucursal else []
         finally:
             if close_session:
                 db.close()

@@ -14,8 +14,7 @@ class EspacioDisponibleSucursalRepository:
             db = Database.get_session("rrhh")
             close_session = True
         try:
-            espacio = db.query(EspacioDisponibleSucursal).filter_by(id=espacio_id).first()
-            return espacio
+            return db.query(EspacioDisponibleSucursal).filter_by(id=espacio_id).first()
         finally:
             if close_session:
                 db.close()
@@ -30,8 +29,7 @@ class EspacioDisponibleSucursalRepository:
             db = Database.get_session("rrhh")
             close_session = True
         try:
-            espacios = db.query(EspacioDisponibleSucursal).all()
-            return espacios
+            return db.query(EspacioDisponibleSucursal).all()
         finally:
             if close_session:
                 db.close()
@@ -46,8 +44,7 @@ class EspacioDisponibleSucursalRepository:
             db = Database.get_session("rrhh")
             close_session = True
         try:
-            espacios = db.query(EspacioDisponibleSucursal).filter_by(sucursal_id=sucursal_id).all()
-            return espacios
+            return db.query(EspacioDisponibleSucursal).filter_by(sucursal_id=sucursal_id).all()
         finally:
             if close_session:
                 db.close()
@@ -62,11 +59,10 @@ class EspacioDisponibleSucursalRepository:
             db = Database.get_session("rrhh")
             close_session = True
         try:
-            espacio = db.query(EspacioDisponibleSucursal).filter_by(
+            return db.query(EspacioDisponibleSucursal).filter_by(
                 sucursal_id=sucursal_id,
                 rol_colaborador_id=rol_colaborador_id
             ).first()
-            return espacio
         finally:
             if close_session:
                 db.close()
@@ -75,6 +71,7 @@ class EspacioDisponibleSucursalRepository:
     def create(espacio: EspacioDisponibleSucursal, db: Optional[Session] = None) -> EspacioDisponibleSucursal:
         """
         Crea un nuevo registro de espacio disponible en una sucursal.
+        Si se pasa una sesión externa, se asume que el manejo de la transacción (commit) se hace afuera.
         """
         close_session = False
         if db is None:
@@ -82,7 +79,10 @@ class EspacioDisponibleSucursalRepository:
             close_session = True
         try:
             db.add(espacio)
-            db.commit()
+            if close_session:
+                db.commit()
+            else:
+                db.flush()
             db.refresh(espacio)
             return espacio
         finally:
@@ -93,6 +93,7 @@ class EspacioDisponibleSucursalRepository:
     def update(espacio: EspacioDisponibleSucursal, db: Optional[Session] = None) -> EspacioDisponibleSucursal:
         """
         Actualiza un registro de espacio disponible en una sucursal.
+        Si se pasa una sesión externa, se asume que el manejo de la transacción (commit) se hace afuera.
         """
         close_session = False
         if db is None:
@@ -100,7 +101,10 @@ class EspacioDisponibleSucursalRepository:
             close_session = True
         try:
             db_espacio = db.merge(espacio)
-            db.commit()
+            if close_session:
+                db.commit()
+            else:
+                db.flush()
             db.refresh(db_espacio)
             return db_espacio
         finally:
@@ -112,6 +116,7 @@ class EspacioDisponibleSucursalRepository:
         """
         Elimina un registro de espacio disponible de la base de datos, por su ID.
         Devuelve True si se ha eliminado correctamente.
+        Si se pasa una sesión externa, se asume que el manejo de la transacción (commit) se hace afuera.
         """
         close_session = False
         if db is None:
@@ -121,7 +126,10 @@ class EspacioDisponibleSucursalRepository:
             espacio = db.query(EspacioDisponibleSucursal).filter_by(id=espacio_id).first()
             if espacio:
                 db.delete(espacio)
-                db.commit()
+                if close_session:
+                    db.commit()
+                else:
+                    db.flush()
                 return True
             return False
         finally:

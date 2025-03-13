@@ -1,6 +1,7 @@
 from application.config.logger_config import setup_logger
 from typing import List
 from fastapi import HTTPException
+from fastapi.encoders import jsonable_encoder
 from infrastructure.databases.models.espacio_disponible_sucursal import EspacioDisponibleSucursal
 from infrastructure.repositories.espacio_disponible_sucursal_repo import EspacioDisponibleSucursalRepository
 
@@ -29,6 +30,7 @@ def controlador_py_logger_get_all_espacios() -> List[EspacioDisponibleSucursal]:
 def controlador_py_logger_get_espacios_by_sucursal(sucursal_id: int) -> List[EspacioDisponibleSucursal]:
     try:
         espacios = EspacioDisponibleSucursalRepository.get_by_sucursal(sucursal_id)
+        espacios = jsonable_encoder(espacios)
     except Exception as error:
         logger.error("Error al obtener espacios disponibles para sucursal %s: %s", sucursal_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
