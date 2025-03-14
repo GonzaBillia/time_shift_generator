@@ -9,13 +9,13 @@ class VentaHora(BaseModel):
     Documento: str
     Fecha: date
     Hora: time
-    Usuario: int
-    Efectivo: float
-    CtaCte: float
-    OSocial: float
+    Usuario: Optional[int]
+    Efectivo: Optional[float]
+    CtaCte: Optional[float]
+    OSocial: Optional[float]
     obra_social_detalle: Optional[str] = Field(None, alias="Obra Social Detalle")
-    Tarjeta: float
-    OtrosMP: float
+    Tarjeta: Optional[float]
+    OtrosMP: Optional[float]
     tarjeta_detalle: Optional[str] = Field(None, alias="Tarjeta Detalle")
     Total: float
     apellido_y_nombre: Optional[str] = Field(None, alias="Apellido y nombre/Razón Social")

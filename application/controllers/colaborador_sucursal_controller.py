@@ -1,6 +1,7 @@
 import logging
 from typing import List, Optional
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 from fastapi.encoders import jsonable_encoder
 from infrastructure.databases.models.colaborador_sucursal import ColaboradorSucursal
 from infrastructure.repositories.colaborador_sucursal_repo import ColaboradorSucursalRepository
@@ -10,7 +11,7 @@ from application.services.colaborador_sucursal_service import (
     get_colaboradores_by_sucursal
 )
 
-logger = setup_logger(__name__, "logs/colaborador_sucursal.log")
+logger = setup_logger(__name__)
 
 def controlador_get_by_id(relacion_id: int) -> Optional[ColaboradorSucursal]:
     try:
@@ -22,9 +23,9 @@ def controlador_get_by_id(relacion_id: int) -> Optional[ColaboradorSucursal]:
         logger.error("Error al obtener ColaboradorSucursal con id %s: %s", relacion_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
-def controlador_get_by_colaborador(colaborador_id: int) -> List[ColaboradorSucursal]:
+def controlador_get_by_colaborador(colaborador_id: int, db: Session = None) -> List[ColaboradorSucursal]:
     try:
-        relaciones = ColaboradorSucursalRepository.get_by_colaborador(colaborador_id)
+        relaciones = ColaboradorSucursalRepository.get_by_colaborador(colaborador_id, db)
         return relaciones
     except Exception as error:
         logger.error("Error al obtener ColaboradorSucursal para colaborador %s: %s", colaborador_id, error)
@@ -38,9 +39,10 @@ def controlador_get_by_sucursal(sucursal_id: int) -> List[ColaboradorSucursal]:
         logger.error("Error al obtener ColaboradorSucursal para sucursal %s: %s", sucursal_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
-def controlador_create_colaborador_sucursal(relacion: ColaboradorSucursal) -> ColaboradorSucursal:
+def controlador_create_colaborador_sucursal(relacion: ColaboradorSucursal, db: Session = None) -> ColaboradorSucursal:
     try:
-        nuevo = ColaboradorSucursalRepository.create(relacion)
+        nuevo = ColaboradorSucursalRepository.create(relacion, db)
+        logger.info("relacion creada", nuevo)
         return nuevo
     except Exception as error:
         logger.error("Error al crear ColaboradorSucursal: %s", error)
@@ -56,9 +58,9 @@ def controlador_update_colaborador_sucursal(relacion: ColaboradorSucursal) -> Co
         logger.error("Error al actualizar ColaboradorSucursal con id %s: %s", relacion.id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
-def controlador_delete_colaborador_sucursal(relacion_id: int) -> bool:
+def controlador_delete_colaborador_sucursal(relacion_id: int, db: Session = None) -> bool:
     try:
-        eliminado = ColaboradorSucursalRepository.delete(relacion_id)
+        eliminado = ColaboradorSucursalRepository.delete(relacion_id, db)
         if not eliminado:
             raise HTTPException(status_code=404, detail="Registro no encontrado")
         return eliminado

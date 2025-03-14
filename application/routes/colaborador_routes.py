@@ -21,15 +21,22 @@ from application.controllers.horario_preferido_colaborador_controller import (
     controlador_py_logger_create_horario_preferido_colaborador,
     controlador_py_logger_delete_horario_preferido_colaborador
 )
+from application.controllers.colaborador_sucursal_controller import (
+    controlador_get_by_colaborador,
+    controlador_create_colaborador_sucursal,
+    controlador_delete_colaborador_sucursal
+)
 from application.services.colaborador_service import convertir_recursivamente
 from application.helpers.response_handler import error_response, success_response
 from infrastructure.schemas.colaborador import ColaboradorResponse, ColaboradorBase, ColaboradorUpdate
+from infrastructure.schemas.colaborador_sucursal import ColaboradorSucursalBase
 from infrastructure.schemas.horario_preferido_colaborador import HorarioPreferidoColaboradorBase
 from infrastructure.schemas.colaborador_details import ColaboradorDetailSchema, ColaboradorFullUpdate
 from infrastructure.databases.models.colaborador import Colaborador
+from infrastructure.databases.models.colaborador_sucursal import ColaboradorSucursal
 from infrastructure.databases.config.database import DBConfig 
 
-logger = setup_logger(__name__, "logs/colaboradores.log")
+logger = setup_logger(__name__)
 router = APIRouter(prefix="/colaboradores", tags=["Colaboradores"])
 
 def get_rrhh_session() -> Generator[Session, None, None]:
@@ -210,9 +217,10 @@ def update_colaborador_full(
 ):
     """
     Endpoint para actualizar completamente un colaborador, incluyendo:
-    - Los datos básicos del colaborador (actualizados solo si se envían cambios)
-    - La lista de horarios preferidos: se actualizan los existentes (si vienen con id) o se crean nuevos
-    - El campo dias_preferidos se actualiza derivándolo de la unión de los dias en los horarios preferidos.
+    - Los datos básicos (solo se actualizan los campos enviados)
+    - La lista de horarios preferidos: se actualizan los existentes (si vienen con id), se crean nuevos o se eliminan
+    - Relaciones colaborador_sucursal: a partir de dos listas (roles y sucursales) se extrae el id de cada objeto
+      para crear o eliminar las relaciones correspondientes.
     Toda la operación se ejecuta en una transacción.
     """
     try:
@@ -227,24 +235,19 @@ def update_colaborador_full(
             for key, value in update_data.items():
                 setattr(colaborador_actual, key, value)
             
-            # 1. Obtener la lista actual de horarios preferidos del colaborador utilizando el controlador.
+            # 1. Actualizar los horarios preferidos
             current_horarios = controlador_py_logger_get_by_colaborador(colaborador_actual.id, db)
-            current_ids = {h.id for h in current_horarios if h.id is not None}
-
-            # 2. Extraer los IDs de los horarios que vienen en el payload (los que se quieren actualizar o mantener).
-            payload_ids = {horario_data.id for horario_data in colaborador_full_update.horario_preferido if horario_data.id}
-
-            # 3. Determinar cuáles horarios se deben eliminar (existen actualmente pero no se enviaron en el payload).
-            to_delete_ids = current_ids - payload_ids
-
-            # 4. Eliminar cada uno de los horarios faltantes utilizando el controlador de eliminación.
-            for del_id in to_delete_ids:
+            current_horario_ids = {h.id for h in current_horarios if h.id is not None}
+            payload_horario_ids = {h.id for h in colaborador_full_update.horario_preferido if h.id}
+            
+            # Eliminar horarios que ya no vienen en el payload
+            to_delete_horarios = current_horario_ids - payload_horario_ids
+            for del_id in to_delete_horarios:
                 controlador_py_logger_delete_horario_preferido_colaborador(del_id, db)
-
-            # 4. Procesar la actualización/creación de los horarios preferidos
+            
             updated_horarios = []
             for horario_data in colaborador_full_update.horario_preferido:
-                if horario_data.id:  # Si se envía un id, se intenta actualizar el registro existente
+                if horario_data.id:  # Si se envía un id, se intenta actualizar
                     horario_actual = controlador_py_logger_get_by_id_horario_preferido_colaborador(horario_data.id, db)
                     if horario_actual:
                         update_horario = horario_data.model_dump(exclude_unset=True)
@@ -253,17 +256,61 @@ def update_colaborador_full(
                         actualizado_horario = controlador_py_logger_update_horario_preferido_colaborador(horario_actual, db)
                         updated_horarios.append(actualizado_horario)
                     else:
-                        # Si no se encuentra, se crea uno nuevo
                         nuevo_horario = HorarioPreferidoColaboradorBase(**horario_data.model_dump())
                         creado = controlador_py_logger_create_horario_preferido_colaborador(nuevo_horario, db)
                         updated_horarios.append(creado)
                 else:
-                    # Si no se envía id, se crea uno nuevo
                     nuevo_horario = HorarioPreferidoColaboradorBase(**horario_data.model_dump())
                     creado = controlador_py_logger_create_horario_preferido_colaborador(nuevo_horario, db)
                     updated_horarios.append(creado)
             
-            # Actualizar el colaborador completo en la base de datos
+            # 2. Actualizar las relaciones colaborador_sucursal a partir de roles y sucursales
+            if colaborador_full_update.roles is not None and colaborador_full_update.sucursales is not None:
+                payload_relaciones = set()
+                # Caso: un solo rol para varias sucursales
+                if len(colaborador_full_update.roles) == 1 and len(colaborador_full_update.sucursales) >= 1:
+                    role_id = colaborador_full_update.roles[0].id
+                    for sucursal in colaborador_full_update.sucursales:
+                        payload_relaciones.add((role_id, sucursal.id))
+                # Caso: una sola sucursal para varios roles
+                elif len(colaborador_full_update.sucursales) == 1 and len(colaborador_full_update.roles) >= 1:
+                    sucursal_id = colaborador_full_update.sucursales[0].id
+                    for role in colaborador_full_update.roles:
+                        payload_relaciones.add((role.id, sucursal_id))
+                # Caso: ambas listas tienen la misma longitud y se emparejan por índice
+                elif len(colaborador_full_update.roles) == len(colaborador_full_update.sucursales):
+                    roles_ids = [role.id for role in colaborador_full_update.roles]
+                    sucursales_ids = [sucursal.id for sucursal in colaborador_full_update.sucursales]
+                    payload_relaciones = set(zip(roles_ids, sucursales_ids))
+                else:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="La cantidad de roles y sucursales no coincide y no se puede inferir una relación única"
+                    )
+                
+                # Obtener las relaciones actuales para el colaborador
+                relaciones_actuales = controlador_get_by_colaborador(colaborador_actual.id, db)
+                current_set = {(rel.rol_colaborador_id, rel.sucursal_id) for rel in relaciones_actuales}
+                
+                # Eliminar relaciones que existen en la BD pero no vienen en el payload
+                relaciones_to_delete = current_set - payload_relaciones
+                for rel in relaciones_actuales:
+                    if (rel.rol_colaborador_id, rel.sucursal_id) in relaciones_to_delete:
+                        controlador_delete_colaborador_sucursal(rel.id, db)
+                
+                # Agregar nuevas relaciones que vienen en el payload pero no existen en la BD
+                relaciones_to_add = payload_relaciones - current_set
+                for role_id, sucursal_id in relaciones_to_add:
+                    # Crear el objeto utilizando el patrón model_dump() como en horarios preferidos
+                    nueva_relacion_data = ColaboradorSucursalBase(
+                        colaborador_id=colaborador_actual.id,
+                        rol_colaborador_id=role_id,
+                        sucursal_id=sucursal_id
+                    )
+                    nueva_relacion = ColaboradorSucursal(**nueva_relacion_data.model_dump())
+                    controlador_create_colaborador_sucursal(nueva_relacion, db)
+            
+            # 3. Actualizar el colaborador en la base de datos
             actualizado = controlador_py_logger_update_colaborador(colaborador_actual, db)
             colaborador_schema = ColaboradorResponse.model_validate(actualizado)
             return success_response("Colaborador actualizado exitosamente", data=colaborador_schema.model_dump())

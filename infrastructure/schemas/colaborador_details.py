@@ -33,3 +33,5 @@ class ColaboradorDetailSchema(BaseModel):
 class ColaboradorFullUpdate(BaseModel):
     colaborador: ColaboradorUpdate
     horario_preferido: Optional[List[HorarioPreferidoColaboradorResponse]] = []
+    roles: Optional[List[RolResponse]]        # Lista de IDs de roles, ordenada
+    sucursales: Optional[List[SucursalResponse]]
