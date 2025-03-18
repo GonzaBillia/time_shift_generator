@@ -9,7 +9,7 @@ class Dia(Base):
     nombre = Column(String(15), nullable=False, unique=True)
 
     # Relaciones con otros modelos que referencian "dias.id"
-    horarios = relationship("Horario", back_populates="dia")
+    puestos = relationship("Puesto", back_populates="dia")
     horarios_sucursal = relationship("HorarioSucursal", back_populates="dia")
     minimo_puestos = relationship("MinimoPuestosRequeridos", back_populates="dia")
     puestos_cubiertos = relationship("PuestosCubiertosPorHora", back_populates="dia")

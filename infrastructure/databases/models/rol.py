@@ -23,6 +23,8 @@ class Rol(Base):
     espacios_disponibles = relationship("EspacioDisponibleSucursal", back_populates="rol_colaborador")
     minimo_puestos = relationship("MinimoPuestosRequeridos", back_populates="rol_colaborador")
     puestos_cubiertos = relationship("PuestosCubiertosPorHora", back_populates="rol_colaborador")
+    puestos = relationship("Puesto", back_populates="rol_colaborador")
+
 
     def __repr__(self):
         return f"<Rol(id={self.id}, nombre={self.nombre}, principal={self.principal})>"

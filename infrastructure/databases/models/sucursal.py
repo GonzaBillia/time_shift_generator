@@ -15,7 +15,7 @@ class Sucursal(Base):
     # Relaciones existentes
     empresa = relationship("Empresa", back_populates="sucursales")
     formato = relationship("Formato", back_populates="sucursales")
-    horarios = relationship("Horario", back_populates="sucursal")
+    puestos = relationship("Puesto", back_populates="sucursal")
     
     # Nueva relación con HorarioPreferidoColaborador
     horarios_preferidos_colaboradores = relationship("HorarioPreferidoColaborador", back_populates="sucursal")

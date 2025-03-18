@@ -18,6 +18,7 @@ from application.routes.empresa_routes import router as empresas_router
 from application.routes.rol_routes import router as roles_router
 from application.routes.dia_routes import router as dias_router
 from application.routes.formato_routes import router as formatos_router
+from application.routes.puestos_routes import router as puestos_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -48,6 +49,7 @@ app.include_router(sucursal_routes)
 app.include_router(horarios_router)
 app.include_router(dias_router)
 app.include_router(roles_router)
+app.include_router(puestos_router)
 app.include_router(formatos_router)
 app.include_router(tipo_colaboradores_router)
 app.include_router(horario_preferido_colaborador_router)

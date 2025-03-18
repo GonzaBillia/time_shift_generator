@@ -10,7 +10,8 @@ from application.controllers.rol_controller import (
     controlador_py_logger_update_rol,
     controlador_py_logger_delete_rol,
     controlador_py_logger_get_by_nombre_rol,
-    controlador_py_logger_get_principales
+    controlador_py_logger_get_principales,
+    controlador_get_available_roles
 )
 from application.helpers.response_handler import success_response, error_response
 from application.config.logger_config import setup_logger
@@ -126,4 +127,20 @@ def get_principales():
         raise he
     except Exception as e:
         logger.error("Error en get_principales: %s", e)
+        return error_response(str(e), status_code=500)
+
+@router.get("/available/sucursal/{sucursal_id}", response_model=List[RolResponse])
+def get_available_roles_by_sucursal(sucursal_id: int):
+    """
+    Endpoint para obtener los roles disponibles para una sucursal a partir de sus espacios disponibles.
+    """
+    try:
+        roles = controlador_get_available_roles(sucursal_id)
+        roles_schema = [RolResponse.model_validate(r) for r in roles]
+        data = [rs.model_dump() for rs in roles_schema]
+        return success_response("Roles disponibles encontrados", data=data)
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en get_available_roles_by_sucursal: %s", e)
         return error_response(str(e), status_code=500)

@@ -19,7 +19,7 @@ class Colaborador(Base):
     # Relaciones
     empresa = relationship("Empresa", back_populates="colaboradores")
     tipo_empleado = relationship("TipoEmpleado", back_populates="colaboradores")
-    horarios = relationship("Horario", back_populates="colaborador")
+    puestos = relationship("Puesto", back_populates="colaborador")
     
     sucursales = relationship(
         "ColaboradorSucursal",

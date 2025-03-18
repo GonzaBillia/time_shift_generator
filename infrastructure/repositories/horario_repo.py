@@ -19,6 +19,33 @@ class HorarioRepository:
         return horario
 
     @staticmethod
+    def get_by_puesto(puesto_id: int, db: Optional[Session] = None) -> List[Horario]:
+        close_session = False
+        if db is None:
+            db = Database.get_session("rrhh")
+            close_session = True
+        try:
+            horarios = db.query(Horario).filter_by(puesto_id=puesto_id).all()
+            return horarios
+        finally:
+            if close_session:
+                db.close()
+
+    @staticmethod
+    def get_by_colaborador(colaborador_id: int, db: Optional[Session] = None) -> List[Horario]:
+        close_session = False
+        if db is None:
+            db = Database.get_session("rrhh")
+            close_session = True
+        try:
+            horarios = db.query(Horario).filter_by(colaborador_id=colaborador_id).all()
+            return horarios
+        finally:
+            if close_session:
+                db.close()
+
+
+    @staticmethod
     def get_all() -> List[Horario]:
         """
         Devuelve todos los horarios registrados en la base de datos.
@@ -79,64 +106,47 @@ class HorarioRepository:
         return False
 
     @staticmethod
-    def get_by_sucursal(sucursal_id: int) -> List[Horario]:
+    def delete_many(horario_ids: list[int]) -> bool:
         """
-        Devuelve todos los horarios asociados a una Sucursal específica.
+        Elimina múltiples Horarios de la base de datos por sus IDs.
+        Retorna True si se eliminó al menos uno, o False si ninguno fue encontrado.
         """
         session: Session = Database.get_session("rrhh")
-        horarios = session.query(Horario).filter_by(sucursal_id=sucursal_id).all()
-        session.close()
-        return horarios
+        try:
+            # Se filtran los horarios cuyos id estén en la lista
+            query = session.query(Horario).filter(Horario.id.in_(horario_ids))
+            if query.count() == 0:
+                session.close()
+                return False
+            query.delete(synchronize_session=False)
+            session.commit()
+            return True
+        finally:
+            session.close()
 
     @staticmethod
-    def get_by_colaborador(colaborador_id: int) -> List[Horario]:
-        """
-        Devuelve todos los horarios asociados a un Colaborador específico.
-        """
+    def bulk_crear_horarios(horarios: List[Horario]) -> List[Horario]:
         session: Session = Database.get_session("rrhh")
-        horarios = session.query(Horario).filter_by(colaborador_id=colaborador_id).all()
+        session.add_all(horarios)
+        session.commit()
+        for horario in horarios:
+            session.refresh(horario)
+        result = horarios.copy()  # Copia de las instancias ya refrescadas
         session.close()
-        return horarios
+        return result
 
     @staticmethod
-    def get_by_fecha(fecha: date) -> List[Horario]:
-        """
-        Devuelve todos los horarios establecidos para una fecha específica.
-        """
+    def bulk_actualizar_horarios(horarios: List[Horario]) -> List[Horario]:
         session: Session = Database.get_session("rrhh")
-        horarios = session.query(Horario).filter_by(fecha=fecha).all()
+        persisted_horarios = []
+        for horario in horarios:
+            # merge devuelve la instancia persistente asociada a la sesión.
+            persisted = session.merge(horario)
+            persisted_horarios.append(persisted)
+        session.commit()
+        for ph in persisted_horarios:
+            session.refresh(ph)
+        result = persisted_horarios.copy()
         session.close()
-        return horarios
+        return result
 
-    @staticmethod
-    def verificar_superposicion(
-        sucursal_id: int,
-        fecha: date,
-        hora_inicio: time,
-        hora_fin: time
-    ) -> bool:
-        """
-        Verifica si existe al menos un Horario en la misma sucursal y fecha
-        que se superponga con el rango [hora_inicio, hora_fin].
-        Retorna True si hay superposición, False en caso contrario.
-        """
-        session: Session = Database.get_session("rrhh")
-        existe_superposicion = session.query(Horario).filter(
-            Horario.sucursal_id == sucursal_id,
-            Horario.fecha == fecha,
-            Horario.hora_inicio < hora_fin,  # cruce en la parte final
-            Horario.hora_fin > hora_inicio   # cruce en la parte inicial
-        ).first() is not None
-        session.close()
-        return existe_superposicion
-
-    @staticmethod
-    def get_horarios_por_dia(sucursal_id: int, dia_id: int) -> List[Horario]:
-        """
-        Devuelve la lista de horarios de una Sucursal en un día de la semana específico
-        (referenciado por 'dia_id').
-        """
-        session: Session = Database.get_session("rrhh")
-        horarios = session.query(Horario).filter_by(sucursal_id=sucursal_id, dia_id=dia_id).all()
-        session.close()
-        return horarios

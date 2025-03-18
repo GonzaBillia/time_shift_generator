@@ -4,6 +4,7 @@ from typing import List
 from fastapi import HTTPException
 from infrastructure.databases.models.rol import Rol
 from infrastructure.repositories.rol_repo import RolRepository
+from application.services.rol_service import get_available_roles_service
 
 logger = setup_logger(__name__, "logs/rol.log")
 
@@ -98,3 +99,23 @@ def controlador_py_logger_get_principales() -> List[Rol]:
         logger.error("Error al obtener roles principales: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
     return roles
+
+def controlador_get_available_roles(sucursal_id: int):
+    """
+    Controlador que invoca el servicio para obtener los roles disponibles para una sucursal.
+    
+    Args:
+        sucursal_id (int): ID de la sucursal.
+    
+    Returns:
+        List[Rol]: Lista de roles disponibles.
+    
+    Raises:
+        HTTPException: Con código 500 si ocurre un error interno.
+    """
+    try:
+        roles = get_available_roles_service(sucursal_id)
+        return roles
+    except Exception as error:
+        logger.error("Error en el controlador al obtener roles para la sucursal %s: %s", sucursal_id, error)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from error

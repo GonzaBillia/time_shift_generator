@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.rol import Rol
+from infrastructure.databases.models.espacio_disponible_sucursal import EspacioDisponibleSucursal
 
 class RolRepository:
     @staticmethod
@@ -99,4 +100,28 @@ class RolRepository:
             .options(joinedload(Rol.formatos)) \
             .filter_by(principal=True).all()
         session.close()
+        return roles
+    
+    @staticmethod
+    def get_available_rols_by_sucursal(sucursal_id: int):
+        """
+        Obtiene los roles disponibles para una sucursal específica a partir de sus espacios disponibles.
+        
+        Se realiza un join entre Rol y EspacioDisponibleSucursal y se filtra por:
+        - sucursal_id (de EspacioDisponibleSucursal)
+        - cantidad > 0 (opcional, para considerar solo espacios con disponibilidad)
+        
+        Se utiliza distinct() para evitar roles duplicados en caso de que existan múltiples espacios para el mismo rol.
+        """
+        session: Session = Database.get_session("rrhh")
+        roles = (
+            session.query(Rol)
+            .join(EspacioDisponibleSucursal, Rol.id == EspacioDisponibleSucursal.rol_colaborador_id)
+            .filter(
+                EspacioDisponibleSucursal.sucursal_id == sucursal_id,
+                EspacioDisponibleSucursal.cantidad > 0  # Filtra solo si la cantidad es mayor a 0
+            )
+            .distinct()
+            .all()
+        )
         return roles

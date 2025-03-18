@@ -6,6 +6,7 @@ class Horario:
         self,
         sucursal_id: int,
         colaborador_id: Optional[int],  # Puede ser None si es un horario general de sucursal
+        rol_colaborador_id: Optional[int],
         dia_id: int,  # Nuevo campo para reflejar la base de datos
         fecha: Optional[date],
         bloques: List[Tuple[time, time]],
@@ -24,6 +25,7 @@ class Horario:
         """
         self.sucursal_id = sucursal_id
         self.colaborador_id = colaborador_id
+        self.rol_colaborador_id = rol_colaborador_id
         self.dia_id = dia_id  # Se alinea con la BD
         self.fecha = fecha
         self.horario_corrido = horario_corrido
