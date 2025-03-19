@@ -48,6 +48,14 @@ def actualizar_puesto(puesto_data: dict) -> Puesto:
     puesto = Puesto(**puesto_data)
     return PuestoRepository.update(puesto)
 
+def actualizar_varios_puestos(puesto_data: List[dict]) -> List[Puesto]:
+    """
+    Actualiza varios puestos existentes. Se espera que cada diccionario en puesto_data contenga el 'id' y los campos a modificar.
+    """
+    puestos = [Puesto(**data) for data in puesto_data]
+    return PuestoRepository.update_many(puestos)
+
+
 def obtener_puestos_por_sucursal(sucursal_id: int) -> List[Puesto]:
     """
     Retorna todos los puestos de una sucursal.

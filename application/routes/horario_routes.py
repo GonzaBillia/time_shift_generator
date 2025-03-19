@@ -10,7 +10,8 @@ from infrastructure.schemas.horario import (
 from application.controllers.horario_controller import (
     controlador_py_logger_crear_horarios,
     controlador_py_logger_actualizar_horarios,
-    controlador_py_logger_get_by_puesto
+    controlador_py_logger_get_by_puesto,
+    controlador_py_logger_delete_horarios
 )
 from application.helpers.response_handler import success_response, error_response
 from application.config.logger_config import setup_logger
@@ -67,7 +68,7 @@ def delete_horarios_endpoint(request: HorarioDeleteRequest = Body(...)):
     """
     try:
         # Asumimos que existe la función delete_many en el repositorio de horarios
-        from application.controllers.horario_controller import controlador_py_logger_delete_horarios
+        
         resultado = controlador_py_logger_delete_horarios(request.ids)
         return success_response("Bloques horarias eliminados exitosamente", data={"deleted": resultado})
     except HTTPException as he:

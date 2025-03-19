@@ -1,6 +1,7 @@
 # src/application/services/horarios_service.py
 from typing import List
 from datetime import time, date
+from collections import defaultdict
 from domain.models.horario import Horario
 from infrastructure.databases.models.horario import Horario as HorarioORM
 from infrastructure.databases.models.horario_sucursal import HorarioSucursal
@@ -54,36 +55,65 @@ def validar_horarios_dentro_sucursal(horarios: List[HorarioORM], horarios_sucurs
 
 def crear_horarios(horarios_front: list, db=None) -> List[HorarioORM]:
     """
-    Crea en bloque los bloques horarias asociados a puestos ya creados.
-    Se espera que cada objeto del front contenga 'puesto_id', 'hora_inicio', 'hora_fin' y 'horario_corrido'.
+    Crea en bloque los horarios asociados a puestos ya creados y los valida individualmente.
     """
+    if not horarios_front:
+        return []
+
     horarios_instanciados: List[HorarioORM] = []
+
+    # Crear horarios instanciados y obtener puesto_ids únicos
+    puestos_ids = set()
     for item in horarios_front:
         horario = HorarioORM(
-            puesto_id=item.get("puesto_id"),
-            hora_inicio=item.get("hora_inicio"),
-            hora_fin=item.get("hora_fin"),
+            puesto_id=item["puesto_id"],
+            hora_inicio=item["hora_inicio"],
+            hora_fin=item["hora_fin"],
             horario_corrido=item.get("horario_corrido", False)
         )
         horarios_instanciados.append(horario)
+        puestos_ids.add(item["puesto_id"])
 
-    if not horarios_instanciados:
-        return []
+    # Obtener información completa de los puestos involucrados
+    puestos = PuestoRepository.get_by_ids(list(puestos_ids))
+    puestos_dict = {puesto.id: puesto for puesto in puestos}
 
-    # Se determina la sucursal a partir del puesto.
-    # Aquí podemos obtener el puesto del primer horario (asumiendo que la relación está cargada)
-    # O alternativamente, hacer una consulta:
-    puesto_id = horarios_instanciados[0].puesto_id
-    puesto = PuestoRepository.get_by_id(puesto_id)
-    sucursal_id = puesto.sucursal_id if puesto else None
+    # Agrupar horarios por sucursal_id para validar más eficientemente
+    horarios_por_sucursal = defaultdict(list)
 
-    if sucursal_id:
+    errores_validacion = []
+
+    for horario in horarios_instanciados:
+        puesto = puestos_dict.get(horario.puesto_id)
+        
+        if not puesto:
+            errores_validacion.append(f"Puesto con id {horario.puesto_id} no encontrado.")
+            continue
+
+        sucursal_id = puesto.sucursal_id
+        dia_id = puesto.dia_id
+
+        if not sucursal_id or not dia_id:
+            errores_validacion.append(f"Puesto {horario.puesto_id} no tiene sucursal o día definido.")
+            continue
+
+        # Asignar temporalmente atributos para validación
+        horario.puesto = puesto  # Importante para validación posterior
+        horarios_por_sucursal[sucursal_id].append(horario)
+
+    # Validar horarios por sucursal
+    for sucursal_id, horarios in horarios_por_sucursal.items():
         horarios_sucursal = obtener_horarios_sucursal(sucursal_id, db)
-        errores_validacion = validar_horarios_dentro_sucursal(horarios_instanciados, horarios_sucursal)
-        if errores_validacion:
-            error_message = "Errores en los siguientes bloques:\n" + "\n".join(errores_validacion)
-            raise ValueError(error_message)
+        errores = validar_horarios_dentro_sucursal(horarios, horarios_sucursal)
+        errores_validacion.extend(errores)
+
+    if errores_validacion:
+        error_message = "Errores en los siguientes bloques:\n" + "\n".join(errores_validacion)
+        raise ValueError(error_message)
+
+    # Guardar horarios si no hay errores
     HorarioRepository.bulk_crear_horarios(horarios_instanciados)
+
     return horarios_instanciados
 
 def actualizar_horarios(horarios_front: list, db=None) -> List[HorarioORM]:

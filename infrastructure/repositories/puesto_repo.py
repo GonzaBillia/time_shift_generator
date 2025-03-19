@@ -24,6 +24,23 @@ class PuestoRepository:
                 db.close()
 
     @staticmethod
+    def get_by_ids(puesto_ids: List[int], db: Optional[Session] = None) -> List[Puesto]:
+        """
+        Obtiene varios puestos a partir de una lista de IDs.
+        """
+        close_session = False
+        if db is None:
+            db = Database.get_session("rrhh")
+            close_session = True
+        try:
+            puestos = db.query(Puesto).filter(Puesto.id.in_(puesto_ids)).all()
+            return puestos
+        finally:
+            if close_session:
+                db.close()
+
+
+    @staticmethod
     def get_all(db: Optional[Session] = None) -> List[Puesto]:
         """
         Obtiene todos los puestos.
@@ -127,6 +144,34 @@ class PuestoRepository:
                 db.flush()
             db.refresh(db_puesto)
             return db_puesto
+        finally:
+            if close_session:
+                db.close()
+
+    @staticmethod
+    def update_many(puestos: List[Puesto], db: Optional[Session] = None) -> List[Puesto]:
+        """
+        Actualiza varios puestos en la base de datos.
+        Si se pasa una sesión externa, se asume que el manejo de la transacción se hace afuera.
+        """
+        close_session = False
+        if db is None:
+            db = Database.get_session("rrhh")
+            close_session = True
+        try:
+            # Se hace merge de cada puesto para que SQLAlchemy gestione la sesión
+            updated_puestos = [db.merge(puesto) for puesto in puestos]
+            
+            if close_session:
+                db.commit()
+            else:
+                db.flush()
+            
+            # Se refresca cada puesto para obtener sus datos actualizados
+            for puesto in updated_puestos:
+                db.refresh(puesto)
+                
+            return updated_puestos
         finally:
             if close_session:
                 db.close()

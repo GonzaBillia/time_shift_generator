@@ -10,7 +10,8 @@ from application.controllers.puestos_controller import (
     controlador_py_logger_actualizar_puesto,
     controlador_py_logger_obtener_puestos,
     controlador_py_logger_crear_varios_puestos,
-    controlador_py_logger_eliminar_varios_puestos
+    controlador_py_logger_eliminar_varios_puestos,
+    controlador_py_logger_actualizar_varios_puestos
 )
 from infrastructure.databases.config.database import DBConfig
 
@@ -74,6 +75,27 @@ def actualizar_puesto_endpoint(puesto_data: PuestoUpdate = Body(...)):
     except Exception as error:
         logger.error("Error en actualizar_puesto_endpoint: %s", error)
         return error_response(str(error), status_code=500)
+
+@router.put("/actualizar-varios", response_model=List[PuestoResponse])
+def actualizar_varios_puestos_endpoint(puestos_data: List[PuestoUpdate] = Body(...)):
+    """
+    Endpoint para actualizar varios puestos. Se espera una lista de objetos PuestoUpdate,
+    donde cada uno contenga el 'id' y los campos a modificar.
+    """
+    try:
+        # Convertir cada objeto PuestoUpdate a dict
+        puestos_dict = [
+            puesto.model_dump() if hasattr(puesto, "model_dump") else puesto.dict()
+            for puesto in puestos_data
+        ]
+        puestos = controlador_py_logger_actualizar_varios_puestos(puestos_dict)
+        return success_response("Puestos actualizados exitosamente", data=jsonable_encoder(puestos))
+    except HTTPException as he:
+        raise he
+    except Exception as error:
+        logger.error("Error en actualizar_varios_puestos_endpoint: %s", error)
+        return error_response(str(error), status_code=500)
+
 
 @router.get("/sucursal/{sucursal_id}", response_model=List[PuestoResponse])
 def obtener_puestos_por_sucursal_endpoint(sucursal_id: int):

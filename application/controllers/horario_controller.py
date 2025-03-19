@@ -48,3 +48,22 @@ def controlador_py_logger_get_by_puesto(puesto_id: int) -> List[HorarioORM]:
         logger.warning("No se encontraron bloques horarias para el puesto %s", puesto_id)
         return []
     return horarios
+
+def controlador_py_logger_delete_horarios(horario_ids: list[int]) -> bool:
+    """
+    Elimina múltiples horarios según una lista de IDs proporcionados.
+    Devuelve True si al menos un horario fue eliminado.
+    """
+    try:
+        eliminado = HorarioRepository.delete_many(horario_ids)
+    except Exception as error:
+        logger.error("Error al eliminar horarios con IDs %s: %s", horario_ids, error)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from error
+
+    if not eliminado:
+        logger.warning("No se encontraron horarios para eliminar con IDs %s", horario_ids)
+        return False
+
+    logger.info("Horarios eliminados correctamente con IDs %s", horario_ids)
+    return True
+

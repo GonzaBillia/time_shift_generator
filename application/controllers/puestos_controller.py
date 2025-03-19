@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from typing import List, Optional
 import logging
 from sqlalchemy.orm import Session
-from application.services.puestos_service import crear_puesto, actualizar_puesto, delete_multiple_puestos, create_multiple_puestos, obtener_puestos_por_sucursal
+from application.services.puestos_service import crear_puesto, actualizar_puesto, actualizar_varios_puestos, delete_multiple_puestos, create_multiple_puestos, obtener_puestos_por_sucursal
 from infrastructure.schemas.puestos import PuestoBase, PuestoUpdate, PuestoResponse
 from infrastructure.databases.models.puestos import Puesto
 from infrastructure.repositories.horario_repo import HorarioRepository
@@ -56,6 +56,20 @@ def controlador_py_logger_actualizar_puesto(puesto_data: dict) -> PuestoResponse
     except Exception as error:
         logger.error("Error al actualizar puesto: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
+    
+def controlador_py_logger_actualizar_varios_puestos(puestos_data: List[dict]) -> List[PuestoResponse]:
+    """
+    Actualiza varios puestos existentes. Se espera que cada diccionario en 'puestos_data'
+    contenga el 'id' y los campos a modificar.
+    """
+    try:
+        puestos_actualizados = actualizar_varios_puestos(puestos_data)
+        logger.info("Puestos actualizados exitosamente con ids: %s", [puesto.id for puesto in puestos_actualizados])
+        return puestos_actualizados
+    except Exception as error:
+        logger.error("Error al actualizar los puestos: %s", error)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from error
+
 
 def controlador_py_logger_obtener_puestos(sucursal_id: int) -> List[PuestoResponse]:
     """
