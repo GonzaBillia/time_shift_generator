@@ -119,8 +119,11 @@ def crear_horarios(horarios_front: list, db=None) -> List[HorarioORM]:
 def actualizar_horarios(horarios_front: list, db=None) -> List[HorarioORM]:
     """
     Actualiza en bloque los bloques horarias existentes.
-    Se espera que cada objeto en 'horarios_front' contenga 'id' y 'puesto_id' junto con la información de hora_inicio, hora_fin, etc.
+    Se espera que cada objeto en 'horarios_front' contenga 'id' y 'puesto_id'
+    junto con la información de hora_inicio, hora_fin, etc.
     """
+    from collections import defaultdict
+
     horarios_instanciados: List[HorarioORM] = []
     for item in horarios_front:
         if not item.get("id"):
@@ -132,22 +135,39 @@ def actualizar_horarios(horarios_front: list, db=None) -> List[HorarioORM]:
             hora_fin=item.get("hora_fin"),
             horario_corrido=item.get("horario_corrido", False)
         )
+        # Obtener y asignar el puesto correspondiente
+        puesto = PuestoRepository.get_by_id(horario.puesto_id)
+        if puesto:
+            horario.puesto = puesto
+        else:
+            raise ValueError(f"Puesto con id {horario.puesto_id} no encontrado.")
         horarios_instanciados.append(horario)
 
     if not horarios_instanciados:
         return []
 
-    # Validación similar: obtener la sucursal desde el puesto
-    puesto = PuestoRepository.get_by_id(horarios_instanciados[0].puesto_id)
-    sucursal_id = puesto.sucursal_id if puesto else None
-    if sucursal_id:
+    # Agrupar los horarios por sucursal
+    horarios_por_sucursal = defaultdict(list)
+    for horario in horarios_instanciados:
+        if horario.puesto and horario.puesto.sucursal_id:
+            horarios_por_sucursal[horario.puesto.sucursal_id].append(horario)
+        else:
+            raise ValueError(f"No se encontró la sucursal para el puesto con id {horario.puesto_id}.")
+
+    errores_validacion = []
+    # Validar cada grupo de horarios según el rango de horarios de su sucursal
+    for sucursal_id, horarios in horarios_por_sucursal.items():
         horarios_sucursal = obtener_horarios_sucursal(sucursal_id, db)
-        errores_validacion = validar_horarios_dentro_sucursal(horarios_instanciados, horarios_sucursal)
-        if errores_validacion:
-            error_message = "Errores en los siguientes bloques:\n" + "\n".join(errores_validacion)
-            raise ValueError(error_message)
+        errores = validar_horarios_dentro_sucursal(horarios, horarios_sucursal)
+        errores_validacion.extend(errores)
+
+    if errores_validacion:
+        error_message = "Errores en los siguientes bloques:\n" + "\n".join(errores_validacion)
+        raise ValueError(error_message)
+
     HorarioRepository.bulk_actualizar_horarios(horarios_instanciados)
     return horarios_instanciados
+
 
 def crear_horario_preferido(
     sucursal_id: int,

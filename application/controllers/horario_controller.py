@@ -49,6 +49,20 @@ def controlador_py_logger_get_by_puesto(puesto_id: int) -> List[HorarioORM]:
         return []
     return horarios
 
+def controlador_py_logger_get_by_puestos(puesto_ids: List[int]) -> List[HorarioORM]:
+    """
+    Devuelve todos los bloques horarias asociados a un puesto específico.
+    """
+    try:
+        horarios = HorarioRepository.get_by_puestos(puesto_ids)
+    except Exception as error:
+        logger.error("Error al obtener horarios para los puestos %s: %s", puesto_ids, error)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from error
+
+    if not horarios:
+        return []
+    return horarios
+
 def controlador_py_logger_delete_horarios(horario_ids: list[int]) -> bool:
     """
     Elimina múltiples horarios según una lista de IDs proporcionados.

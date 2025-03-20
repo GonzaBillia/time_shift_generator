@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, HTTPException
+from fastapi import APIRouter, Body, HTTPException, Query
 from fastapi.encoders import jsonable_encoder
 from typing import List
 from infrastructure.schemas.horario import (
@@ -11,7 +11,8 @@ from application.controllers.horario_controller import (
     controlador_py_logger_crear_horarios,
     controlador_py_logger_actualizar_horarios,
     controlador_py_logger_get_by_puesto,
-    controlador_py_logger_delete_horarios
+    controlador_py_logger_delete_horarios,
+    controlador_py_logger_get_by_puestos
 )
 from application.helpers.response_handler import success_response, error_response
 from application.config.logger_config import setup_logger
@@ -93,3 +94,27 @@ def get_horarios_by_puesto_id(puesto_id: int):
     except Exception as e:
         logger.error("Error en get_horarios_by_puesto_id: %s", e)
         return error_response(str(e), status_code=500)
+    
+@router.get("/puestos", response_model=List[HorarioResponse])
+def get_horarios_by_puesto_id(
+    puesto_ids: List[int] = Query(..., alias="puesto_ids[]")
+):
+    """
+    Endpoint para obtener todos los bloques horarias asociados a los puestos especificados.
+    Se espera recibir los IDs en la query string, por ejemplo:
+    /horarios/puestos?puesto_ids[]=37&puesto_ids[]=38
+    """
+    try:
+        horarios = controlador_py_logger_get_by_puestos(puesto_ids)
+        # Convertir cada objeto a esquema de respuesta
+        horarios_schema = [HorarioResponse.model_validate(h) for h in horarios]
+        data = [hs.model_dump() for hs in horarios_schema]
+        return success_response(
+            "Bloques horarias para el puesto encontrados", data=jsonable_encoder(data)
+        )
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en get_horarios_by_puesto_id: %s", e)
+        return error_response(str(e), status_code=500)
+

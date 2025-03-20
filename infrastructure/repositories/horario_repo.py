@@ -32,6 +32,19 @@ class HorarioRepository:
                 db.close()
 
     @staticmethod
+    def get_by_puestos(puestos_ids: List[int], db: Optional[Session] = None) -> List[Horario]:
+        close_session = False
+        if db is None:
+            db = Database.get_session("rrhh")
+            close_session = True
+        try:
+            horarios = db.query(Horario).filter(Horario.puesto_id.in_(puestos_ids)).all()
+            return horarios
+        finally:
+            if close_session:
+                db.close()
+
+    @staticmethod
     def get_by_colaborador(colaborador_id: int, db: Optional[Session] = None) -> List[Horario]:
         close_session = False
         if db is None:
