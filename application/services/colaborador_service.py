@@ -91,6 +91,7 @@ def get_colaborador_details(colaborador_id: int) -> Colaborador:
             horario = {
                 "sucursal_id": p.sucursal_id,
                 "colaborador_id": p.colaborador_id,
+                "rol_colaborador_id": p.rol_colaborador_id,
                 "dia_id": p.dia_id,
                 "fecha": p.fecha,
                 "hora_inicio": h.hora_inicio,

@@ -6,11 +6,11 @@ class Horario:
         self,
         sucursal_id: int,
         colaborador_id: Optional[int],  # Puede ser None si es un horario general de sucursal
-        rol_colaborador_id: Optional[int],
         dia_id: int,  # Nuevo campo para reflejar la base de datos
         fecha: Optional[date],
         bloques: List[Tuple[time, time]],
-        horario_corrido: bool
+        horario_corrido: bool,
+        rol_colaborador_id: Optional[int] = None,
     ):
         """
         Inicializa un objeto Horario.
