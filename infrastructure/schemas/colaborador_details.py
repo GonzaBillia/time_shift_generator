@@ -23,7 +23,7 @@ class ColaboradorDetailSchema(BaseModel):
     horario_preferido: List[HorarioPreferidoColaboradorResponse]
     dias_preferidos: List[int]
     tipo_empleado: TipoEmpleadoResponse
-    horario_asignado: List[HorarioResponse]
+    horario_asignado: Optional[List[HorarioResponse]] = None
     hs_extra: Dict[str, int]
     vacaciones: List[date]
     horario_corrido: bool

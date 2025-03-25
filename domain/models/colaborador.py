@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 from datetime import date
 from .horario import Horario
 from .tipo_colaborador import TipoEmpleado
@@ -22,7 +22,7 @@ class Colaborador:
         horario_preferido: List[Horario],       # <-- Se quita la tupla
         dias_preferidos: List[int],
         tipo_empleado: TipoEmpleado,
-        horario_asignado: List[Horario],   # (sucursal_id, Horario)
+        horario_asignado: Optional[List[Horario]],   # (sucursal_id, Horario)
         hs_extra: Dict[str, int],  # {'devolver': int, 'cobrar': int}
         vacaciones: List[date],
         horario_corrido: bool = False,

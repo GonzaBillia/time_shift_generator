@@ -79,63 +79,7 @@ def get_colaborador_details(colaborador_id: int) -> Colaborador:
         # Generar los días preferidos a partir de los horarios preferidos
         dias_preferidos = [hp.dia_id for hp in horario_preferido_response]
     
-    # --- Procesar horarios asignados ---
-    puestos_asignados_data = puesto_repo.get_by_colaborador(colaborador_id)
-
-    horario_asignado_data: List[dict] = []
-    for p in puestos_asignados_data:
-        # Se obtienen los horarios asociados a cada puesto
-        hrs = horario_repo.get_by_puesto(p.id)
-        for h in hrs:
-            # Se construye un diccionario con los datos combinados del puesto y su horario
-            horario = {
-                "sucursal_id": p.sucursal_id,
-                "colaborador_id": p.colaborador_id,
-                "rol_colaborador_id": p.rol_colaborador_id,
-                "dia_id": p.dia_id,
-                "fecha": p.fecha,
-                "hora_inicio": h.hora_inicio,
-                "hora_fin": h.hora_fin,
-                "horario_corrido": h.horario_corrido,
-                "id": h.id  # Se incluye el id del horario, en caso de ser necesario
-            }
-            # Se agrega el diccionario a la lista
-            horario_asignado_data.append(horario)
-
-
-    # Se construye una lista de HorarioResponse
-    horario_asignado_response: List[HorarioResponse] = []
-    for ha in horario_asignado_data:
-        try:
-            # Se crea un nuevo objeto horario utilizando la función 'crear_horario'
-            h = crear_horario(
-                sucursal_id=ha["sucursal_id"],
-                colaborador_id=colaborador_id,
-                dia_id=ha["dia_id"],
-                fecha=ha["fecha"],
-                hora_inicio=ha["hora_inicio"],
-                hora_fin=ha["hora_fin"],
-                horario_corrido=ha["horario_corrido"]
-            )
-            # Se asume que 'h.bloques' es una lista con al menos un elemento,
-            # donde cada elemento es una tupla (hora_inicio_obj, hora_fin_obj)
-            hora_inicio_obj, hora_fin_obj = h.bloques[0]
-            h_dict = {
-                "id": ha.get("id"),  # Se puede usar el id obtenido o h.id según convenga
-                "colaborador_id": h.colaborador_id,
-                "sucursal_id": h.sucursal_id,
-                "hora_inicio": hora_inicio_obj.isoformat() if hasattr(hora_inicio_obj, "isoformat") else hora_inicio_obj,
-                "hora_fin": hora_fin_obj.isoformat() if hasattr(hora_fin_obj, "isoformat") else hora_fin_obj,
-                "dia_id": h.dia_id,
-                "horario_corrido": h.horario_corrido,
-                "fecha": h.fecha.isoformat() if h.fecha and hasattr(h.fecha, "isoformat") else h.fecha,
-            }
-            # Se valida el diccionario y se obtiene el objeto de respuesta
-            h_response = HorarioResponse.model_validate(h_dict)
-        except ValueError as e:
-            raise ValueError(f"Error en horario asignado: {e}")
-        horario_asignado_response.append(h_response)
-
+    
     
     # --- Procesar horas extra ---
     hs_extra_data = horas_extra_colaborador_repo.get_by_colaborador(colaborador_id)
@@ -170,8 +114,8 @@ def get_colaborador_details(colaborador_id: int) -> Colaborador:
         roles=[Rol(id=r.id, nombre=r.nombre, principal=r.principal) for r in roles],
         horario_preferido=horario_preferido_response,  # Lista de HorarioPreferidoColaboradorResponse
         dias_preferidos=dias_preferidos,
-        tipo_empleado=tipo_empleado,
-        horario_asignado=horario_asignado_response,     # Lista de HorarioResponse
+        horario_asignado=None,
+        tipo_empleado=tipo_empleado,    # Lista de HorarioResponse
         hs_extra=hs_extra,
         vacaciones=vacaciones,
         horario_corrido=colaborador_data.horario_corrido

@@ -3,6 +3,7 @@ from typing import List
 from datetime import time, date
 from collections import defaultdict
 from domain.models.horario import Horario
+from infrastructure.schemas.horario import HorarioBase
 from infrastructure.databases.models.horario import Horario as HorarioORM
 from infrastructure.databases.models.horario_sucursal import HorarioSucursal
 from infrastructure.repositories.horario_repo import HorarioRepository
@@ -65,7 +66,9 @@ def crear_horarios(horarios_front: list, db=None) -> List[HorarioORM]:
     # Crear horarios instanciados y obtener puesto_ids únicos
     puestos_ids = set()
     for item in horarios_front:
+        item.pop("id", None)  # Elimina 'id' si existe para evitar que se asigne 0
         horario = HorarioORM(
+            id=None,
             puesto_id=item["puesto_id"],
             hora_inicio=item["hora_inicio"],
             hora_fin=item["hora_fin"],
@@ -73,6 +76,7 @@ def crear_horarios(horarios_front: list, db=None) -> List[HorarioORM]:
         )
         horarios_instanciados.append(horario)
         puestos_ids.add(item["puesto_id"])
+
 
     # Obtener información completa de los puestos involucrados
     puestos = PuestoRepository.get_by_ids(list(puestos_ids))
@@ -112,9 +116,9 @@ def crear_horarios(horarios_front: list, db=None) -> List[HorarioORM]:
         raise ValueError(error_message)
 
     # Guardar horarios si no hay errores
-    HorarioRepository.bulk_crear_horarios(horarios_instanciados)
+    hrs = HorarioRepository.bulk_crear_horarios(horarios_instanciados)
 
-    return horarios_instanciados
+    return hrs
 
 def actualizar_horarios(horarios_front: list, db=None) -> List[HorarioORM]:
     """
