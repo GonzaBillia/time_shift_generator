@@ -13,9 +13,9 @@ from .horario_preferido_colaborador import HorarioPreferidoColaboradorResponse
 class ColaboradorDetailSchema(BaseModel):
     id: int
     nombre: str
-    legajo: int
-    email: str
-    telefono: str
+    legajo: Optional[int]
+    email: Optional[str]
+    telefono: Optional[str]
     dni: str
     empresa: EmpresaResponse
     sucursales: List[SucursalResponse]

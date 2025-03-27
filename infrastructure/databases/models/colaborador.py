@@ -8,13 +8,13 @@ class Colaborador(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     nombre = Column(String(100), nullable=False)
-    email = Column(String(100), nullable=False, unique=True)
+    email = Column(String(100), nullable=True, unique=True)
     telefono = Column(String(20), nullable=True)
     dni = Column(Integer, nullable=False, unique=True)
     empresa_id = Column(Integer, ForeignKey("empresas.id"), nullable=False)
     tipo_empleado_id = Column(Integer, ForeignKey("tipo_empleado.id"), nullable=False)
     horario_corrido = Column(Boolean, nullable=False, default=True)
-    legajo = Column(Integer, nullable=False, unique=True)
+    legajo = Column(Integer, nullable=True, unique=True)
 
     # Relaciones
     empresa = relationship("Empresa", back_populates="colaboradores")

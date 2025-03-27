@@ -12,7 +12,8 @@ from application.controllers.colaborador_controller import(
     controlador_py_logger_get_details,
     controlador_py_logger_create_colaborador,
     controlador_py_logger_update_colaborador,
-    controlador_py_logger_delete_colaborador
+    controlador_py_logger_delete_colaborador,
+    controlador_py_logger_get_paginated
 )
 from application.controllers.horario_preferido_colaborador_controller import (
     controlador_py_logger_get_by_id_horario_preferido_colaborador,
@@ -43,12 +44,15 @@ def get_rrhh_session() -> Generator[Session, None, None]:
     yield from DBConfig.get_db_session("rrhh")
 
 @router.get("/all", response_model=List[ColaboradorResponse])
-def get_all_colaboradores():
+def get_all_colaboradores(page: int = Query(1, ge=1), limit: int = Query(20, ge=1), search: str = Query("", alias="search")):
     """
-    Endpoint para obtener todos los colaboradores.
+    Endpoint para obtener los colaboradores de forma paginada.
+    Parámetros:
+      - page: número de página (empezando en 1)
+      - limit: cantidad de colaboradores por página
     """
     try:
-        colaboradores = controlador_py_logger_get_all()
+        colaboradores = controlador_py_logger_get_paginated(page, limit, search)
         colaboradores_schema = [ColaboradorResponse.model_validate(c) for c in colaboradores]
         data = [cs.model_dump() for cs in colaboradores_schema]
         return success_response("Colaboradores encontrados", data=data)

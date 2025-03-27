@@ -1,7 +1,7 @@
 from datetime import date
 from typing import List, Optional
 from sqlalchemy.orm import Session
-
+from sqlalchemy import or_, cast, String
 from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.colaborador import Colaborador
 from infrastructure.databases.models.horario import Horario
@@ -44,6 +44,43 @@ class ColaboradorRepository:
         session.close()
         return colaboradores
     
+    @staticmethod
+    def get_all_paginated(page: int, limit: int, search: str = "") -> List[Colaborador]:
+        """
+        Obtiene los colaboradores paginados, aplicando un filtro opcional.
+
+        Args:
+            page (int): Número de página (empezando en 1).
+            limit (int): Cantidad de registros por página.
+            search (str): Término de búsqueda (filtra por nombre, dni y legajo).
+
+        Returns:
+            List[Colaborador]: Lista de colaboradores para la página solicitada.
+        """
+        session: Session = Database.get_session("rrhh")
+        offset = (page - 1) * limit
+        query = session.query(Colaborador)
+        
+        if search.strip():
+            # Filtros por nombre y dni (siempre en modo ilike)
+            filters = [
+                Colaborador.nombre.ilike(f"%{search}%"),
+                Colaborador.dni.ilike(f"%{search}%")
+            ]
+            # Si el término de búsqueda es numérico, filtrar legajo por igualdad
+            if search.isdigit():
+                filters.append(Colaborador.legajo == int(search))
+            else:
+                # Opcional: si se quiere permitir búsqueda parcial en legajo, se puede hacer cast
+                filters.append(cast(Colaborador.legajo, String).ilike(f"%{search}%"))
+            
+            query = query.filter(or_(*filters))
+        
+        query = query.order_by(Colaborador.nombre.asc())
+        colaboradores = query.offset(offset).limit(limit).all()
+        session.close()
+        return colaboradores
+
     @staticmethod
     def get_filtered(
         dni: Optional[int] = None,

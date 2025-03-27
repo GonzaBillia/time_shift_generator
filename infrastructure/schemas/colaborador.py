@@ -3,13 +3,13 @@ from typing import Optional
 
 class ColaboradorBase(BaseModel):
     nombre: str
-    email: str
+    email: Optional[str] = None
     telefono: Optional[str] = None
     dni: int
     empresa_id: int
     tipo_empleado_id: int
     horario_corrido: bool
-    legajo: int
+    legajo: Optional[int] = None
 
 class ColaboradorUpdate(BaseModel):
     nombre: Optional[str] = None

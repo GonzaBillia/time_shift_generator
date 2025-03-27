@@ -28,6 +28,26 @@ def controlador_py_logger_get_all() -> List[Colaborador]:
 
     return colaboradores
 
+def controlador_py_logger_get_paginated(page: int, limit: int, search: str) -> List[Colaborador]:
+    """
+    Obtiene los colaboradores de manera paginada.
+
+    Args:
+        page (int): Número de página.
+        limit (int): Cantidad de registros por página.
+
+    Returns:
+        List[Colaborador]: Lista de colaboradores.
+    """
+    try:
+        colaboradores = ColaboradorRepository.get_all_paginated(page, limit, search)
+    except Exception as error:
+        logger.error("Error al obtener los colaboradores paginados: %s", error)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from error
+
+    return colaboradores
+
+
 def controlador_py_logger_get_filtered(
     dni: Optional[int] = None,
     empresa_id: Optional[int] = None,
