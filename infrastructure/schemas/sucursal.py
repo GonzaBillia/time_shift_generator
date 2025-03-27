@@ -11,6 +11,7 @@ class SucursalBase(BaseModel):
     telefono: Optional[str] = None
     empresa_id: int
     formato_id: int
+    cod_sucursal: Optional[int] = None
 
 class SucursalUpdate(BaseModel):
     nombre: Optional[str]

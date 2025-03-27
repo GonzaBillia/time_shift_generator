@@ -11,7 +11,7 @@ class Sucursal(Base):
     telefono = Column(String(20), nullable=True)
     empresa_id = Column(Integer, ForeignKey("empresas.id"), nullable=False)
     formato_id = Column(Integer, ForeignKey("formatos_sucursales.id"), nullable=False)
-
+    cod_sucursal = Column(Integer, nullable=True)
     # Relaciones existentes
     empresa = relationship("Empresa", back_populates="sucursales")
     formato = relationship("Formato", back_populates="sucursales")
