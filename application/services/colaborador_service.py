@@ -80,7 +80,6 @@ def get_colaborador_details(colaborador_id: int) -> Colaborador:
         dias_preferidos = [hp.dia_id for hp in horario_preferido_response]
     
     
-    
     # --- Procesar horas extra ---
     hs_extra_data = horas_extra_colaborador_repo.get_by_colaborador(colaborador_id)
     hs_extra: Dict[str, int] = {}

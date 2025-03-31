@@ -1,7 +1,7 @@
 # src/infrastructure/repositories/puesto_repo.py
 from typing import List, Optional
 from sqlalchemy.orm import Session
-
+from datetime import date
 from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.puestos import Puesto
 
@@ -74,6 +74,22 @@ class PuestoRepository:
 
     @staticmethod
     def get_by_colaborador(colaborador_id: int, db: Optional[Session] = None) -> List[Puesto]:
+        """
+        Obtiene todos los puestos de un colaborador.
+        """
+        close_session = False
+        if db is None:
+            db = Database.get_session("rrhh")
+            close_session = True
+        try:
+            puestos = db.query(Puesto).filter_by(colaborador_id=colaborador_id).all()
+            return puestos
+        finally:
+            if close_session:
+                db.close()
+
+    @staticmethod
+    def get_by_colaborador_date(colaborador_id: int, fecha_desde: date, fecha_hasta: date, db: Optional[Session] = None) -> List[Puesto]:
         """
         Obtiene todos los puestos de un colaborador.
         """

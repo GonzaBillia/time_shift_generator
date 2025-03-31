@@ -232,3 +232,19 @@ class HorarioRepository:
             return resultado
         finally:
             session.close()
+
+    @staticmethod
+    def bulk_crear_horarios_session(horarios: List[Horario], db: Optional[Session] = None) -> List[Horario]:
+        close_session = False
+        if db is None:
+            db = Database.get_session("rrhh")
+            close_session = True
+        try:
+            db.add_all(horarios)
+            db.commit()
+            for horario in horarios:
+                db.refresh(horario)
+            return horarios.copy()
+        finally:
+            if close_session:
+                db.close()

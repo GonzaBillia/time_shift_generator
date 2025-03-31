@@ -7,6 +7,10 @@ from infrastructure.schemas.puestos import PuestoBase, PuestoUpdate, PuestoRespo
 from infrastructure.databases.models.puestos import Puesto
 from infrastructure.repositories.horario_repo import HorarioRepository
 
+# Importamos el servicio y esquema para la copia histórica
+from application.services.copy_historial_service import copy_history_service
+from infrastructure.schemas.hostorial import CopyHistoryRequest
+
 logger = logging.getLogger(__name__)
 
 def controlador_py_logger_crear_puesto(puesto_data: dict) -> PuestoResponse:
@@ -70,7 +74,6 @@ def controlador_py_logger_actualizar_varios_puestos(puestos_data: List[dict]) ->
         logger.error("Error al actualizar los puestos: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
-
 def controlador_py_logger_obtener_puestos(sucursal_id: int) -> List[PuestoResponse]:
     """
     Retorna la lista de puestos de una sucursal.
@@ -107,4 +110,29 @@ def controlador_py_logger_eliminar_varios_puestos(puesto_ids: List[int], db: Ses
         logger.info("Se eliminaron %d puestos", len(puesto_ids))
     except Exception as error:
         logger.error("Error al eliminar puestos y horarios: %s", error)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from error
+
+def controlador_py_logger_copy_history(copy_history_data: dict, db: Session) -> dict:
+    """
+    Realiza la copia histórica de puestos y horarios.
+    Se espera que 'copy_history_data' contenga:
+      - sucursal_id
+      - origin_week: {start: date, end: date}
+      - destination_weeks: List[{start: date, end: date}]
+      - resources: List de puestos (con su id original)
+      - events: List de horarios (con su puesto_id original)
+    Este controlador llama al servicio copy_history_service, que se encarga de crear las copias
+    de forma transaccional, generando nuevos puestos y asociando los eventos correspondientes.
+    """
+    try:
+        # Convertir el dict a una instancia del esquema CopyHistoryRequest
+        request_obj = CopyHistoryRequest.model_validate(copy_history_data)
+        
+        result = copy_history_service(request_obj, db)
+        num_puestos = len(result.get("puestos", []))
+        num_horarios = len(result.get("horarios", []))
+        logger.info("Copia histórica completada: %d puestos y %d horarios creados", num_puestos, num_horarios)
+        return result
+    except Exception as error:
+        logger.error("Error en copia histórica: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
