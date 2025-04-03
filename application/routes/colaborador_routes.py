@@ -1,6 +1,6 @@
-from fastapi import APIRouter, HTTPException, Query, Depends
+from fastapi import APIRouter, HTTPException, Query, Depends, Body
 from sqlalchemy.orm import Session
-from datetime import time
+from datetime import date, time
 from typing import List, Optional, Generator
 from application.config.logger_config import setup_logger
 from fastapi.encoders import jsonable_encoder
@@ -13,14 +13,16 @@ from application.controllers.colaborador_controller import(
     controlador_py_logger_create_colaborador,
     controlador_py_logger_update_colaborador,
     controlador_py_logger_delete_colaborador,
-    controlador_py_logger_get_paginated
+    controlador_py_logger_get_paginated,
+    controlador_py_logger_get_horarios_asignados
+
 )
 from application.controllers.horario_preferido_colaborador_controller import (
     controlador_py_logger_get_by_id_horario_preferido_colaborador,
     controlador_py_logger_get_by_colaborador,
     controlador_py_logger_update_horario_preferido_colaborador,
     controlador_py_logger_create_horario_preferido_colaborador,
-    controlador_py_logger_delete_horario_preferido_colaborador
+    controlador_py_logger_delete_horario_preferido_colaborador,
 )
 from application.controllers.colaborador_sucursal_controller import (
     controlador_get_by_colaborador,
@@ -112,7 +114,6 @@ def get_colaborador(colaborador_id: int):
         # Para otras excepciones inesperadas, retorna una respuesta de error con status 500
         return error_response(str(e), status_code=500)
 
-
 @router.get("/legajo/{colaborador_legajo}", response_model=ColaboradorResponse)
 def get_colaborador_by_legajo(colaborador_legajo: int):
     """
@@ -139,7 +140,6 @@ def get_colaborador_details_endpoint(colaborador_id: int):
     except Exception as e:
         logger.error("Error en get_colaborador_details_endpoint: %s", e)
         return error_response(str(e), status_code=500)
-
 
 @router.post("/", response_model=ColaboradorResponse)
 def create_colaborador(colaborador_data: ColaboradorBase):
@@ -268,44 +268,24 @@ def update_colaborador_full(
                     creado = controlador_py_logger_create_horario_preferido_colaborador(nuevo_horario, db)
                     updated_horarios.append(creado)
             
-            # 2. Actualizar las relaciones colaborador_sucursal a partir de roles y sucursales
-            if colaborador_full_update.roles is not None and colaborador_full_update.sucursales is not None:
-                payload_relaciones = set()
-                # Caso: un solo rol para varias sucursales
-                if len(colaborador_full_update.roles) == 1 and len(colaborador_full_update.sucursales) >= 1:
-                    role_id = colaborador_full_update.roles[0].id
-                    for sucursal in colaborador_full_update.sucursales:
-                        payload_relaciones.add((role_id, sucursal.id))
-                # Caso: una sola sucursal para varios roles
-                elif len(colaborador_full_update.sucursales) == 1 and len(colaborador_full_update.roles) >= 1:
-                    sucursal_id = colaborador_full_update.sucursales[0].id
-                    for role in colaborador_full_update.roles:
-                        payload_relaciones.add((role.id, sucursal_id))
-                # Caso: ambas listas tienen la misma longitud y se emparejan por índice
-                elif len(colaborador_full_update.roles) == len(colaborador_full_update.sucursales):
-                    roles_ids = [role.id for role in colaborador_full_update.roles]
-                    sucursales_ids = [sucursal.id for sucursal in colaborador_full_update.sucursales]
-                    payload_relaciones = set(zip(roles_ids, sucursales_ids))
-                else:
-                    raise HTTPException(
-                        status_code=400,
-                        detail="La cantidad de roles y sucursales no coincide y no se puede inferir una relación única"
-                    )
-                
+            # 2. Actualizar las relaciones colaborador_sucursal a partir de colaboradorSucursales
+            if colaborador_full_update.colaboradorSucursales is not None:
+                # Generar un set con las relaciones enviadas (cada elemento es una tupla (rol_colaborador_id, sucursal_id))
+                payload_relaciones = {(rel.rol_colaborador_id, rel.sucursal_id) for rel in colaborador_full_update.colaboradorSucursales}
+
                 # Obtener las relaciones actuales para el colaborador
                 relaciones_actuales = controlador_get_by_colaborador(colaborador_actual.id, db)
                 current_set = {(rel.rol_colaborador_id, rel.sucursal_id) for rel in relaciones_actuales}
-                
+
                 # Eliminar relaciones que existen en la BD pero no vienen en el payload
                 relaciones_to_delete = current_set - payload_relaciones
                 for rel in relaciones_actuales:
                     if (rel.rol_colaborador_id, rel.sucursal_id) in relaciones_to_delete:
                         controlador_delete_colaborador_sucursal(rel.id, db)
-                
+
                 # Agregar nuevas relaciones que vienen en el payload pero no existen en la BD
                 relaciones_to_add = payload_relaciones - current_set
                 for role_id, sucursal_id in relaciones_to_add:
-                    # Crear el objeto utilizando el patrón model_dump() como en horarios preferidos
                     nueva_relacion_data = ColaboradorSucursalBase(
                         colaborador_id=colaborador_actual.id,
                         rol_colaborador_id=role_id,
@@ -313,7 +293,7 @@ def update_colaborador_full(
                     )
                     nueva_relacion = ColaboradorSucursal(**nueva_relacion_data.model_dump())
                     controlador_create_colaborador_sucursal(nueva_relacion, db)
-            
+        
             # 3. Actualizar el colaborador en la base de datos
             actualizado = controlador_py_logger_update_colaborador(colaborador_actual, db)
             colaborador_schema = ColaboradorResponse.model_validate(actualizado)
@@ -322,4 +302,33 @@ def update_colaborador_full(
         raise he
     except Exception as e:
         logger.error("Error en update_colaborador_full: %s", e)
+        return error_response(str(e), status_code=500)
+
+
+@router.get("/{colaborador_id}/horarios", response_model=List[dict])
+def get_horarios_asignados(
+    colaborador_id: int,
+    fecha_desde: date = Query(...),
+    fecha_hasta: date = Query(...),
+    db: Session = Depends(get_rrhh_session)
+):
+    """
+    Endpoint para obtener los horarios asignados a un colaborador en un rango de fechas.
+
+    Args:
+        colaborador_id (int): Identificador del colaborador.
+        fecha_desde (date): Fecha de inicio del rango.
+        fecha_hasta (date): Fecha de fin del rango.
+        db (Session): Sesión de base de datos.
+
+    Returns:
+        List[dict]: Lista de horarios asignados formateados.
+    """
+    try:
+        horarios = controlador_py_logger_get_horarios_asignados(colaborador_id, fecha_desde, fecha_hasta, db)
+        return success_response("Horarios asignados encontrados", data=horarios)
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        logger.error("Error en get_horarios_asignados: %s", e)
         return error_response(str(e), status_code=500)

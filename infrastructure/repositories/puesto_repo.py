@@ -91,14 +91,18 @@ class PuestoRepository:
     @staticmethod
     def get_by_colaborador_date(colaborador_id: int, fecha_desde: date, fecha_hasta: date, db: Optional[Session] = None) -> List[Puesto]:
         """
-        Obtiene todos los puestos de un colaborador.
+        Obtiene todos los puestos de un colaborador filtrando por el rango de fechas.
         """
         close_session = False
         if db is None:
             db = Database.get_session("rrhh")
             close_session = True
         try:
-            puestos = db.query(Puesto).filter_by(colaborador_id=colaborador_id).all()
+            puestos = db.query(Puesto).filter(
+                Puesto.colaborador_id == colaborador_id,
+                Puesto.fecha >= fecha_desde,
+                Puesto.fecha <= fecha_hasta
+            ).all()
             return puestos
         finally:
             if close_session:

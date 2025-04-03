@@ -1,5 +1,6 @@
 from datetime import date, time
-from typing import List, Dict
+from typing import List, Dict, Optional
+from sqlalchemy.orm import Session
 from infrastructure.repositories import (
     colaborador_repo,
     colaborador_sucursal_repo,
@@ -143,3 +144,52 @@ def convertir_recursivamente(obj):
         return obj.isoformat()
     else:
         return obj
+    
+def obtener_horarios_asignados(colaborador_id: int, fecha_desde: date, fecha_hasta: date, db: Optional[Session] = None):
+    """
+    Retorna los puestos asignados a un colaborador en un rango de fechas, incluyendo para cada puesto 
+    la lista de horarios asociados.
+    """
+    # Validar que el colaborador exista
+    colaborador = colaborador_repo.get_by_id(colaborador_id, db)
+    if not colaborador:
+        raise Exception("El colaborador no existe.")
+
+    # Obtener puestos asignados en el rango de fechas
+    puestos = puesto_repo.get_by_colaborador_date(colaborador_id, fecha_desde, fecha_hasta, db)
+    if not puestos:
+        return []  # O se puede retornar un mensaje indicando que no hay puestos asignados
+
+    # Obtener los IDs de los puestos
+    puestos_ids = [puesto.id for puesto in puestos]
+
+    # Obtener los horarios asociados a esos puestos
+    horarios = horario_repo.get_by_puestos(puestos_ids, db)
+
+    # Agrupar los horarios por puesto_id
+    horarios_grouped = {}
+    for horario in horarios:
+        horario_dict = {
+            "id": horario.id,
+            "puesto_id": horario.puesto_id,
+            "hora_inicio": horario.hora_inicio.strftime("%H:%M:%S"),
+            "hora_fin": horario.hora_fin.strftime("%H:%M:%S"),
+            "horario_corrido": horario.horario_corrido
+        }
+        if horario.puesto_id not in horarios_grouped:
+            horarios_grouped[horario.puesto_id] = []
+        horarios_grouped[horario.puesto_id].append(horario_dict)
+
+    # Formatear la respuesta: cada puesto incluye sus horarios correspondientes
+    respuesta = []
+    for puesto in puestos:
+        puesto_dict = {
+            "id": puesto.id,
+            "fecha": puesto.fecha.isoformat() if puesto.fecha else None,
+            "nombre": puesto.nombre,
+            "dia_id": puesto.dia_id,
+            "horarios": horarios_grouped.get(puesto.id, [])
+        }
+        respuesta.append(puesto_dict)
+
+    return respuesta

@@ -344,7 +344,28 @@ def generar_excel_horarios(
                 df = _generar_dataframe(colaboradores_filtrados)
                 file_name = f"sucursal_{sucursal['id']}_semana_{semana_str}.xlsx"
                 file_path = os.path.join(output_dir, file_name)
-                df.to_excel(file_path, index=False)
+                
+                # Escribir Excel usando xlsxwriter para aplicar formato
+                with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
+                    df.to_excel(writer, sheet_name='Sheet1', index=False)
+                    workbook  = writer.book
+                    worksheet = writer.sheets['Sheet1']
+                    # Formato para el header con fondo violeta claro
+                    header_format = workbook.add_format({
+                        'bold': True,
+                        'bg_color': '#E6E6FA',  # Color violeta claro (lavanda)
+                        'border': 1
+                    })
+                    # Aplicar el formato al encabezado
+                    for col_num, value in enumerate(df.columns.values):
+                        worksheet.write(0, col_num, value, header_format)
+                    # Ajustar el ancho de las columnas según el contenido
+                    for idx, col in enumerate(df):
+                        series = df[col].astype(str)
+                        max_len = series.map(len).max()
+                        header_len = len(col)
+                        width = max(max_len, header_len) + 2  # Espacio adicional
+                        worksheet.set_column(idx, idx, width)
                 print(f"Archivo generado: {file_path}")
         else:
             # Se genera un solo archivo consolidado para todas las sucursales en la semana actual
@@ -362,5 +383,27 @@ def generar_excel_horarios(
             df = _generar_dataframe(colaboradores_totales)
             file_name = f"horarios_semana_{semana_str}.xlsx"
             file_path = os.path.join(output_dir, file_name)
-            df.to_excel(file_path, index=False)
+            
+            # Escribir Excel usando xlsxwriter para aplicar formato
+            with pd.ExcelWriter(file_path, engine='xlsxwriter') as writer:
+                df.to_excel(writer, sheet_name='Sheet1', index=False)
+                workbook  = writer.book
+                worksheet = writer.sheets['Sheet1']
+                # Formato para el header con fondo violeta claro
+                header_format = workbook.add_format({
+                    'bold': True,
+                    'bg_color': '#E6E6FA',  # Color violeta claro (lavanda)
+                    'border': 1
+                })
+                # Aplicar el formato al encabezado
+                for col_num, value in enumerate(df.columns.values):
+                    worksheet.write(0, col_num, value, header_format)
+                # Ajustar el ancho de las columnas según el contenido
+                for idx, col in enumerate(df):
+                    series = df[col].astype(str)
+                    max_len = series.map(len).max()
+                    header_len = len(col)
+                    width = max(max_len, header_len) + 2  # Espacio adicional
+                    worksheet.set_column(idx, idx, width)
             print(f"Archivo generado: {file_path}")
+

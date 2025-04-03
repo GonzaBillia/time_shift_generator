@@ -1,9 +1,10 @@
 from application.config.logger_config import setup_logger
+from datetime import date
 from typing import Optional, List
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from infrastructure.databases.models import Colaborador
-from application.services.colaborador_service import get_colaborador_details
+from application.services.colaborador_service import get_colaborador_details, obtener_horarios_asignados
 from infrastructure.repositories.colaborador_repo import ColaboradorRepository  # Ajusta el path según tu estructura
 from application.controllers.empresa_controller import controlador_py_logger_get_by_id_empresa
 from application.controllers.tipo_colaborador_controller import controlador_py_logger_get_by_id_tipo_empleado
@@ -216,3 +217,27 @@ def controlador_py_logger_delete_colaborador(colaborador_id: int) -> bool:
     
     logger.info("Colaborador eliminado exitosamente con id %s", colaborador_id)
     return resultado
+
+def controlador_py_logger_get_horarios_asignados(colaborador_id: int, fecha_desde: date, fecha_hasta: date, db: Session) -> List[dict]:
+    """
+    Obtiene los horarios asignados a un colaborador en un rango de fechas.
+
+    Args:
+        colaborador_id (int): Identificador del colaborador.
+        fecha_desde (date): Fecha de inicio del rango.
+        fecha_hasta (date): Fecha de fin del rango.
+        db (Session): Sesión de base de datos.
+
+    Returns:
+        List[dict]: Lista de horarios formateados.
+
+    Raises:
+        HTTPException: Con código 404 si el colaborador no existe, o con código 500 si ocurre un error interno.
+    """
+    try:
+        horarios = obtener_horarios_asignados(colaborador_id, fecha_desde, fecha_hasta, db)
+        logger.info("Horarios asignados obtenidos exitosamente para el colaborador %s", colaborador_id)
+        return horarios
+    except Exception as error:
+        logger.error("Error al obtener horarios para el colaborador %s: %s", colaborador_id, error)
+        raise HTTPException(status_code=500, detail="Error interno del servidor") from error

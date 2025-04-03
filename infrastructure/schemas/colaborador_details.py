@@ -30,8 +30,13 @@ class ColaboradorDetailSchema(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class ColaboradorSucursalUpdate(BaseModel):
+    sucursal_id: int
+    rol_colaborador_id: int
+
 class ColaboradorFullUpdate(BaseModel):
     colaborador: ColaboradorUpdate
+    # Si tienes un esquema de actualización para horarios preferidos, es mejor usarlo en lugar del de respuesta
     horario_preferido: Optional[List[HorarioPreferidoColaboradorResponse]] = []
-    roles: Optional[List[RolResponse]]        # Lista de IDs de roles, ordenada
-    sucursales: Optional[List[SucursalResponse]]
+    # Nueva propiedad que agrupa las asociaciones de sucursal y rol
+    colaboradorSucursales: Optional[List[ColaboradorSucursalUpdate]] = []
