@@ -1,70 +1,60 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session, joinedload
 
-from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.formato import Formato
 from infrastructure.databases.models.rol import Rol
 from infrastructure.databases.models.formato_rol import FormatosRoles
 
 class FormatoRepository:
     @staticmethod
-    def get_by_id(formato_id: int) -> Optional[Formato]:
+    def get_by_id(formato_id: int, db: Session) -> Optional[Formato]:
         """
         Retorna un Formato por su ID, o None si no existe.
         'formato.roles' es una lista de objetos FormatosRoles.
         Se utiliza joinedload para cargar la relación 'roles' de forma anticipada.
         """
-        session: Session = Database.get_session("rrhh")
-        formato = session.query(Formato)\
+        return db.query(Formato)\
             .options(joinedload(Formato.roles).joinedload(FormatosRoles.rol))\
             .filter_by(id=formato_id).first()
-        session.close()
-        return formato
 
     @staticmethod
-    def get_all() -> List[Formato]:
+    def get_all(db: Session) -> List[Formato]:
         """
         Retorna la lista de todos los Formato en la base.
         Se utiliza joinedload para cargar la relación 'roles' de forma anticipada.
         """
-        session: Session = Database.get_session("rrhh")
-        formatos = session.query(Formato)\
+        return db.query(Formato)\
             .options(joinedload(Formato.roles).joinedload(FormatosRoles.rol))\
             .all()
-        session.close()
-        return formatos
 
     @staticmethod
-    def create(formato: Formato) -> Formato:
+    def create(formato: Formato, db: Session) -> Formato:
         """
         Crea un Formato y (opcionalmente) sus asociaciones FormatosRoles
         si 'formato.roles' tiene elementos.
+        Se asume que se pasa una sesión activa y que el commit se realizará externamente.
         """
-        session: Session = Database.get_session("rrhh")
-        session.add(formato)
-        session.commit()
-        session.refresh(formato)
-        session.close()
+        db.add(formato)
+        db.flush()  # Sincroniza los cambios para asignar un ID si es necesario
+        db.refresh(formato)
         return formato
 
     @staticmethod
-    def update(formato: Formato) -> Optional[Formato]:
+    def update(formato: Formato, db: Session) -> Optional[Formato]:
         """
         Actualiza un Formato existente en la BD (nombre y asociaciones).
-        
+
         1) Busca el Formato real: 'formato_existente'.
         2) Actualiza el 'nombre'.
         3) Limpia 'formato_existente.roles' (FormatosRoles).
         4) Por cada obj en 'formato.roles', reasigna 'assoc.formato = formato_existente' y
            ajusta 'assoc.rol' o 'assoc.rol_id'.
-        5) Hace commit. Devuelve el Formato actualizado. Si no existe, retorna None.
+        5) Sincroniza los cambios y retorna el Formato actualizado. Si no existe, retorna None.
         """
-        session: Session = Database.get_session("rrhh")
-        formato_existente = session.query(Formato)\
+        formato_existente = db.query(Formato)\
             .options(joinedload(Formato.roles).joinedload(FormatosRoles.rol))\
             .filter_by(id=formato.id).first()
         if not formato_existente:
-            session.close()
             return None
 
         # Actualiza campos simples
@@ -77,58 +67,49 @@ class FormatoRepository:
         for assoc in formato.roles:
             assoc.formato = formato_existente
             if assoc.rol is not None:
-                db_rol = session.merge(assoc.rol)
+                db_rol = db.merge(assoc.rol)
                 assoc.rol = db_rol
-            session.add(assoc)
+            db.add(assoc)
 
-        session.commit()
-        session.refresh(formato_existente)
-        session.close()
+        db.flush()
+        db.refresh(formato_existente)
         return formato_existente
 
     @staticmethod
-    def delete(formato_id: int) -> bool:
+    def delete(formato_id: int, db: Session) -> bool:
         """
         Elimina el Formato por su ID. Por cascada (cascade="all, delete-orphan"),
         se eliminarán los FormatosRoles asociados.
+        Se asume que se pasa una sesión activa y que el commit se realizará externamente.
         """
-        session: Session = Database.get_session("rrhh")
-        formato = session.query(Formato).filter_by(id=formato_id).first()
+        formato = db.query(Formato).filter_by(id=formato_id).first()
         if formato:
-            session.delete(formato)
-            session.commit()
-            session.close()
+            db.delete(formato)
+            db.flush()
             return True
-        session.close()
         return False
 
     @staticmethod
-    def get_by_nombre(nombre: str) -> Optional[Formato]:
+    def get_by_nombre(nombre: str, db: Session) -> Optional[Formato]:
         """
         Obtiene un Formato por su nombre, o None si no existe.
         """
-        session: Session = Database.get_session("rrhh")
-        formato = session.query(Formato)\
+        return db.query(Formato)\
             .options(joinedload(Formato.roles).joinedload(FormatosRoles.rol))\
             .filter_by(nombre=nombre).first()
-        session.close()
-        return formato
 
     @staticmethod
-    def get_roles_by_formato(formato_id: int) -> List[Rol]:
+    def get_roles_by_formato(formato_id: int, db: Session) -> List[Rol]:
         """
         Obtiene la lista de Rol que están asociados a un Formato dado,
         extrayendo 'assoc.rol' de cada FormatosRoles en formato.roles.
         """
-        session: Session = Database.get_session("rrhh")
-        formato = session.query(Formato)\
+        formato = db.query(Formato)\
             .options(joinedload(Formato.roles).joinedload(FormatosRoles.rol))\
             .filter_by(id=formato_id).first()
 
         if not formato:
-            session.close()
             return []
 
         lista_roles = [assoc.rol for assoc in formato.roles if assoc.rol is not None]
-        session.close()
         return lista_roles
