@@ -2,14 +2,15 @@ from application.config.logger_config import setup_logger
 from typing import List
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
+from sqlalchemy.orm import Session
 from infrastructure.databases.models.espacio_disponible_sucursal import EspacioDisponibleSucursal
 from infrastructure.repositories.espacio_disponible_sucursal_repo import EspacioDisponibleSucursalRepository
 
 logger = setup_logger(__name__, "logs/espacio_disponible_sucursal.log")
 
-def controlador_py_logger_get_by_id_espacio(espacio_id: int) -> EspacioDisponibleSucursal:
+def controlador_py_logger_get_by_id_espacio(espacio_id: int, db: Session) -> EspacioDisponibleSucursal:
     try:
-        espacio = EspacioDisponibleSucursalRepository.get_by_id(espacio_id)
+        espacio = EspacioDisponibleSucursalRepository.get_by_id(espacio_id, db)
     except Exception as error:
         logger.error("Error al obtener EspacioDisponibleSucursal con id %s: %s", espacio_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -19,26 +20,26 @@ def controlador_py_logger_get_by_id_espacio(espacio_id: int) -> EspacioDisponibl
         raise HTTPException(status_code=404, detail="EspacioDisponibleSucursal no encontrado")
     return espacio
 
-def controlador_py_logger_get_all_espacios() -> List[EspacioDisponibleSucursal]:
+def controlador_py_logger_get_all_espacios(db: Session) -> List[EspacioDisponibleSucursal]:
     try:
-        espacios = EspacioDisponibleSucursalRepository.get_all()
+        espacios = EspacioDisponibleSucursalRepository.get_all(db)
     except Exception as error:
         logger.error("Error al obtener todos los espacios disponibles: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
     return espacios
 
-def controlador_py_logger_get_espacios_by_sucursal(sucursal_id: int) -> List[EspacioDisponibleSucursal]:
+def controlador_py_logger_get_espacios_by_sucursal(sucursal_id: int, db: Session) -> List[EspacioDisponibleSucursal]:
     try:
-        espacios = EspacioDisponibleSucursalRepository.get_by_sucursal(sucursal_id)
+        espacios = EspacioDisponibleSucursalRepository.get_by_sucursal(sucursal_id, db)
         espacios = jsonable_encoder(espacios)
     except Exception as error:
         logger.error("Error al obtener espacios disponibles para sucursal %s: %s", sucursal_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
     return espacios
 
-def controlador_py_logger_get_by_rol(sucursal_id: int, rol_colaborador_id: int) -> EspacioDisponibleSucursal:
+def controlador_py_logger_get_by_rol(sucursal_id: int, rol_colaborador_id: int, db: Session) -> EspacioDisponibleSucursal:
     try:
-        espacio = EspacioDisponibleSucursalRepository.get_by_rol(sucursal_id, rol_colaborador_id)
+        espacio = EspacioDisponibleSucursalRepository.get_by_rol(sucursal_id, rol_colaborador_id, db)
     except Exception as error:
         logger.error("Error al obtener espacio disponible para sucursal %s y rol %s: %s", 
                      sucursal_id, rol_colaborador_id, error)
@@ -50,18 +51,18 @@ def controlador_py_logger_get_by_rol(sucursal_id: int, rol_colaborador_id: int) 
         raise HTTPException(status_code=404, detail="EspacioDisponibleSucursal no encontrado")
     return espacio
 
-def controlador_py_logger_create_espacio(espacio: EspacioDisponibleSucursal) -> EspacioDisponibleSucursal:
+def controlador_py_logger_create_espacio(espacio: EspacioDisponibleSucursal, db: Session) -> EspacioDisponibleSucursal:
     try:
-        nuevo_espacio = EspacioDisponibleSucursalRepository.create(espacio)
+        nuevo_espacio = EspacioDisponibleSucursalRepository.create(espacio, db)
         logger.info("EspacioDisponibleSucursal creado exitosamente con id %s", nuevo_espacio.id)
         return nuevo_espacio
     except Exception as error:
         logger.error("Error al crear EspacioDisponibleSucursal: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
-def controlador_py_logger_update_espacio(espacio: EspacioDisponibleSucursal) -> EspacioDisponibleSucursal:
+def controlador_py_logger_update_espacio(espacio: EspacioDisponibleSucursal, db: Session) -> EspacioDisponibleSucursal:
     try:
-        actualizado = EspacioDisponibleSucursalRepository.update(espacio)
+        actualizado = EspacioDisponibleSucursalRepository.update(espacio, db)
     except Exception as error:
         logger.error("Error al actualizar EspacioDisponibleSucursal con id %s: %s", espacio.id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -73,9 +74,9 @@ def controlador_py_logger_update_espacio(espacio: EspacioDisponibleSucursal) -> 
     logger.info("EspacioDisponibleSucursal actualizado exitosamente con id %s", actualizado.id)
     return actualizado
 
-def controlador_py_logger_delete_espacio(espacio_id: int) -> bool:
+def controlador_py_logger_delete_espacio(espacio_id: int, db: Session) -> bool:
     try:
-        eliminado = EspacioDisponibleSucursalRepository.delete(espacio_id)
+        eliminado = EspacioDisponibleSucursalRepository.delete(espacio_id, db)
     except Exception as error:
         logger.error("Error al eliminar EspacioDisponibleSucursal con id %s: %s", espacio_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
