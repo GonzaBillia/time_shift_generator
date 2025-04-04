@@ -1,6 +1,5 @@
-# CONTROLLER_PY_LOGGER_TIPO_EMPLEADO
 from application.config.logger_config import setup_logger
-from typing import List, Optional
+from typing import List
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from infrastructure.databases.models.tipo_colaborador import TipoEmpleado
@@ -24,24 +23,24 @@ def controlador_py_logger_get_by_id_tipo_empleado(tipo_empleado_id: int, db: Ses
 
     return tipo
 
-def controlador_py_logger_get_all_tipo_empleado() -> List[TipoEmpleado]:
+def controlador_py_logger_get_all_tipo_empleado(db: Session) -> List[TipoEmpleado]:
     """
     Obtiene todos los tipos de empleados.
     """
     try:
-        tipos = TipoEmpleadoRepository.get_all()
+        tipos = TipoEmpleadoRepository.get_all(db)
     except Exception as error:
         logger.error("Error al obtener todos los tipos de empleados: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
     return tipos
 
-def controlador_py_logger_get_by_tipo_tipo_empleado(tipo: str) -> TipoEmpleado:
+def controlador_py_logger_get_by_tipo_tipo_empleado(tipo: str, db: Session) -> TipoEmpleado:
     """
     Obtiene un TipoEmpleado por su campo 'tipo' (nombre).
     """
     try:
-        tipo_empleado = TipoEmpleadoRepository.get_by_tipo(tipo)
+        tipo_empleado = TipoEmpleadoRepository.get_by_tipo(tipo, db)
     except Exception as error:
         logger.error("Error al obtener TipoEmpleado por tipo %s: %s", tipo, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -52,24 +51,24 @@ def controlador_py_logger_get_by_tipo_tipo_empleado(tipo: str) -> TipoEmpleado:
 
     return tipo_empleado
 
-def controlador_py_logger_create_tipo_empleado(tipo: TipoEmpleado) -> TipoEmpleado:
+def controlador_py_logger_create_tipo_empleado(tipo: TipoEmpleado, db: Session) -> TipoEmpleado:
     """
     Crea un nuevo TipoEmpleado en la base de datos.
     """
     try:
-        nuevo_tipo = TipoEmpleadoRepository.create(tipo)
+        nuevo_tipo = TipoEmpleadoRepository.create(tipo, db)
         logger.info("TipoEmpleado creado exitosamente con id %s", nuevo_tipo.id)
         return nuevo_tipo
     except Exception as error:
         logger.error("Error al crear TipoEmpleado: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
-def controlador_py_logger_update_tipo_empleado(tipo: TipoEmpleado) -> TipoEmpleado:
+def controlador_py_logger_update_tipo_empleado(tipo: TipoEmpleado, db: Session) -> TipoEmpleado:
     """
     Actualiza un TipoEmpleado existente en la base de datos.
     """
     try:
-        actualizado = TipoEmpleadoRepository.update(tipo)
+        actualizado = TipoEmpleadoRepository.update(tipo, db)
     except Exception as error:
         logger.error("Error al actualizar TipoEmpleado con id %s: %s", tipo.id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -81,12 +80,12 @@ def controlador_py_logger_update_tipo_empleado(tipo: TipoEmpleado) -> TipoEmplea
     logger.info("TipoEmpleado actualizado exitosamente con id %s", actualizado.id)
     return actualizado
 
-def controlador_py_logger_delete_tipo_empleado(tipo_empleado_id: int) -> bool:
+def controlador_py_logger_delete_tipo_empleado(tipo_empleado_id: int, db: Session) -> bool:
     """
     Elimina un TipoEmpleado por su ID.
     """
     try:
-        eliminado = TipoEmpleadoRepository.delete(tipo_empleado_id)
+        eliminado = TipoEmpleadoRepository.delete(tipo_empleado_id, db)
     except Exception as error:
         logger.error("Error al eliminar TipoEmpleado con id %s: %s", tipo_empleado_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -97,5 +96,3 @@ def controlador_py_logger_delete_tipo_empleado(tipo_empleado_id: int) -> bool:
 
     logger.info("TipoEmpleado eliminado exitosamente con id %s", tipo_empleado_id)
     return eliminado
-
-
