@@ -1,14 +1,14 @@
-import logging
-from typing import List
-from sqlalchemy.orm import Session
 from fastapi import HTTPException
+from typing import List, Dict, Any
+from sqlalchemy.orm import Session
+from application.config.logger_config import setup_logger
+from infrastructure.schemas.sucursal import SucursalFullUpdate, SucursalEditResponse
+from infrastructure.databases.models.sucursal import Sucursal
 from infrastructure.databases.models.horario_sucursal import HorarioSucursal
 from infrastructure.databases.models.espacio_disponible_sucursal import EspacioDisponibleSucursal
 from infrastructure.repositories.sucursal_repo import SucursalRepository
-from infrastructure.schemas.sucursal import SucursalFullUpdate, SucursalEditResponse
 from infrastructure.repositories.horario_sucursal_repo import HorarioSucursalRepository
 from infrastructure.repositories.espacio_disponible_sucursal_repo import EspacioDisponibleSucursalRepository
-from application.config.logger_config import setup_logger
 from application.controllers.empresa_controller import controlador_py_logger_get_by_id_empresa
 from application.controllers.formato_controller import controlador_py_logger_get_by_id_formato
 from application.controllers.formatos_roles_controller import controlador_py_logger_get_roles_by_formato
@@ -18,45 +18,40 @@ from application.controllers.espacio_disponible_sucursal_controller import contr
 
 logger = setup_logger(__name__, "logs/sucursal_full_service.log")
 
-def get_sucursal_details(sucursal_id: int) -> SucursalEditResponse:
+def get_sucursal_details(sucursal_id: int, db: Session) -> SucursalEditResponse:
     # 1. Obtener la sucursal por su ID.
-    sucursal = SucursalRepository.get_by_id(sucursal_id)
+    sucursal = SucursalRepository.get_by_id(sucursal_id, db)
     if not sucursal:
         raise ValueError("Sucursal no encontrada")
     
     # 2. Obtener la empresa asociada.
-    empresa = controlador_py_logger_get_by_id_empresa(sucursal.empresa_id)
+    empresa = controlador_py_logger_get_by_id_empresa(sucursal.empresa_id, db)
     
-    # 3. Obtener el mapeo de formatos roles para el formato de la sucursal.
-    #    Suponemos que este controlador devuelve una lista de mappings con el nombre del formato.
-    formato_name = controlador_py_logger_get_by_id_formato(sucursal.formato_id)
+    # 3. Obtener el mapeo de formatos para el formato de la sucursal.
+    formato_obj = controlador_py_logger_get_by_id_formato(sucursal.formato_id, db)
     
     # 4. Obtener los roles asociados al formato.
-    roles = controlador_py_logger_get_roles_by_formato(sucursal.formato_id)
+    roles = controlador_py_logger_get_roles_by_formato(sucursal.formato_id, db)
     
     # 5. Obtener los colaboradores asignados a la sucursal.
-    #    Se asume que existe un controlador que devuelve una lista de ColaboradorSucursalDetail.
-    colaboradores = controlador_get_colaboradores_by_sucursal(sucursal.id)
+    colaboradores = controlador_get_colaboradores_by_sucursal(sucursal.id, db)
     countColabs = len(colaboradores) if colaboradores else 0
     
     # 6. Obtener los horarios asignados a la sucursal.
-    #    Aquí se debe usar el controlador correspondiente al repositorio de HorarioSucursal.
-    horarios = controlador_py_logger_get_by_sucursal(sucursal.id)  # Desde HorarioSucursalRepository
+    horarios = controlador_py_logger_get_by_sucursal(sucursal.id, db)
     
     # 7. Obtener los espacios disponibles para la sucursal.
-    #    Se asume que existe un controlador (de EspacioDisponibleSucursalRepository)
-    #    con el mismo nombre, pero de otro módulo.
-    espacios = controlador_py_logger_get_espacios_by_sucursal(sucursal.id)  # Desde EspacioDisponibleSucursalRepository
+    espacios = controlador_py_logger_get_espacios_by_sucursal(sucursal.id, db)
     
     # 8. Construir y retornar el objeto con la información completa.
-    sucursal_details = {
+    sucursal_details: Dict[str, Any] = {
         "id": sucursal.id,
         "nombre": sucursal.nombre,
         "direccion": sucursal.direccion,
         "telefono": sucursal.telefono,
         "empresa_id": sucursal.empresa_id,
         "formato_id": sucursal.formato_id,
-        "formato": formato_name.nombre,
+        "formato": formato_obj.nombre if formato_obj else None,
         "empresa": empresa.razon_social if empresa else None,
         "roles": roles,
         "colaboradores": colaboradores,
@@ -68,7 +63,7 @@ def get_sucursal_details(sucursal_id: int) -> SucursalEditResponse:
     return sucursal_details
 
 
-def update_full_sucursal(sucursal_id: int, data: SucursalFullUpdate, db: Session):
+def update_full_sucursal(sucursal_id: int, data: SucursalFullUpdate, db: Session) -> Sucursal:
     """
     Actualiza completamente una sucursal y sus objetos asociados:
       - Actualiza los campos básicos de la sucursal.
@@ -77,19 +72,17 @@ def update_full_sucursal(sucursal_id: int, data: SucursalFullUpdate, db: Session
       - Deriva y actualiza el campo 'dias_atencion' a partir de los horarios actualizados.
     Toda la operación se realiza en una transacción.
     
-    Nota: Es importante que, al manejar la transacción en el servicio,
-    los métodos de los repositorios (create, update, delete) no invoquen
-    un commit() manual, ya que esto puede cerrar la transacción prematuramente.
-    En su lugar, deben usar db.flush() para enviar los cambios sin finalizar la transacción.
+    Nota: Es importante que los métodos de los repositorios (create, update, delete) utilicen db.flush()
+    para enviar los cambios sin finalizar la transacción, permitiendo que la transacción se confirme al final.
     """
     try:
         with db.begin():
-            # 1. Recuperar la sucursal actual
+            # 1. Recuperar la sucursal actual.
             sucursal_actual = SucursalRepository.get_by_id(sucursal_id, db)
             if not sucursal_actual:
                 raise HTTPException(status_code=404, detail="Sucursal no encontrada")
             
-            # 2. Actualizar campos básicos de la sucursal (excluyendo relaciones)
+            # 2. Actualizar campos básicos de la sucursal (excluyendo relaciones).
             basic_update_data = data.model_dump(
                 exclude_unset=True,
                 exclude={"horario", "horarios", "espacio", "roles", "colaboradores"}
@@ -98,7 +91,7 @@ def update_full_sucursal(sucursal_id: int, data: SucursalFullUpdate, db: Session
                 if value is not None:
                     setattr(sucursal_actual, key, value)
             
-            # 3. Procesar HorarioSucursal
+            # 3. Procesar HorarioSucursal.
             current_horarios = HorarioSucursalRepository.get_by_sucursal(sucursal_id, db)
             current_ids = {h.id for h in current_horarios if h.id is not None}
             payload_ids = {h_data.id for h_data in data.horarios if h_data.id}
@@ -109,7 +102,7 @@ def update_full_sucursal(sucursal_id: int, data: SucursalFullUpdate, db: Session
             updated_horarios = []
             for horario_data in data.horarios:
                 horario_dict = horario_data.model_dump()
-                # Asegurar que se asigna el sucursal_id si no viene en el payload
+                # Asegurar que se asigna el sucursal_id si no viene en el payload.
                 if not horario_dict.get("sucursal_id"):
                     horario_dict["sucursal_id"] = sucursal_id
                 if horario_data.id:
@@ -129,7 +122,7 @@ def update_full_sucursal(sucursal_id: int, data: SucursalFullUpdate, db: Session
                     creado = HorarioSucursalRepository.create(nuevo, db)
                     updated_horarios.append(creado)
             
-            # 4. Procesar EspacioDisponibleSucursal
+            # 4. Procesar EspacioDisponibleSucursal.
             current_espacios = EspacioDisponibleSucursalRepository.get_by_sucursal(sucursal_id, db)
             current_esp_ids = {e.id for e in current_espacios if e.id is not None}
             payload_esp_ids = {esp_data.id for esp_data in data.espacio if esp_data.id}
@@ -159,7 +152,7 @@ def update_full_sucursal(sucursal_id: int, data: SucursalFullUpdate, db: Session
                     creado = EspacioDisponibleSucursalRepository.create(nuevo_esp, db)
                     updated_espacios.append(creado)
             
-            # 5. Actualizar la sucursal en la base de datos
+            # 5. Actualizar la sucursal en la base de datos.
             updated_sucursal = SucursalRepository.update(sucursal_actual, db)
             return updated_sucursal
     except Exception as e:
