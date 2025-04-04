@@ -1,52 +1,52 @@
-# CONTROLLER_PY_LOGGER_HORAS_EXTRA_COLABORADOR
 from application.config.logger_config import setup_logger
 from typing import List
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 from infrastructure.databases.models.horas_extra_colaborador import HorasExtraColaborador
 from infrastructure.repositories.horas_extra_colaborador_repo import HorasExtraColaboradorRepository
 
 logger = setup_logger(__name__, "logs/horas_extra_colaborador.log")
 
-def controlador_py_logger_get_by_colaborador_horas_extra(colaborador_id: int) -> List[HorasExtraColaborador]:
+def controlador_py_logger_get_by_colaborador_horas_extra(colaborador_id: int, db: Session) -> List[HorasExtraColaborador]:
     """
     Devuelve todas las horas extra para un colaborador específico.
     """
     try:
-        horas_extra = HorasExtraColaboradorRepository.get_by_colaborador(colaborador_id)
+        horas_extra = HorasExtraColaboradorRepository.get_by_colaborador(colaborador_id, db)
     except Exception as error:
         logger.error("Error al obtener horas extra para colaborador %s: %s", colaborador_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
     return horas_extra
 
-def controlador_py_logger_get_by_tipo_horas_extra(colaborador_id: int, tipo: str) -> List[HorasExtraColaborador]:
+def controlador_py_logger_get_by_tipo_horas_extra(colaborador_id: int, tipo: str, db: Session) -> List[HorasExtraColaborador]:
     """
     Devuelve todas las horas extra para un colaborador filtradas por tipo.
     """
     try:
-        horas_extra = HorasExtraColaboradorRepository.get_by_tipo(colaborador_id, tipo)
+        horas_extra = HorasExtraColaboradorRepository.get_by_tipo(colaborador_id, tipo, db)
     except Exception as error:
         logger.error("Error al obtener horas extra para colaborador %s y tipo %s: %s", colaborador_id, tipo, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
     return horas_extra
 
-def controlador_py_logger_create_horas_extra(horas_extra: HorasExtraColaborador) -> HorasExtraColaborador:
+def controlador_py_logger_create_horas_extra(horas_extra: HorasExtraColaborador, db: Session) -> HorasExtraColaborador:
     """
     Crea un nuevo registro de horas extra para un colaborador.
     """
     try:
-        nuevo_registro = HorasExtraColaboradorRepository.create(horas_extra)
+        nuevo_registro = HorasExtraColaboradorRepository.create(horas_extra, db)
         logger.info("Horas extra creadas exitosamente con id %s", nuevo_registro.id)
         return nuevo_registro
     except Exception as error:
         logger.error("Error al crear horas extra: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
-def controlador_py_logger_delete_horas_extra(horas_extra_id: int) -> bool:
+def controlador_py_logger_delete_horas_extra(horas_extra_id: int, db: Session) -> bool:
     """
     Elimina un registro de horas extra por su ID.
     """
     try:
-        eliminado = HorasExtraColaboradorRepository.delete(horas_extra_id)
+        eliminado = HorasExtraColaboradorRepository.delete(horas_extra_id, db)
     except Exception as error:
         logger.error("Error al eliminar horas extra con id %s: %s", horas_extra_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
