@@ -1,77 +1,62 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
-
-from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.dia import Dia
 
 class DiaRepository:
     @staticmethod
-    def get_by_id(dia_id: int) -> Optional[Dia]:
+    def get_by_id(dia_id: int, db: Session) -> Optional[Dia]:
         """
         Obtiene un día por su ID.
         """
-        session: Session = Database.get_session("rrhh")
-        dia = session.query(Dia).filter_by(id=dia_id).first()
-        session.close()
-        return dia
+        return db.query(Dia).filter_by(id=dia_id).first()
 
     @staticmethod
-    def get_by_nombre(nombre: str) -> Optional[Dia]:
+    def get_by_nombre(nombre: str, db: Session) -> Optional[Dia]:
         """
         Obtiene un día por su nombre.
         Por ejemplo, 'Lunes', 'Martes', etc.
         """
-        session: Session = Database.get_session("rrhh")
-        dia = session.query(Dia).filter_by(nombre=nombre).first()
-        session.close()
-        return dia
+        return db.query(Dia).filter_by(nombre=nombre).first()
 
     @staticmethod
-    def get_all() -> List[Dia]:
+    def get_all(db: Session) -> List[Dia]:
         """
         Obtiene todos los días registrados en la base de datos.
         """
-        session: Session = Database.get_session("rrhh")
-        dias = session.query(Dia).all()
-        session.close()
-        return dias
+        return db.query(Dia).all()
 
     @staticmethod
-    def create(dia: Dia) -> Dia:
+    def create(dia: Dia, db: Session) -> Dia:
         """
         Crea un nuevo registro de día en la base de datos.
+        Se asume que se pasa una sesión activa y que el commit se realizará externamente.
         """
-        session: Session = Database.get_session("rrhh")
-        session.add(dia)
-        session.commit()
-        session.refresh(dia)
-        session.close()
+        db.add(dia)
+        db.flush()  # Sincroniza los cambios para asignar un ID si es necesario
+        db.refresh(dia)
         return dia
 
     @staticmethod
-    def update(dia: Dia) -> Dia:
+    def update(dia: Dia, db: Session) -> Dia:
         """
         Actualiza un día existente en la base de datos.
+        Se asume que se pasa una sesión activa y que el commit se realizará externamente.
         """
-        session: Session = Database.get_session("rrhh")
-        db_dia = session.merge(dia)  # Devuelve la instancia unificada/persistida
-        session.commit()
-        session.refresh(db_dia)
-        session.close()
+        db_dia = db.merge(dia)
+        db.flush()
+        db.refresh(db_dia)
         return db_dia
 
     @staticmethod
-    def delete(dia_id: int) -> bool:
+    def delete(dia_id: int, db: Session) -> bool:
         """
         Elimina un día de la base de datos, por su ID.
         Retorna True si se eliminó correctamente.
+        Se asume que se pasa una sesión activa y que el commit se realizará externamente.
         """
-        session: Session = Database.get_session("rrhh")
-        dia = session.query(Dia).filter_by(id=dia_id).first()
+        dia = db.query(Dia).filter_by(id=dia_id).first()
         if dia:
-            session.delete(dia)
-            session.commit()
-            session.close()
+            db.delete(dia)
+            db.flush()
             return True
-        session.close()
         return False
