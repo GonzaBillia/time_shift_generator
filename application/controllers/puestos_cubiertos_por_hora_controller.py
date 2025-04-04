@@ -1,35 +1,33 @@
-# application/controllers/puestos_cubiertos_controller.py
-
-import logging
+from application.config.logger_config import setup_logger
 from typing import List, Optional
 from datetime import time
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 from infrastructure.databases.models.puestos_cubiertos_por_hora import PuestosCubiertosPorHora
 from infrastructure.repositories.puestos_cubiertos_por_hora_repo import PuestosCubiertosPorHoraRepository
-from application.config.logger_config import setup_logger
 
 logger = setup_logger(__name__, "logs/puestos_cubiertos.log")
 
-def controlador_get_by_sucursal_puestos(sucursal_id: int) -> List[PuestosCubiertosPorHora]:
+def controlador_get_by_sucursal_puestos(sucursal_id: int, db: Session) -> List[PuestosCubiertosPorHora]:
     try:
-        registros = PuestosCubiertosPorHoraRepository.get_by_sucursal(sucursal_id)
+        registros = PuestosCubiertosPorHoraRepository.get_by_sucursal(sucursal_id, db)
         return registros
     except Exception as error:
         logger.error("Error al obtener puestos cubiertos para sucursal %s: %s", sucursal_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
-def controlador_get_by_rol_puestos(sucursal_id: int, rol_colaborador_id: int) -> List[PuestosCubiertosPorHora]:
+def controlador_get_by_rol_puestos(sucursal_id: int, rol_colaborador_id: int, db: Session) -> List[PuestosCubiertosPorHora]:
     try:
-        registros = PuestosCubiertosPorHoraRepository.get_by_rol(sucursal_id, rol_colaborador_id)
+        registros = PuestosCubiertosPorHoraRepository.get_by_rol(sucursal_id, rol_colaborador_id, db)
         return registros
     except Exception as error:
         logger.error("Error al obtener puestos cubiertos para sucursal %s y rol %s: %s", 
                      sucursal_id, rol_colaborador_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
-def controlador_get_by_horario_puestos(sucursal_id: int, dia_id: int, hora: time) -> Optional[PuestosCubiertosPorHora]:
+def controlador_get_by_horario_puestos(sucursal_id: int, dia_id: int, hora: time, db: Session) -> Optional[PuestosCubiertosPorHora]:
     try:
-        registro = PuestosCubiertosPorHoraRepository.get_by_horario(sucursal_id, dia_id, hora)
+        registro = PuestosCubiertosPorHoraRepository.get_by_horario(sucursal_id, dia_id, hora, db)
     except Exception as error:
         logger.error("Error al obtener registro para sucursal %s, día %s y hora %s: %s", 
                      sucursal_id, dia_id, hora, error)
@@ -40,18 +38,18 @@ def controlador_get_by_horario_puestos(sucursal_id: int, dia_id: int, hora: time
         raise HTTPException(status_code=404, detail="Registro no encontrado")
     return registro
 
-def controlador_create_puestos(registro: PuestosCubiertosPorHora) -> PuestosCubiertosPorHora:
+def controlador_create_puestos(registro: PuestosCubiertosPorHora, db: Session) -> PuestosCubiertosPorHora:
     try:
-        nuevo = PuestosCubiertosPorHoraRepository.create(registro)
+        nuevo = PuestosCubiertosPorHoraRepository.create(registro, db)
         logger.info("Registro creado exitosamente con id %s", nuevo.id)
         return nuevo
     except Exception as error:
         logger.error("Error al crear registro de puestos cubiertos: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
-def controlador_update_puestos(registro: PuestosCubiertosPorHora) -> PuestosCubiertosPorHora:
+def controlador_update_puestos(registro: PuestosCubiertosPorHora, db: Session) -> PuestosCubiertosPorHora:
     try:
-        actualizado = PuestosCubiertosPorHoraRepository.update(registro)
+        actualizado = PuestosCubiertosPorHoraRepository.update(registro, db)
     except Exception as error:
         logger.error("Error al actualizar registro con id %s: %s", registro.id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -63,9 +61,9 @@ def controlador_update_puestos(registro: PuestosCubiertosPorHora) -> PuestosCubi
     logger.info("Registro actualizado exitosamente con id %s", actualizado.id)
     return actualizado
 
-def controlador_delete_puestos(registro_id: int) -> bool:
+def controlador_delete_puestos(registro_id: int, db: Session) -> bool:
     try:
-        eliminado = PuestosCubiertosPorHoraRepository.delete(registro_id)
+        eliminado = PuestosCubiertosPorHoraRepository.delete(registro_id, db)
     except Exception as error:
         logger.error("Error al eliminar registro con id %s: %s", registro_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
