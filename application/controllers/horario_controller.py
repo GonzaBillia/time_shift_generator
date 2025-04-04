@@ -1,15 +1,16 @@
 from typing import List
+from datetime import time, date, datetime, timedelta
 from fastapi import HTTPException
 from application.config.logger_config import setup_logger
 from infrastructure.databases.models.horario import Horario as HorarioORM
 from infrastructure.repositories.horario_repo import HorarioRepository
-from application.services.horario_service import crear_horarios, actualizar_horarios
-from application.services.horario_service import generar_excel_horarios  # Se importa la función de Excel
+from application.services.horario_service import crear_horarios, actualizar_horarios, generar_excel_horarios
+from infrastructure.repositories.puesto_repo import PuestoRepository  # Se asume que este repositorio ya recibe 'db: Session'
 
 logger = setup_logger(__name__, "logs/horario.log")
 
 
-def controlador_py_logger_crear_horarios(horarios_front: List[dict], db=None) -> List[HorarioORM]:
+def controlador_py_logger_crear_horarios(horarios_front: List[dict], db) -> List[HorarioORM]:
     """
     Controlador para crear en bloque los bloques horarias (Horarios).
     Se espera una lista de diccionarios que contengan 'puesto_id', 'hora_inicio', 'hora_fin'
@@ -24,7 +25,7 @@ def controlador_py_logger_crear_horarios(horarios_front: List[dict], db=None) ->
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
 
-def controlador_py_logger_actualizar_horarios(horarios_front: List[dict], db=None) -> List[HorarioORM]:
+def controlador_py_logger_actualizar_horarios(horarios_front: List[dict], db) -> List[HorarioORM]:
     """
     Controlador para actualizar en bloque los bloques horarias existentes.
     Se espera que cada objeto incluya 'id' y 'puesto_id' junto con la información de hora_inicio, hora_fin y horario_corrido.
@@ -38,12 +39,12 @@ def controlador_py_logger_actualizar_horarios(horarios_front: List[dict], db=Non
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
 
-def controlador_py_logger_get_by_puesto(puesto_id: int) -> List[HorarioORM]:
+def controlador_py_logger_get_by_puesto(puesto_id: int, db) -> List[HorarioORM]:
     """
     Devuelve todos los bloques horarias asociados a un puesto específico.
     """
     try:
-        horarios = HorarioRepository.get_by_puesto(puesto_id)
+        horarios = HorarioRepository.get_by_puesto(puesto_id, db)
     except Exception as error:
         logger.error("Error al obtener horarios para el puesto %s: %s", puesto_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -54,12 +55,12 @@ def controlador_py_logger_get_by_puesto(puesto_id: int) -> List[HorarioORM]:
     return horarios
 
 
-def controlador_py_logger_get_by_puestos(puesto_ids: List[int]) -> List[HorarioORM]:
+def controlador_py_logger_get_by_puestos(puesto_ids: List[int], db) -> List[HorarioORM]:
     """
     Devuelve todos los bloques horarias asociados a un conjunto de puestos.
     """
     try:
-        horarios = HorarioRepository.get_by_puestos(puesto_ids)
+        horarios = HorarioRepository.get_by_puestos(puesto_ids, db)
     except Exception as error:
         logger.error("Error al obtener horarios para los puestos %s: %s", puesto_ids, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -69,13 +70,13 @@ def controlador_py_logger_get_by_puestos(puesto_ids: List[int]) -> List[HorarioO
     return horarios
 
 
-def controlador_py_logger_delete_horarios(horario_ids: list[int]) -> bool:
+def controlador_py_logger_delete_horarios(horario_ids: List[int], db) -> bool:
     """
     Elimina múltiples horarios según una lista de IDs proporcionados.
     Devuelve True si al menos un horario fue eliminado.
     """
     try:
-        eliminado = HorarioRepository.delete_many(horario_ids)
+        eliminado = HorarioRepository.delete_many(horario_ids, db)
     except Exception as error:
         logger.error("Error al eliminar horarios con IDs %s: %s", horario_ids, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -92,8 +93,9 @@ def controlador_py_logger_generar_excel_horarios(
     sucursal_ids: List[int],
     fecha_inicio: str,
     fecha_fin: str,
+    db,
     separar_por_sucursal: bool = False,
-    output_dir: str = None
+    output_dir: str = None,
 ) -> dict:
     """
     Controlador para generar archivos Excel con la información de horarios.
@@ -107,7 +109,7 @@ def controlador_py_logger_generar_excel_horarios(
     Retorna un diccionario con un mensaje de éxito.
     """
     try:
-        generar_excel_horarios(sucursal_ids, fecha_inicio, fecha_fin, separar_por_sucursal, output_dir)
+        generar_excel_horarios(sucursal_ids, fecha_inicio, fecha_fin, separar_por_sucursal, output_dir, db)
         logger.info("Archivos Excel generados exitosamente.")
         return {"message": "Archivos Excel generados exitosamente."}
     except Exception as error:

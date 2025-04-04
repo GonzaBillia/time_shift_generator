@@ -1,5 +1,5 @@
 from typing import List, Optional, Dict, Any
-from datetime import date, datetime
+from datetime import date
 from sqlalchemy.orm import Session, joinedload
 
 from infrastructure.databases.config.database import DBConfig as Database
@@ -9,164 +9,112 @@ from infrastructure.databases.models.colaborador import Colaborador
 from infrastructure.databases.models.colaborador_sucursal import ColaboradorSucursal
 from infrastructure.databases.models.puestos import Puesto
 
-
 class HorarioRepository:
     @staticmethod
-    def get_by_id(horario_id: int) -> Optional[Horario]:
+    def get_by_id(horario_id: int, db: Session) -> Optional[Horario]:
         """
         Obtiene un Horario por su ID.
         Retorna None si no existe.
         """
-        session: Session = Database.get_session("rrhh")
-        horario = session.query(Horario).filter_by(id=horario_id).first()
-        session.close()
-        return horario
+        return db.query(Horario).filter_by(id=horario_id).first()
 
     @staticmethod
-    def get_by_puesto(puesto_id: int, db: Optional[Session] = None) -> List[Horario]:
-        close_session = False
-        if db is None:
-            db = Database.get_session("rrhh")
-            close_session = True
-        try:
-            horarios = db.query(Horario).filter_by(puesto_id=puesto_id).all()
-            return horarios
-        finally:
-            if close_session:
-                db.close()
+    def get_by_puesto(puesto_id: int, db: Session) -> List[Horario]:
+        return db.query(Horario).filter_by(puesto_id=puesto_id).all()
 
     @staticmethod
-    def get_by_puestos(puestos_ids: List[int], db: Optional[Session] = None) -> List[Horario]:
-        close_session = False
-        if db is None:
-            db = Database.get_session("rrhh")
-            close_session = True
-        try:
-            horarios = db.query(Horario).filter(Horario.puesto_id.in_(puestos_ids)).all()
-            return horarios
-        finally:
-            if close_session:
-                db.close()
+    def get_by_puestos(puestos_ids: List[int], db: Session) -> List[Horario]:
+        return db.query(Horario).filter(Horario.puesto_id.in_(puestos_ids)).all()
 
     @staticmethod
-    def get_by_colaborador(colaborador_id: int, db: Optional[Session] = None) -> List[Horario]:
-        close_session = False
-        if db is None:
-            db = Database.get_session("rrhh")
-            close_session = True
-        try:
-            horarios = db.query(Horario).filter_by(colaborador_id=colaborador_id).all()
-            return horarios
-        finally:
-            if close_session:
-                db.close()
+    def get_by_colaborador(colaborador_id: int, db: Session) -> List[Horario]:
+        return db.query(Horario).filter_by(colaborador_id=colaborador_id).all()
 
     @staticmethod
-    def get_all() -> List[Horario]:
+    def get_all(db: Session) -> List[Horario]:
         """
         Devuelve todos los horarios registrados en la base de datos.
         """
-        session: Session = Database.get_session("rrhh")
-        horarios = session.query(Horario).all()
-        session.close()
-        return horarios
+        return db.query(Horario).all()
 
     @staticmethod
-    def create(horario: Horario) -> Horario:
+    def create(horario: Horario, db: Session) -> Horario:
         """
         Crea un nuevo Horario y lo persiste en la base de datos.
+        Se asume que el commit se realizará externamente.
         """
-        session: Session = Database.get_session("rrhh")
-        session.add(horario)
-        session.commit()
-        session.refresh(horario)
-        session.close()
+        db.add(horario)
+        db.flush()  # Sin commit, sincroniza para asignar ID si es necesario
+        db.refresh(horario)
         return horario
 
     @staticmethod
-    def update(horario: Horario) -> Optional[Horario]:
+    def update(horario: Horario, db: Session) -> Optional[Horario]:
         """
         Actualiza un Horario existente.
-        Recibe un objeto Horario con id,
-        hace 'merge' en la sesión y lo refresca luego del commit.
+        Recibe un objeto Horario con id, hace 'merge' en la sesión y lo refresca.
         Retorna el Horario actualizado o None si no existe.
         """
-        session: Session = Database.get_session("rrhh")
-        existente = session.query(Horario).filter_by(id=horario.id).first()
+        existente = db.query(Horario).filter_by(id=horario.id).first()
         if not existente:
-            session.close()
             return None
 
-        db_horario = session.merge(horario)
-        session.commit()
-        session.refresh(db_horario)
-        session.close()
+        db_horario = db.merge(horario)
+        db.flush()
+        db.refresh(db_horario)
         return db_horario
 
     @staticmethod
-    def delete(horario_id: int) -> bool:
+    def delete(horario_id: int, db: Session) -> bool:
         """
         Elimina un Horario de la base de datos por su ID.
         Retorna True si se elimina, False si no existe.
         """
-        session: Session = Database.get_session("rrhh")
-        horario = session.query(Horario).filter_by(id=horario_id).first()
+        horario = db.query(Horario).filter_by(id=horario_id).first()
         if horario:
-            session.delete(horario)
-            session.commit()
-            session.close()
+            db.delete(horario)
+            db.flush()
             return True
-        session.close()
         return False
 
     @staticmethod
-    def delete_many(horario_ids: List[int]) -> bool:
+    def delete_many(horario_ids: List[int], db: Session) -> bool:
         """
         Elimina múltiples Horarios de la base de datos por sus IDs.
         Retorna True si se eliminó al menos uno, o False si ninguno fue encontrado.
         """
-        session: Session = Database.get_session("rrhh")
-        try:
-            query = session.query(Horario).filter(Horario.id.in_(horario_ids))
-            if query.count() == 0:
-                session.close()
-                return False
-            query.delete(synchronize_session=False)
-            session.commit()
-            return True
-        finally:
-            session.close()
+        query = db.query(Horario).filter(Horario.id.in_(horario_ids))
+        if query.count() == 0:
+            return False
+        query.delete(synchronize_session=False)
+        db.commit()
+        return True
 
     @staticmethod
-    def bulk_crear_horarios(horarios: List[Horario]) -> List[Horario]:
-        session: Session = Database.get_session("rrhh")
-        session.add_all(horarios)
-        session.commit()
+    def bulk_crear_horarios(horarios: List[Horario], db: Session) -> List[Horario]:
+        db.add_all(horarios)
+        db.commit()
         for horario in horarios:
-            session.refresh(horario)
-        result = horarios.copy()
-        session.close()
-        return result
+            db.refresh(horario)
+        return horarios.copy()
 
     @staticmethod
-    def bulk_actualizar_horarios(horarios: List[Horario]) -> List[Horario]:
-        session: Session = Database.get_session("rrhh")
+    def bulk_actualizar_horarios(horarios: List[Horario], db: Session) -> List[Horario]:
         persisted_horarios = []
         for horario in horarios:
-            persisted = session.merge(horario)
+            persisted = db.merge(horario)
             persisted_horarios.append(persisted)
-        session.commit()
+        db.commit()
         for ph in persisted_horarios:
-            session.refresh(ph)
-        result = persisted_horarios.copy()
-        session.close()
-        return result
+            db.refresh(ph)
+        return persisted_horarios.copy()
 
     @staticmethod
     def get_horarios_por_sucursales(
         sucursal_ids: List[int],
         fecha_inicio: date,
-        fecha_fin: date
+        fecha_fin: date,
+        db: Session
     ) -> Dict[str, Any]:
         """
         Retorna la lista de sucursales filtradas por los ids proporcionados.
@@ -176,75 +124,60 @@ class HorarioRepository:
         incluyendo sus horarios (hora_inicio y hora_fin).
         Además, se incluye el rango de fechas elegido en el resultado.
         """
-        session: Session = Database.get_session("rrhh")
-        try:
-            sucursales = session.query(Sucursal).filter(
-                Sucursal.id.in_(sucursal_ids)
-            ).options(
-                joinedload(Sucursal.colaboradores)
-                .joinedload(ColaboradorSucursal.colaborador)
-                .joinedload(Colaborador.puestos)
-                .joinedload(Puesto.horarios)
-            ).all()
+        sucursales = db.query(Sucursal).filter(
+            Sucursal.id.in_(sucursal_ids)
+        ).options(
+            joinedload(Sucursal.colaboradores)
+            .joinedload(ColaboradorSucursal.colaborador)
+            .joinedload(Colaborador.puestos)
+            .joinedload(Puesto.horarios)
+        ).all()
 
-            resultado: Dict[str, Any] = {
-                "fecha_inicio": fecha_inicio.isoformat(),
-                "fecha_fin": fecha_fin.isoformat(),
-                "sucursales": []
+        resultado: Dict[str, Any] = {
+            "fecha_inicio": fecha_inicio.isoformat(),
+            "fecha_fin": fecha_fin.isoformat(),
+            "sucursales": []
+        }
+
+        for sucursal in sucursales:
+            sucursal_data = {
+                "id": sucursal.id,
+                "nombre": sucursal.nombre,
+                "colaboradores": []
             }
-
-            for sucursal in sucursales:
-                sucursal_data = {
-                    "id": sucursal.id,
-                    "nombre": sucursal.nombre,
-                    "colaboradores": []
+            # Recorremos la relación intermedia ColaboradorSucursal
+            for cs in sucursal.colaboradores:
+                colaborador = cs.colaborador
+                colaborador_data = {
+                    "id": colaborador.id,
+                    "nombre": colaborador.nombre,
+                    "email": colaborador.email,
+                    "puestos": []
                 }
-                # Recorremos la relación intermedia ColaboradorSucursal
-                for cs in sucursal.colaboradores:
-                    colaborador = cs.colaborador
-                    colaborador_data = {
-                        "id": colaborador.id,
-                        "nombre": colaborador.nombre,  # Se asume que el 'nombre' actúa como username
-                        "email": colaborador.email,
-                        "puestos": []
-                    }
-                    # Se itera sobre los puestos asociados al colaborador
-                    for puesto in colaborador.puestos:
-                        # Filtramos para incluir solo los puestos que pertenezcan a la sucursal actual 
-                        # y cuya fecha esté dentro del rango especificado.
-                        if puesto.sucursal_id == sucursal.id and fecha_inicio <= puesto.fecha <= fecha_fin:
-                            puesto_data = {
-                                "dia_id": puesto.dia_id,
-                                "fecha": puesto.fecha.isoformat(),
-                                "horarios": []
+                # Se itera sobre los puestos asociados al colaborador
+                for puesto in colaborador.puestos:
+                    if puesto.sucursal_id == sucursal.id and fecha_inicio <= puesto.fecha <= fecha_fin:
+                        puesto_data = {
+                            "dia_id": puesto.dia_id,
+                            "fecha": puesto.fecha.isoformat(),
+                            "horarios": []
+                        }
+                        for horario in puesto.horarios:
+                            horario_data = {
+                                "hora_inicio": horario.hora_inicio.strftime("%H:%M:%S"),
+                                "hora_fin": horario.hora_fin.strftime("%H:%M:%S")
                             }
-                            # Agregamos cada uno de los horarios asociados al puesto.
-                            for horario in puesto.horarios:
-                                horario_data = {
-                                    "hora_inicio": horario.hora_inicio.strftime("%H:%M:%S"),
-                                    "hora_fin": horario.hora_fin.strftime("%H:%M:%S")
-                                }
-                                puesto_data["horarios"].append(horario_data)
-                            colaborador_data["puestos"].append(puesto_data)
-                    sucursal_data["colaboradores"].append(colaborador_data)
-                resultado["sucursales"].append(sucursal_data)
+                            puesto_data["horarios"].append(horario_data)
+                        colaborador_data["puestos"].append(puesto_data)
+                sucursal_data["colaboradores"].append(colaborador_data)
+            resultado["sucursales"].append(sucursal_data)
 
-            return resultado
-        finally:
-            session.close()
+        return resultado
 
     @staticmethod
-    def bulk_crear_horarios_session(horarios: List[Horario], db: Optional[Session] = None) -> List[Horario]:
-        close_session = False
-        if db is None:
-            db = Database.get_session("rrhh")
-            close_session = True
-        try:
-            db.add_all(horarios)
-            db.commit()
-            for horario in horarios:
-                db.refresh(horario)
-            return horarios.copy()
-        finally:
-            if close_session:
-                db.close()
+    def bulk_crear_horarios_session(horarios: List[Horario], db: Session) -> List[Horario]:
+        db.add_all(horarios)
+        db.commit()
+        for horario in horarios:
+            db.refresh(horario)
+        return horarios.copy()
