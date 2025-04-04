@@ -1,42 +1,42 @@
 from fastapi import HTTPException, status
+from sqlalchemy.orm import Session
 from application.services.usuario_service import (
     get_all_users,
     get_user_by_id,
     update_user,
     delete_user
 )
-from application.helpers.response_handler import success_response, error_response
 
-def get_all_users_controller():
+def get_all_users_controller(db: Session):
     try:
-        users = get_all_users()
-        return success_response("Usuarios encontrados", data=users)
+        users = get_all_users(db)
+        return users
     except Exception as e:
-        return error_response(str(e), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return e
 
-def get_user_by_id_controller(user_id: int):
+def get_user_by_id_controller(user_id: int, db: Session):
     try:
-        user = get_user_by_id(user_id)
-        return success_response("Usuario encontrado", data=user)
+        user = get_user_by_id(user_id, db)
+        return user
     except ValueError as e:
-        return error_response(str(e), status_code=404)
+        return e
     except Exception as e:
-        return error_response(str(e), status_code=500)
+        return e
 
-def update_user_controller(user_id: int, update_data: dict):
+def update_user_controller(user_id: int, update_data: dict, db: Session):
     try:
-        user = update_user(user_id, update_data)
-        return success_response("Usuario actualizado", data=user)
+        user = update_user(user_id, update_data, db)
+        return user
     except ValueError as e:
-        return error_response(str(e), status_code=404)
+        return e
     except Exception as e:
-        return error_response(str(e), status_code=500)
+        return e
 
-def delete_user_controller(user_id: int):
+def delete_user_controller(user_id: int, db: Session):
     try:
-        delete_user(user_id)
-        return success_response("Usuario eliminado exitosamente")
+        delete_user(user_id, db)
+        return "Usuario eliminado exitosamente"
     except ValueError as e:
-        return error_response(str(e), status_code=404)
+        return e
     except Exception as e:
-        return error_response(str(e), status_code=500)
+        return e

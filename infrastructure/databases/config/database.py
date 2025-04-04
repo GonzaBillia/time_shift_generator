@@ -149,7 +149,7 @@ class DBConfig:
             logger.warning(f"No hay engine activo para '{db_name}'.")
 
     @staticmethod
-    def get_db_session(db_name: str):
+    def get_db(db_name: str):
     # "MY_DB" es el nombre de la base de datos; ajústalo según corresponda
         session = DBConfig.get_session(db_name)
         try:

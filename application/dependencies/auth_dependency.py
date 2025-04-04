@@ -1,7 +1,8 @@
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import HTTPException, Request, status
 import jwt, os
+from typing import Generator, Callable
 from dotenv import load_dotenv
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, Session
 from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.usuario import Usuario
 
@@ -32,3 +33,12 @@ def get_current_user_from_cookie(request: Request):
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuario no encontrado")
     return user
+
+def get_db_factory(db_name: str) -> Callable[[], Generator[Session, None, None]]:
+    def _get_db() -> Generator[Session, None, None]:
+        session = Database.get_session(db_name)
+        try:
+            yield session
+        finally:
+            session.close()
+    return _get_db
