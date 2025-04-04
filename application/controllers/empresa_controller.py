@@ -7,18 +7,9 @@ from infrastructure.repositories.empresas_repo import EmpresaRepository
 
 logger = setup_logger(__name__, "logs/empresa.log")
 
-def controlador_py_logger_get_by_id_empresa(empresa_id: int, db: Session = None) -> Empresa:
+def controlador_py_logger_get_by_id_empresa(empresa_id: int, db: Session) -> Empresa:
     """
     Obtiene una Empresa por su ID.
-
-    Args:
-        empresa_id (int): Identificador de la empresa.
-
-    Returns:
-        Empresa: Objeto Empresa obtenido.
-
-    Raises:
-        HTTPException: Con código 404 si la empresa no existe o 500 en caso de error interno.
     """
     try:
         empresa = EmpresaRepository.get_by_id(empresa_id, db)
@@ -32,21 +23,12 @@ def controlador_py_logger_get_by_id_empresa(empresa_id: int, db: Session = None)
 
     return empresa
 
-def controlador_py_logger_get_by_cuit(cuit: str) -> Empresa:
+def controlador_py_logger_get_by_cuit(cuit: str, db: Session) -> Empresa:
     """
     Obtiene una Empresa por su CUIT.
-
-    Args:
-        cuit (str): CUIT de la empresa.
-
-    Returns:
-        Empresa: Objeto Empresa obtenido.
-
-    Raises:
-        HTTPException: Si ocurre un error interno o si no se encuentra la empresa.
     """
     try:
-        empresa = EmpresaRepository.get_by_cuit(cuit)
+        empresa = EmpresaRepository.get_by_cuit(cuit, db)
     except Exception as error:
         logger.error("Error al obtener empresa con CUIT %s: %s", cuit, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -57,21 +39,12 @@ def controlador_py_logger_get_by_cuit(cuit: str) -> Empresa:
 
     return empresa
 
-def controlador_py_logger_get_by_razon_social(razon_social: str) -> Empresa:
+def controlador_py_logger_get_by_razon_social(razon_social: str, db: Session) -> Empresa:
     """
     Obtiene una Empresa por su razón social.
-
-    Args:
-        razon_social (str): Razón social de la empresa.
-
-    Returns:
-        Empresa: Objeto Empresa obtenido.
-
-    Raises:
-        HTTPException: Si ocurre un error interno o si no se encuentra la empresa.
     """
     try:
-        empresa = EmpresaRepository.get_by_razon_social(razon_social)
+        empresa = EmpresaRepository.get_by_razon_social(razon_social, db)
     except Exception as error:
         logger.error("Error al obtener empresa con razón social '%s': %s", razon_social, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -82,60 +55,36 @@ def controlador_py_logger_get_by_razon_social(razon_social: str) -> Empresa:
 
     return empresa
 
-def controlador_py_logger_get_all_empresas() -> List[Empresa]:
+def controlador_py_logger_get_all_empresas(db: Session) -> List[Empresa]:
     """
     Obtiene todas las Empresas.
-
-    Returns:
-        List[Empresa]: Lista de empresas.
-
-    Raises:
-        HTTPException: Si ocurre un error interno.
     """
     try:
-        empresas = EmpresaRepository.get_all()
+        empresas = EmpresaRepository.get_all(db)
     except Exception as error:
         logger.error("Error al obtener todas las empresas: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
     return empresas
 
-def controlador_py_logger_create_empresa(empresa: Empresa) -> Empresa:
+def controlador_py_logger_create_empresa(empresa: Empresa, db: Session) -> Empresa:
     """
     Crea una nueva Empresa en la base de datos.
-
-    Args:
-        empresa (Empresa): Objeto Empresa a crear.
-
-    Returns:
-        Empresa: Objeto Empresa creado con los datos actualizados.
-
-    Raises:
-        HTTPException: Con código 500 si ocurre un error interno.
     """
     try:
-        empresa_creada = EmpresaRepository.create(empresa)
+        empresa_creada = EmpresaRepository.create(empresa, db)
         logger.info("Empresa creada exitosamente con id %s", empresa_creada.id)
         return empresa_creada
     except Exception as error:
         logger.error("Error al crear la empresa: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
     
-def controlador_py_logger_update_empresa(empresa: Empresa) -> Empresa:
+def controlador_py_logger_update_empresa(empresa: Empresa, db: Session) -> Empresa:
     """
     Actualiza una Empresa existente en la base de datos.
-
-    Args:
-        empresa (Empresa): Objeto Empresa con los datos a actualizar (debe incluir el id).
-
-    Returns:
-        Empresa: Objeto Empresa actualizado.
-
-    Raises:
-        HTTPException: Si ocurre un error interno o si la empresa no existe.
     """
     try:
-        empresa_actualizada = EmpresaRepository.update(empresa)
+        empresa_actualizada = EmpresaRepository.update(empresa, db)
     except Exception as error:
         logger.error("Error al actualizar empresa con id %s: %s", empresa.id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -147,21 +96,12 @@ def controlador_py_logger_update_empresa(empresa: Empresa) -> Empresa:
     logger.info("Empresa actualizada exitosamente con id %s", empresa_actualizada.id)
     return empresa_actualizada
 
-def controlador_py_logger_delete_empresa(empresa_id: int) -> bool:
+def controlador_py_logger_delete_empresa(empresa_id: int, db: Session) -> bool:
     """
     Elimina una Empresa por su ID.
-
-    Args:
-        empresa_id (int): ID de la empresa a eliminar.
-
-    Returns:
-        bool: True si la eliminación fue exitosa.
-
-    Raises:
-        HTTPException: Si ocurre un error interno o si no se encuentra la empresa.
     """
     try:
-        resultado = EmpresaRepository.delete(empresa_id)
+        resultado = EmpresaRepository.delete(empresa_id, db)
     except Exception as error:
         logger.error("Error al eliminar empresa con id %s: %s", empresa_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
