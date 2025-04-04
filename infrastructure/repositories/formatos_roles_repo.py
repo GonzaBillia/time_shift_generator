@@ -1,85 +1,74 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session, joinedload
-from infrastructure.databases.config.database import DBConfig as Database
 from infrastructure.databases.models.formato_rol import FormatosRoles
 from infrastructure.databases.models.rol import Rol
 
 class FormatosRolesRepository:
     @staticmethod
-    def get_by_ids(rol_colaborador_id: int, formato_id: int) -> Optional[FormatosRoles]:
+    def get_by_ids(rol_colaborador_id: int, formato_id: int, db: Session) -> Optional[FormatosRoles]:
         """
         Obtiene un registro de FormatosRoles por su clave compuesta.
         """
-        session: Session = Database.get_session("rrhh")
-        mapping = session.query(FormatosRoles).filter_by(
+        mapping = db.query(FormatosRoles).filter_by(
             rol_colaborador_id=rol_colaborador_id, 
             formato_id=formato_id
         ).first()
-        session.close()
         return mapping
     
     @staticmethod
-    def get_by_formatos(formato_id: int) -> List[FormatosRoles]:
+    def get_by_formatos(formato_id: int, db: Session) -> List[FormatosRoles]:
         """
-        Obtiene un registro de FormatosRoles por su clave compuesta.
+        Obtiene todos los registros de FormatosRoles para un Formato dado.
         """
-        session: Session = Database.get_session("rrhh")
-        mapping = session.query(FormatosRoles).filter_by( 
-            formato_id=formato_id
-        )
-        session.close()
+        mapping = db.query(FormatosRoles).filter_by(formato_id=formato_id).all()
         return mapping
 
     @staticmethod
-    def get_all() -> List[FormatosRoles]:
+    def get_all(db: Session) -> List[FormatosRoles]:
         """
         Retorna la lista de todos los registros en FormatosRoles.
         """
-        session: Session = Database.get_session("rrhh")
-        mappings = session.query(FormatosRoles).all()
-        session.close()
+        mappings = db.query(FormatosRoles).all()
         return mappings
     
     @staticmethod
-    def get_roles_by_formato(formato_id: int) -> List[Rol]:
-        session: Session = Database.get_session("rrhh")
+    def get_roles_by_formato(formato_id: int, db: Session) -> List[Rol]:
+        """
+        Retorna la lista de Roles asociados a un Formato, mediante la unión con FormatosRoles.
+        """
         roles = (
-            session.query(Rol)
+            db.query(Rol)
             .join(FormatosRoles)
             .options(joinedload(Rol.formatos))
             .filter(FormatosRoles.formato_id == formato_id)
             .all()
         )
-        session.close()
         return roles
 
     @staticmethod
-    def create(mapping: FormatosRoles) -> FormatosRoles:
+    def create(mapping: FormatosRoles, db: Session) -> FormatosRoles:
         """
         Crea un nuevo registro en FormatosRoles.
+        Se asume que se pasa una sesión activa y que el commit se realizará externamente.
         """
-        session: Session = Database.get_session("rrhh")
-        session.add(mapping)
-        session.commit()
-        session.refresh(mapping)
-        session.close()
+        db.add(mapping)
+        db.flush()  # Sincroniza los cambios para asignar un ID si es necesario
+        db.refresh(mapping)
         return mapping
 
     @staticmethod
-    def delete(rol_colaborador_id: int, formato_id: int) -> bool:
+    def delete(rol_colaborador_id: int, formato_id: int, db: Session) -> bool:
         """
         Elimina un registro de FormatosRoles por su clave compuesta.
         Retorna True si se elimina, False si no existe.
+        Se asume que se pasa una sesión activa y que el commit se realizará externamente.
         """
-        session: Session = Database.get_session("rrhh")
-        mapping = session.query(FormatosRoles).filter_by(
+        mapping = db.query(FormatosRoles).filter_by(
             rol_colaborador_id=rol_colaborador_id, 
             formato_id=formato_id
         ).first()
         if mapping:
-            session.delete(mapping)
-            session.commit()
-            session.close()
+            db.delete(mapping)
+            db.flush()
             return True
-        session.close()
         return False
