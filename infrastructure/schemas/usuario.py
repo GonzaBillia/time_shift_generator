@@ -18,6 +18,16 @@ class UsuarioResponse(UsuarioBase):
 
     model_config = {"from_attributes": True}
 
+class UsuarioPublic(BaseModel):
+    id: int
+    username: str
+    colaborador_id: int
+    rol_usuario_id: int
+    is_active: bool
+    token_version: int
+
+    model_config = {"from_attributes": True}
+
 class Token(BaseModel):
     access_token: str
     token_type: str

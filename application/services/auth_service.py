@@ -23,7 +23,7 @@ def get_password_hash(password: str) -> str:
 def authenticate_user(db: Session, username: str, password: str):
     """
     Autentica un usuario validando que exista, que la contraseña sea correcta
-    y que el usuario esté activo.
+    y que el usuario esté activo. Además, actualiza last_login y token_version.
     """
     user = UsuarioRepository.get_by_username(db, username)
     if not user:
@@ -44,8 +44,10 @@ def authenticate_user(db: Session, username: str, password: str):
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Usuario inactivo"
         )
-    # Aquí podrías actualizar el campo last_login si es necesario
+    # Actualizamos la información de login en la capa de repositorio
+    user = UsuarioRepository.update_login_info(db, user)
     return user
+
 
 def create_access_token(db: Session, data: dict) -> str:
     """

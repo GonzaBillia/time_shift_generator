@@ -17,6 +17,7 @@ def register_user(user_data: UsuarioCreate, db: Session) -> Usuario:
         password_hash=get_password_hash(user_data.password),
         rol_usuario_id=user_data.rol_usuario_id
     )
+    # Utiliza el método create del repositorio para añadir el usuario a la base de datos
     return UsuarioRepository.create(db, new_user)
 
 def update_user(user_id: int, update_data: dict, db: Session) -> Usuario:
@@ -39,5 +40,10 @@ def get_user_by_id(user_id: int, db: Session) -> Usuario:
         raise ValueError("Usuario no encontrado")
     return user
 
-def get_all_users(db: Session) -> List[Usuario]:
-    return UsuarioRepository.get_all(db)
+def get_all_users_paginated(db: Session, page: int, limit: int, search: str = "") -> List[Usuario]:
+    offset = (page - 1) * limit
+    query = db.query(Usuario)
+    if search:
+        query = query.filter(Usuario.username.ilike(f"%{search}%"))
+    return query.offset(offset).limit(limit).all()
+

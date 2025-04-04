@@ -1,4 +1,5 @@
 from typing import Optional, List
+from datetime import datetime
 from sqlalchemy.orm import Session
 from infrastructure.databases.models.usuario import Usuario
 
@@ -33,3 +34,14 @@ class UsuarioRepository:
     def delete(session: Session, user: Usuario) -> None:
         session.delete(user)
         session.commit()
+
+    @staticmethod
+    def update_login_info(session: Session, user: Usuario) -> Usuario:
+        """
+        Actualiza el campo last_login y aumenta la versión del token.
+        """
+        user.last_login = datetime.utcnow()
+        user.token_version += 1
+        session.commit()
+        session.refresh(user)
+        return user
