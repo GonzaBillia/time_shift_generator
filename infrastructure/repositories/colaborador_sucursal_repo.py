@@ -5,117 +5,59 @@ from infrastructure.databases.models.colaborador_sucursal import ColaboradorSucu
 
 class ColaboradorSucursalRepository:
     @staticmethod
-    def get_by_id(relacion_id: int, db: Optional[Session] = None) -> Optional[ColaboradorSucursal]:
+    def get_by_id(relacion_id: int, db: Session) -> Optional[ColaboradorSucursal]:
         """
         Devuelve una relación específica por su ID en la tabla 'colaboradores_sucursales'.
+        Retorna None si no existe.
         """
-        close_session = False
-        if db is None:
-            db = DBConfig.get_session("rrhh")
-            close_session = True
-        try:
-            relacion = db.query(ColaboradorSucursal).filter_by(id=relacion_id).first()
-            return relacion
-        finally:
-            if close_session:
-                db.close()
+        return db.query(ColaboradorSucursal).filter_by(id=relacion_id).first()
 
     @staticmethod
-    def get_by_colaborador(colaborador_id: int, db: Optional[Session] = None) -> List[ColaboradorSucursal]:
+    def get_by_colaborador(colaborador_id: int, db: Session) -> List[ColaboradorSucursal]:
         """
         Devuelve la lista de asociaciones 'ColaboradorSucursal' para un colaborador específico.
         """
-        close_session = False
-        if db is None:
-            db = DBConfig.get_session("rrhh")
-            close_session = True
-        try:
-            relaciones = db.query(ColaboradorSucursal).filter_by(colaborador_id=colaborador_id).all()
-            return relaciones
-        finally:
-            if close_session:
-                db.close()
+        return db.query(ColaboradorSucursal).filter_by(colaborador_id=colaborador_id).all()
 
     @staticmethod
-    def get_by_sucursal(sucursal_id: int, db: Optional[Session] = None) -> List[ColaboradorSucursal]:
+    def get_by_sucursal(sucursal_id: int, db: Session) -> List[ColaboradorSucursal]:
         """
         Devuelve la lista de asociaciones 'ColaboradorSucursal' para una sucursal específica.
         """
-        close_session = False
-        if db is None:
-            db = DBConfig.get_session("rrhh")
-            close_session = True
-        try:
-            relaciones = db.query(ColaboradorSucursal).filter_by(sucursal_id=sucursal_id).all()
-            return relaciones
-        finally:
-            if close_session:
-                db.close()
+        return db.query(ColaboradorSucursal).filter_by(sucursal_id=sucursal_id).all()
 
     @staticmethod
-    def create(relacion: ColaboradorSucursal, db: Optional[Session] = None) -> ColaboradorSucursal:
+    def create(relacion: ColaboradorSucursal, db: Session) -> ColaboradorSucursal:
         """
         Crea una nueva relación en la tabla 'colaboradores_sucursales'.
-        Si no se proporciona una sesión, se crea y se cierra internamente.
+        Se asume que se pasa una sesión activa y que el commit se realizará externamente.
         """
-        close_session = False
-        if db is None:
-            db = DBConfig.get_session("rrhh")
-            close_session = True
-        try:
-            db.add(relacion)
-            if close_session:
-                db.commit()
-            else:
-                db.flush()
-            db.refresh(relacion)
-            return relacion
-        finally:
-            if close_session:
-                db.close()
+        db.add(relacion)
+        db.flush()  # Sincroniza los cambios para asignar un ID, si es necesario
+        db.refresh(relacion)
+        return relacion
 
     @staticmethod
-    def update(relacion: ColaboradorSucursal, db: Optional[Session] = None) -> ColaboradorSucursal:
+    def update(relacion: ColaboradorSucursal, db: Session) -> ColaboradorSucursal:
         """
         Actualiza una relación existente en la tabla 'colaboradores_sucursales'.
-        Si 'relacion' no existe en la sesión, se hace un merge.
+        Se asume que se pasa una sesión activa y que el commit se realizará externamente.
         """
-        close_session = False
-        if db is None:
-            db = DBConfig.get_session("rrhh")
-            close_session = True
-        try:
-            db_relacion = db.merge(relacion)
-            if close_session:
-                db.commit()
-            else:
-                db.flush()
-            db.refresh(db_relacion)
-            return db_relacion
-        finally:
-            if close_session:
-                db.close()
+        db_relacion = db.merge(relacion)
+        db.flush()
+        db.refresh(db_relacion)
+        return db_relacion
 
     @staticmethod
-    def delete(relacion_id: int, db: Optional[Session] = None) -> bool:
+    def delete(relacion_id: int, db: Session) -> bool:
         """
         Elimina la relación (fila) de la tabla 'colaboradores_sucursales'
-        identificada por 'relacion_id'. Retorna True si se elimina correctamente.
+        identificada por 'relacion_id'. Retorna True si se elimina correctamente, False en caso contrario.
+        Se asume que se pasa una sesión activa y que el commit se realizará externamente.
         """
-        close_session = False
-        if db is None:
-            db = DBConfig.get_session("rrhh")
-            close_session = True
-        try:
-            relacion = db.query(ColaboradorSucursal).filter_by(id=relacion_id).first()
-            if relacion:
-                db.delete(relacion)
-                if close_session:
-                    db.commit()
-                else:
-                    db.flush()
-                return True
-            return False
-        finally:
-            if close_session:
-                db.close()
+        relacion = db.query(ColaboradorSucursal).filter_by(id=relacion_id).first()
+        if relacion:
+            db.delete(relacion)
+            db.flush()
+            return True
+        return False

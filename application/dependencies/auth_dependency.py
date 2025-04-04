@@ -32,6 +32,8 @@ def get_current_user_from_cookie(request: Request):
     db.close()
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuario no encontrado")
+    
+    request.state.user = user
     return user
 
 def get_db_factory(db_name: str) -> Callable[[], Generator[Session, None, None]]:

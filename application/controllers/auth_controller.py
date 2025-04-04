@@ -30,7 +30,7 @@ def login(response: Response, form_data: OAuth2PasswordRequestForm, db: Session)
     return access_token
 
 def logout(response: Response):
-    response.delete_cookie("access_token")
+    response.delete_cookie(key="access_token", path="/", samesite="lax", secure=False)
     return {"message": "Logout exitoso"}
 
 def register(user_data: UsuarioCreate, db: Session):

@@ -6,118 +6,63 @@ from infrastructure.databases.models.horario_preferido_colaborador import Horari
 
 class HorarioPreferidoColaboradorRepository:
     @staticmethod
-    def get_by_id(horario_id: int, db: Optional[Session] = None) -> Optional[HorarioPreferidoColaborador]:
+    def get_by_id(horario_id: int, db: Session) -> Optional[HorarioPreferidoColaborador]:
         """
         Obtiene un HorarioPreferidoColaborador por su ID.
         Retorna None si no existe.
-        Si no se pasa una sesión, se crea y se cierra internamente.
         """
-        close_session = False
-        if db is None:
-            db = Database.get_session("rrhh")
-            close_session = True
-        try:
-            horario = db.query(HorarioPreferidoColaborador).filter_by(id=horario_id).first()
-            return horario
-        finally:
-            if close_session:
-                db.close()
+        return db.query(HorarioPreferidoColaborador).filter_by(id=horario_id).first()
 
     @staticmethod
-    def get_by_colaborador(colaborador_id: int, db: Optional[Session] = None) -> List[HorarioPreferidoColaborador]:
+    def get_by_colaborador(colaborador_id: int, db: Session) -> List[HorarioPreferidoColaborador]:
         """
         Retorna todos los horarios preferidos asociados a un colaborador.
         """
-        close_session = False
-        if db is None:
-            db = Database.get_session("rrhh")
-            close_session = True
-        try:
-            horario = db.query(HorarioPreferidoColaborador).filter_by(colaborador_id=colaborador_id)
-            return horario
-        finally:
-            if close_session:
-                db.close()
+        return db.query(HorarioPreferidoColaborador).filter_by(colaborador_id=colaborador_id).all()
 
     @staticmethod
-    def get_by_dia(dia_id: int) -> List[HorarioPreferidoColaborador]:
+    def get_by_dia(dia_id: int, db: Session) -> List[HorarioPreferidoColaborador]:
         """
         Retorna todos los horarios preferidos para un día específico.
         """
-        session: Session = Database.get_session("rrhh")
-        horarios = session.query(HorarioPreferidoColaborador).filter_by(dia_id=dia_id).all()
-        session.close()
-        return horarios
+        return db.query(HorarioPreferidoColaborador).filter_by(dia_id=dia_id).all()
 
     @staticmethod
-    def create(horario: HorarioPreferidoColaborador, db: Optional[Session] = None) -> HorarioPreferidoColaborador:
+    def create(horario: HorarioPreferidoColaborador, db: Session) -> HorarioPreferidoColaborador:
         """
         Crea un nuevo HorarioPreferidoColaborador en la base de datos.
-        Si no se proporciona una sesión, se crea y se cierra internamente.
+        Se asume que se pasa una sesión activa y que el commit se realizará externamente.
         """
-        close_session = False
-        if db is None:
-            db = Database.get_session("rrhh")
-            close_session = True
-        try:
-            db.add(horario)
-            if close_session:
-                db.commit()
-            else:
-                db.flush()
-            db.refresh(horario)
-            return horario
-        finally:
-            if close_session:
-                db.close()
+        db.add(horario)
+        db.flush()  # Realiza un flush para asignar un ID, en caso de que sea necesario
+        db.refresh(horario)
+        return horario
 
     @staticmethod
-    def update(horario: HorarioPreferidoColaborador, db: Optional[Session] = None) -> Optional[HorarioPreferidoColaborador]:
+    def update(horario: HorarioPreferidoColaborador, db: Session) -> Optional[HorarioPreferidoColaborador]:
         """
         Actualiza un HorarioPreferidoColaborador existente.
         Retorna el objeto actualizado o None si no existe.
-        Si se pasa una sesión externa, se asume que el commit se realizará fuera.
+        Se asume que el commit se realizará externamente.
         """
-        close_session = False
-        if db is None:
-            db = Database.get_session("rrhh")
-            close_session = True
-        try:
-            existente = db.query(HorarioPreferidoColaborador).filter_by(id=horario.id).first()
-            if not existente:
-                return None
-            db_horario = db.merge(horario)
-            if close_session:
-                db.commit()
-            else:
-                db.flush()
-            db.refresh(db_horario)
-            return db_horario
-        finally:
-            if close_session:
-                db.close()
+        existente = db.query(HorarioPreferidoColaborador).filter_by(id=horario.id).first()
+        if not existente:
+            return None
+        db_horario = db.merge(horario)
+        db.flush()
+        db.refresh(db_horario)
+        return db_horario
 
     @staticmethod
-    def delete(horario_id: int, db: Optional[Session] = None) -> bool:
+    def delete(horario_id: int, db: Session) -> bool:
         """
         Elimina un HorarioPreferidoColaborador por su ID.
-        Retorna True si se elimina, False si no existe.
+        Retorna True si se elimina, o False si no existe.
+        Se asume que el commit se realizará externamente.
         """
-        close_session = False
-        if db is None:
-            db = Database.get_session("rrhh")
-            close_session = True
-        try:
-            existente = db.query(HorarioPreferidoColaborador).filter_by(id=horario_id).first()
-            if not existente:
-                return False
-            db.delete(existente)
-            if close_session:
-                db.commit()
-            else:
-                db.flush()
-            return True
-        finally:
-            if close_session:
-                db.close()
-
+        existente = db.query(HorarioPreferidoColaborador).filter_by(id=horario_id).first()
+        if not existente:
+            return False
+        db.delete(existente)
+        db.flush()
+        return True

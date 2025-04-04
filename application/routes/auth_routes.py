@@ -23,7 +23,8 @@ def token_endpoint(
     """
     try:
         result = login(response, form_data, db)
-        return success_response("Login exitoso", data=result, status_code=status.HTTP_200_OK)
+        headers = dict(response.headers)
+        return success_response("Login exitoso", data=result, status_code=status.HTTP_200_OK, headers=headers)
     except HTTPException as he:
         raise he
     except Exception as e:
@@ -37,7 +38,8 @@ def logout_endpoint(response: Response) -> Any:
     """
     try:
         logout(response)
-        return success_response("Logout exitoso", data={"message": "Logout exitoso"}, status_code=status.HTTP_200_OK)
+        headers = dict(response.headers)
+        return success_response("Logout exitoso", data={"message": "Logout exitoso"}, status_code=status.HTTP_200_OK, headers=headers)
     except HTTPException as he:
         raise he
     except Exception as e:

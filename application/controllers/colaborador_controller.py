@@ -1,7 +1,7 @@
 from application.config.logger_config import setup_logger
 from datetime import date
 from typing import Optional, List
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from infrastructure.databases.models import Colaborador
 from application.services.colaborador_service import get_colaborador_details, obtener_horarios_asignados
@@ -11,7 +11,7 @@ from application.controllers.tipo_colaborador_controller import controlador_py_l
 
 logger = setup_logger(__name__)
 
-def controlador_py_logger_get_all() -> List[Colaborador]:
+def controlador_py_logger_get_all(db: Session) -> List[Colaborador]:
     """
     Obtiene todos los colaboradores.
 
@@ -22,14 +22,14 @@ def controlador_py_logger_get_all() -> List[Colaborador]:
         HTTPException: Con código 500 si ocurre un error interno.
     """
     try:
-        colaboradores = ColaboradorRepository.get_all()
+        colaboradores = ColaboradorRepository.get_all(db)
     except Exception as error:
         logger.error("Error al obtener todos los colaboradores: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
     return colaboradores
 
-def controlador_py_logger_get_paginated(page: int, limit: int, search: str) -> List[Colaborador]:
+def controlador_py_logger_get_paginated(page: int, limit: int, search: str, db: Session) -> List[Colaborador]:
     """
     Obtiene los colaboradores de manera paginada.
 
@@ -41,19 +41,19 @@ def controlador_py_logger_get_paginated(page: int, limit: int, search: str) -> L
         List[Colaborador]: Lista de colaboradores.
     """
     try:
-        colaboradores = ColaboradorRepository.get_all_paginated(page, limit, search)
+        colaboradores = ColaboradorRepository.get_all_paginated(page, limit, search, db)
     except Exception as error:
         logger.error("Error al obtener los colaboradores paginados: %s", error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
     return colaboradores
 
-
 def controlador_py_logger_get_filtered(
     dni: Optional[int] = None,
     empresa_id: Optional[int] = None,
     tipo_empleado_id: Optional[int] = None,
     horario_corrido: Optional[bool] = None,
+    db: Session = None
 ) -> List[Colaborador]:
     """
     Obtiene colaboradores aplicando filtros opcionales.
@@ -76,6 +76,7 @@ def controlador_py_logger_get_filtered(
             empresa_id=empresa_id,
             tipo_empleado_id=tipo_empleado_id,
             horario_corrido=horario_corrido,
+            db=db
         )
     except Exception as error:
         logger.error("Error al obtener colaboradores filtrados: %s", error)
@@ -109,7 +110,7 @@ def controlador_py_logger_get_by_id(colaborador_id: int, db: Session) -> Colabor
 
     return colaborador
 
-def controlador_py_logger_get_by_legajo(colaborador_legajo: int) -> Colaborador:
+def controlador_py_logger_get_by_legajo(colaborador_legajo: int, db: Session) -> Colaborador:
     """
     Obtiene un colaborador a partir de su legajo.
 
@@ -124,7 +125,7 @@ def controlador_py_logger_get_by_legajo(colaborador_legajo: int) -> Colaborador:
                        o con código 500 si ocurre un error interno.
     """
     try:
-        colaborador = ColaboradorRepository.get_by_legajo(colaborador_legajo)
+        colaborador = ColaboradorRepository.get_by_legajo(colaborador_legajo, db)
     except Exception as error:
         logger.error("Error al obtener colaborador con legajo %s: %s", colaborador_legajo, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -135,7 +136,7 @@ def controlador_py_logger_get_by_legajo(colaborador_legajo: int) -> Colaborador:
 
     return colaborador
 
-def controlador_py_logger_get_details(colaborador_id: int):
+def controlador_py_logger_get_details(colaborador_id: int, db: Session):
     """
     Obtiene un colaborador a partir de su ID con todos sus detalles.
 
@@ -150,7 +151,7 @@ def controlador_py_logger_get_details(colaborador_id: int):
                        o con código 500 si ocurre un error interno.
     """
     try:
-        colaborador = get_colaborador_details(colaborador_id)
+        colaborador = get_colaborador_details(colaborador_id, db)
     except Exception as error:
         logger.error("Error al obtener detalles del colaborador con id %s: %s", colaborador_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
@@ -201,12 +202,12 @@ def controlador_py_logger_update_colaborador(colaborador: Colaborador, db: Sessi
         logger.error("Error al actualizar Colaborador con id %s: %s", colaborador.id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
 
-def controlador_py_logger_delete_colaborador(colaborador_id: int) -> bool:
+def controlador_py_logger_delete_colaborador(colaborador_id: int, db: Session) -> bool:
     """
     Elimina un Colaborador de la base de datos.
     """
     try:
-        resultado = ColaboradorRepository.delete(colaborador_id)
+        resultado = ColaboradorRepository.delete(colaborador_id, db)
     except Exception as error:
         logger.error("Error al eliminar Colaborador con id %s: %s", colaborador_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error
