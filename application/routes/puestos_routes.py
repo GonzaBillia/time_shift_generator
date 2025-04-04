@@ -19,19 +19,16 @@ from application.controllers.puestos_controller import (
 from infrastructure.databases.config.database import DBConfig
 
 # Dependencias para autenticación y roles
-from application.dependencies.auth_dependency import get_db_session, get_current_user_from_cookie
+from application.dependencies.auth_dependency import get_db_session, get_current_user_from_cookie, get_db_factory
 from application.dependencies.roles_dependency import require_roles
 
 router = APIRouter(prefix="/puestos", tags=["Puestos"])
 logger = logging.getLogger(__name__)
 
-def get_rrhh_session() -> Generator[Session, None, None]:
-    yield from DBConfig.get_db_session("rrhh")
-
 @router.post("/crear", response_model=PuestoResponse)
 def crear_puesto_endpoint(
     puesto_data: PuestoBase = Body(...),
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ):
@@ -51,7 +48,7 @@ def crear_puesto_endpoint(
 @router.post("/crear_varios", response_model=List[PuestoResponse])
 def crear_varios_puestos_endpoint(
     puestos_data: List[PuestoBase] = Body(...),
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ):
@@ -75,7 +72,7 @@ def crear_varios_puestos_endpoint(
 @router.put("/actualizar", response_model=PuestoResponse)
 def actualizar_puesto_endpoint(
     puesto_data: PuestoUpdate = Body(...),
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ):
@@ -95,7 +92,7 @@ def actualizar_puesto_endpoint(
 @router.put("/actualizar-varios", response_model=List[PuestoResponse])
 def actualizar_varios_puestos_endpoint(
     puestos_data: List[PuestoUpdate] = Body(...),
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ):
@@ -119,7 +116,7 @@ def actualizar_varios_puestos_endpoint(
 @router.get("/sucursal/{sucursal_id}", response_model=List[PuestoResponse])
 def obtener_puestos_por_sucursal_endpoint(
     sucursal_id: int,
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ):
@@ -138,7 +135,7 @@ def obtener_puestos_por_sucursal_endpoint(
 @router.delete("/eliminar-varios", response_model=dict)
 def eliminar_varios_puestos_endpoint(
     puesto_ids: List[int] = Body(..., embed=True),
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ):
@@ -158,7 +155,7 @@ def eliminar_varios_puestos_endpoint(
 @router.post("/copy_history", response_model=dict)
 def copy_history_endpoint(
     copy_history_data: dict = Body(...),
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ):

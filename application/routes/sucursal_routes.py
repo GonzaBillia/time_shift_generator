@@ -28,19 +28,16 @@ from application.config.logger_config import setup_logger
 from infrastructure.databases.config.database import DBConfig
 
 # Dependencias para autenticación y roles
-from application.dependencies.auth_dependency import get_current_user_from_cookie
+from application.dependencies.auth_dependency import get_current_user_from_cookie, get_db_factory
 from application.dependencies.roles_dependency import require_roles
 
 router = APIRouter(prefix="/sucursales", tags=["Sucursales"])
 logger = setup_logger(__name__, "logs/sucursal.log")
 
-def get_rrhh_session() -> Generator[Session, None, None]:
-    yield from DBConfig.get_db_session("rrhh")
-
 @router.get("/id/{sucursal_id}", response_model=SucursalResponse)
 def get_sucursal_by_id(
     sucursal_id: int,
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ):
@@ -59,7 +56,7 @@ def get_sucursal_by_id(
 
 @router.get("/", response_model=List[SucursalResponse])
 def get_all_sucursales(
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ):
@@ -80,7 +77,7 @@ def get_all_sucursales(
 @router.post("/", response_model=SucursalResponse)
 def create_sucursal(
     sucursal_data: SucursalBase,
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin"))
 ):
@@ -102,7 +99,7 @@ def create_sucursal(
 def update_sucursal_partial(
     sucursal_id: int,
     sucursal_update: SucursalUpdate,
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin"))
 ):
@@ -124,7 +121,7 @@ def update_sucursal_partial(
 @router.delete("/{sucursal_id}")
 def delete_sucursal(
     sucursal_id: int,
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin"))
 ):
@@ -143,7 +140,7 @@ def delete_sucursal(
 @router.get("/nombre/{nombre}", response_model=SucursalResponse)
 def get_sucursal_by_nombre(
     nombre: str,
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ):
@@ -163,7 +160,7 @@ def get_sucursal_by_nombre(
 @router.get("/empresa/{empresa_id}", response_model=List[SucursalResponse])
 def get_sucursales_by_empresa(
     empresa_id: int,
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ):
@@ -184,7 +181,7 @@ def get_sucursales_by_empresa(
 @router.get("/{sucursal_id}/horarios", response_model=List)
 def get_horarios_by_sucursal(
     sucursal_id: int,
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ):
@@ -205,7 +202,7 @@ def get_horarios_by_sucursal(
 @router.get("/{sucursal_id}/details", response_model=SucursalEditResponse)
 def get_sucursal_details_endpoint(
     sucursal_id: int,
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin", "supervisor"))
 ) -> SucursalEditResponse:
@@ -226,7 +223,7 @@ def get_sucursal_details_endpoint(
 def update_sucursal_full(
     sucursal_id: int,
     data: SucursalFullUpdate,
-    db: Session = Depends(get_rrhh_session),
+    db: Session = Depends(get_db_factory("rrhh")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin"))
 ):
