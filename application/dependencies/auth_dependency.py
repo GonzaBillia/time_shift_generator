@@ -41,6 +41,10 @@ def get_db_factory(db_name: str) -> Callable[[], Generator[Session, None, None]]
         session = Database.get_session(db_name)
         try:
             yield session
+            session.commit()  # Se confirma si no hubo errores.
+        except Exception:
+            session.rollback()  # Se revierte la transacción en caso de error.
+            raise
         finally:
             session.close()
     return _get_db

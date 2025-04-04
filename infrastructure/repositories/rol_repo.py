@@ -9,10 +9,9 @@ class RolRepository:
     def get_by_id(rol_id: int, db: Session) -> Optional[Rol]:
         """
         Obtiene un Rol por su ID. Retorna None si no existe.
-        Se carga de forma anticipada la relación 'formatos' para evitar lazy loading.
+        Se omite la carga de la relación 'formatos' para evitar problemas de recursión.
         """
         return db.query(Rol) \
-            .options(joinedload(Rol.formatos)) \
             .filter_by(id=rol_id).first()
 
     @staticmethod

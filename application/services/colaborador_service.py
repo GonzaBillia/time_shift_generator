@@ -50,7 +50,7 @@ def get_colaborador_details(colaborador_id: int, db: Session) -> Colaborador:
     
     # Obtener sucursales y roles asociados.
     colaborador_sucursales = colaborador_sucursal_repo.get_by_colaborador(colaborador_id, db)
-    sucursales = [controlador_py_logger_get_by_id_sucursal(cs.sucursal_id) for cs in colaborador_sucursales]
+    sucursales = [controlador_py_logger_get_by_id_sucursal(cs.sucursal_id, db) for cs in colaborador_sucursales]
     roles = [rol_repo.get_by_id(cs.rol_colaborador_id, db) for cs in colaborador_sucursales]
     empresa = empresas_repo.get_by_id(colaborador_data.empresa_id, db)
 

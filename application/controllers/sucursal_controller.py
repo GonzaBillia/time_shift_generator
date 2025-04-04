@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from infrastructure.databases.models.sucursal import Sucursal
 from infrastructure.schemas.sucursal import SucursalFullUpdate
+from infrastructure.repositories.horario_sucursal_repo import HorarioSucursalRepository
 from infrastructure.repositories.sucursal_repo import SucursalRepository
 from application.services.sucursal_service import update_full_sucursal
 # Importamos los controladores para validar las FK
@@ -146,7 +147,7 @@ def controlador_py_logger_get_horarios(sucursal_id: int, db: Session) -> List:
     Obtiene la lista de horarios asignados a una Sucursal.
     """
     try:
-        horarios = SucursalRepository.get_horarios(sucursal_id, db)
+        horarios = HorarioSucursalRepository.get_by_sucursal(sucursal_id, db)
     except Exception as error:
         logger.error("Error al obtener horarios para Sucursal con id %s: %s", sucursal_id, error)
         raise HTTPException(status_code=500, detail="Error interno del servidor") from error

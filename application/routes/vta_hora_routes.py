@@ -26,7 +26,7 @@ def get_vta_hora(
     sucursal: int = Query(..., description="ID de la sucursal"),
     fecha_desde: date = Query(..., description="Fecha de inicio (YYYY-MM-DD)"),
     fecha_hasta: date = Query(..., description="Fecha de fin (YYYY-MM-DD)"),
-    db: Session = Depends(get_db_factory("rrhh")),
+    db: Session = Depends(get_db_factory("plex")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin"))
 ):
@@ -48,7 +48,7 @@ def get_ventas_por_hora(
     sucursal: int = Query(..., description="ID de la sucursal"),
     fecha_desde: date = Query(..., description="Fecha de inicio (YYYY-MM-DD)"),
     fecha_hasta: date = Query(..., description="Fecha de fin (YYYY-MM-DD)"),
-    db: Session = Depends(get_db_factory("rrhh")),
+    db: Session = Depends(get_db_factory("plex")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin"))
 ):
@@ -71,7 +71,7 @@ def get_personas_por_hora(
     fecha_desde: date = Query(..., description="Fecha de inicio (YYYY-MM-DD)"),
     fecha_hasta: date = Query(..., description="Fecha de fin (YYYY-MM-DD)"),
     tiempo_promedio: int = Query(5, description="Tiempo promedio (en minutos) que tarda una factura"),
-    db: Session = Depends(get_db_factory("rrhh")),
+    db: Session = Depends(get_db_factory("plex")),
     current_user = Depends(get_current_user_from_cookie),
     role = Depends(require_roles("superadmin", "admin"))
 ):

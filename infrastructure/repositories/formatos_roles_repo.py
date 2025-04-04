@@ -33,13 +33,11 @@ class FormatosRolesRepository:
     
     @staticmethod
     def get_roles_by_formato(formato_id: int, db: Session) -> List[Rol]:
-        """
-        Retorna la lista de Roles asociados a un Formato, mediante la unión con FormatosRoles.
-        """
         roles = (
             db.query(Rol)
             .join(FormatosRoles)
-            .options(joinedload(Rol.formatos))
+            # Se quita el joinedload para evitar la recursión.
+            # .options(joinedload(Rol.formatos))
             .filter(FormatosRoles.formato_id == formato_id)
             .all()
         )

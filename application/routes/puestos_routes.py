@@ -19,7 +19,7 @@ from application.controllers.puestos_controller import (
 from infrastructure.databases.config.database import DBConfig
 
 # Dependencias para autenticación y roles
-from application.dependencies.auth_dependency import get_db_session, get_current_user_from_cookie, get_db_factory
+from application.dependencies.auth_dependency import get_current_user_from_cookie, get_db_factory
 from application.dependencies.roles_dependency import require_roles
 
 router = APIRouter(prefix="/puestos", tags=["Puestos"])
